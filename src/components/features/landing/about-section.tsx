@@ -13,7 +13,7 @@ export const AboutSection = () => {
         ABOUT US
       </div>
       <div className="absolute left-6 md:left-24 top-24 md:top-40 hidden lg:block opacity-[0.15] z-0">
-         <span className="font-serif text-6xl text-[#8B5E56]" style={{ writingMode: 'vertical-rl' }}>哲学</span>
+         <span className="font-serif text-4xl text-[#8B5E56] tracking-[0.3em] uppercase" style={{ writingMode: 'vertical-rl' }}>VISION</span>
       </div>
       <div className="absolute right-6 md:right-24 bottom-24 hidden lg:block opacity-[0.15] z-0">
          <span className="font-sans text-[10px] tracking-[0.5em] text-[#2C2A29] uppercase border-l border-[#8B5E56] pl-4">HIKARA STUDIO</span>
@@ -24,7 +24,7 @@ export const AboutSection = () => {
           <span className="w-8 h-px bg-[#8B5E56]"></span>
           Tentang Kami
           <span className="font-serif text-[#2C2A29]/50 ml-2">
-            私たちについて
+            ABOUT US
           </span>
           <span className="w-8 h-px bg-[#8B5E56]"></span>
         </h2>
@@ -48,7 +48,7 @@ export const AboutSection = () => {
              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" alt="Process" />
              <div className="absolute inset-0 bg-linear-to-t from-[#F6F4F0] via-[#F6F4F0]/80 to-transparent"></div>
            </div>
-           <span className="font-serif text-6xl md:text-8xl text-[#8B5E56] opacity-30 relative z-10 mix-blend-multiply">美</span>
+           <span className="font-serif text-8xl md:text-9xl text-[#8B5E56] opacity-30 relative z-10 mix-blend-multiply">H</span>
            <div className="relative z-10 mt-24">
              <h4 className="text-sm md:text-base tracking-[0.3em] uppercase text-[#2C2A29] font-heading font-bold mb-4">Filosofi Eksklusif</h4>
              <p className="text-xs leading-loose tracking-widest text-[#5A5550] max-w-sm uppercase">Ruang privat untuk berekspresi tanpa batas dengan sistem lighting level komersial.</p>

@@ -32,7 +32,7 @@ export const HeroSection = () => {
         className="absolute left-[10%] top-[20%] w-32 md:w-48 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
          <div className="aspect-3/4 bg-[#EFEBDE] overflow-hidden">
-           <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover filter grayscale opacity-80" alt="Floating Polaroid 1" />
+           <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Photobox Kotabaru - Sesi Foto Estetik Wanita" />
          </div>
       </motion.div>
 
@@ -44,7 +44,7 @@ export const HeroSection = () => {
         className="absolute right-[5%] max-w-[200px] top-[15%] w-32 md:w-40 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
          <div className="aspect-square bg-[#EFEBDE] overflow-hidden">
-           <img src="https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover filter grayscale opacity-80" alt="Floating Polaroid 2" />
+           <img src="https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Studio Foto Premium - Pasangan Minimalis" />
          </div>
       </motion.div>
       
@@ -56,7 +56,7 @@ export const HeroSection = () => {
         className="absolute right-[15%] bottom-[10%] w-40 md:w-56 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
          <div className="aspect-4/3 bg-[#EFEBDE] overflow-hidden">
-           <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover filter grayscale opacity-80" alt="Floating Polaroid 3" />
+           <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Photobox Kotabaru - Foto Hitam Putih Estetik" />
          </div>
       </motion.div>
 
@@ -67,7 +67,7 @@ export const HeroSection = () => {
         className="absolute right-6 md:right-16 top-1/2 -translate-y-1/2 text-[#8B5E56]/40 font-serif text-xl md:text-3xl tracking-[0.5em] pointer-events-none hidden sm:block" 
         style={{ writingMode: 'vertical-rl' }}
       >
-        フォトブース
+        PHOTOBOX
       </motion.div>
 
       <motion.div 
@@ -85,20 +85,20 @@ export const HeroSection = () => {
           <span className="text-[#8B5E56] text-xs md:text-sm tracking-[0.5em] uppercase font-heading font-medium">HIKARA PHOTOBOX</span>
           <span className="w-12 h-px bg-[#8B5E56]/50 mb-2"></span>
           
-          <h1 className="flex flex-col items-center">
-            <span className="sr-only">HIKARA Photobox Kotabaru - Studio Foto Premium & Estetik. </span>
-            <div className="overflow-hidden">
-              <h1 className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide">
+          <div className="flex flex-col items-center">
+            <h1 className="sr-only">HIKARA Photobox Kotabaru - Studio Foto Premium & Estetik. Momen Kecil, Kenangan Abadi.</h1>
+            <div className="overflow-hidden" aria-hidden="true">
+              <span className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide">
                 <TextReveal text="MOMEN KECIL," delay={0.2} />
-              </h1>
+              </span>
             </div>
-            <div className="overflow-hidden">
-              <h1 className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide mt-2">
+            <div className="overflow-hidden" aria-hidden="true">
+              <span className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide mt-2">
                 <span className="text-[#8B5E56] italic font-serif pr-2">KENANGAN</span>
                 <TextReveal text="ABADI" delay={0.4} />
-              </h1>
+              </span>
             </div>
-          </h1>
+          </div>
         </FadeUp>
 
         <FadeUp delay={0.8}>

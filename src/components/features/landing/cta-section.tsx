@@ -31,7 +31,7 @@ export const CtaSection = () => {
         </Magnetic>
       </FadeUp>
       <FadeUp delay={0.4} className="relative z-10 mt-16 md:mt-20">
-        <p className="font-serif text-[#8B5E56] text-2xl md:text-3xl opacity-80">ひから</p>
+        <p className="font-serif text-[#8B5E56] text-xl md:text-2xl opacity-80 uppercase tracking-[0.5em] ml-[0.5em]">Hikara</p>
       </FadeUp>
     </section>
   );

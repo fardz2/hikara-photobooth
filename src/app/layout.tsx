@@ -15,15 +15,23 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "HIKARA Photobox | Studio Foto Premium & Estetik di Kotabaru",
-  description: "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru. Studio foto berkonsep Japanese Zen minimalis. Pesan sesi Anda sekarang!",
-  keywords: ["Photobox Kotabaru", "Studio Foto Kotabaru", "Foto Estetik", "Japanese Minimalist Photo Studio", "HIKARA Photobox"],
+  description:
+    "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru. Studio foto berkonsep estetika modern minimalis. Pesan sesi Anda sekarang!",
+  keywords: [
+    "Photobox Kotabaru",
+    "Studio Foto Kotabaru",
+    "Foto Estetik",
+    "Modern Minimalist Photo Studio",
+    "HIKARA Photobox",
+  ],
   authors: [{ name: "HIKARA" }],
   creator: "HIKARA",
   publisher: "HIKARA",
   openGraph: {
     title: "HIKARA Photobox | Studio Foto Premium di Kotabaru",
-    description: "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru. Berkonsep Japanese Zen minimalis.",
-    url: "https://hikara.co",
+    description:
+      "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru. Berkonsep estetika modern minimalis.",
+    url: "https://hikara-photobox.vercel.app",
     siteName: "HIKARA Photobox",
     locale: "id_ID",
     type: "website",
@@ -31,7 +39,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "HIKARA Photobox | Kotabaru",
-    description: "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru.",
+    description:
+      "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru.",
   },
 };
 export default function RootLayout({
@@ -39,11 +48,41 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "PhotographyBusiness",
+    "name": "HIKARA Photobox",
+    "image": "https://hikara-photobox.vercel.app/logo.png",
+    "@id": "https://hikara-photobox.vercel.app",
+    "url": "https://hikara-photobox.vercel.app",
+    "telephone": "",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kotabaru",
+      "addressRegion": "Kalimantan Selatan",
+      "addressCountry": "ID"
+    },
+    "description": "Studio foto berkonsep estetika modern minimalis di Kotabaru, Kalimantan Selatan."
+  };
+
   return (
     <html
       lang="id"
-      className={cn("relative", "h-full", "antialiased", montserrat.variable, playfair.variable, "font-sans")}
+      className={cn(
+        "relative",
+        "h-full",
+        "antialiased",
+        montserrat.variable,
+        playfair.variable,
+        "font-sans",
+      )}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

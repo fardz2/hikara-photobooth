@@ -29,7 +29,7 @@ export const GallerySection = () => {
           <FadeUp>
             <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] font-sans font-medium flex items-center gap-4 bg-[#F6F4F0]/80 backdrop-blur-sm p-2 rounded">
               Gallery
-              <span className="font-serif text-[#2C2A29]/50 ml-2">ギャラリー</span>
+              <span className="font-serif text-[#2C2A29]/50 ml-2 text-[10px] tracking-[0.2em] uppercase">GALLERY</span>
             </h2>
           </FadeUp>
         </div>
@@ -49,7 +49,7 @@ export const GallerySection = () => {
                 <div className="absolute inset-0 bg-[#EFEBDE] z-10 origin-bottom transform transition-transform duration-1000 md:group-hover:scale-y-0 scale-y-0 md:scale-y-100"></div>
                 <img
                   src={img}
-                  alt={`Gallery ${idx}`}
+                  alt={`HIKARA Studio Foto Kotabaru - Instalasi Galeri Estetik ${idx + 1}`}
                   className="w-full h-full object-cover filter md:grayscale md:opacity-90 transition-all duration-1000 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:scale-105"
                 />
                 {/* Overlay Border */}
@@ -58,7 +58,7 @@ export const GallerySection = () => {
               
               <div className="mt-4 flex justify-between items-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500">
                 <span className="text-[9px] font-sans tracking-[0.3em] uppercase text-[#5A5550]">Vol. 0{idx + 1}</span>
-                <span className="font-serif text-[#8B5E56] text-sm">写真</span>
+                <span className="font-serif text-[#8B5E56] text-xs uppercase tracking-[0.2em]">Hikara</span>
               </div>
             </div>
           ))}
@@ -69,7 +69,7 @@ export const GallerySection = () => {
           <h2 className="font-heading text-[18vw] leading-none text-[#2C2A29] tracking-tighter">MOMENTS</h2>
         </div>
         <div className="absolute top-20 right-20 z-0 opacity-[0.03] pointer-events-none hidden lg:block">
-          <span className="font-serif text-[15vw] leading-none text-[#2C2A29] writing-vertical-rl">愛</span>
+          <span className="font-serif text-[15vw] leading-none text-[#2C2A29] writing-vertical-rl">ART</span>
         </div>
 
       </div>

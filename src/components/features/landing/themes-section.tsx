@@ -55,7 +55,7 @@ export const ThemesSection = () => {
           <div className="text-center mb-16 md:mb-24 relative">
              <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] mb-4 font-sans font-medium flex items-center justify-center gap-4">
               Frame Layouts
-              <span className="font-serif text-[#2C2A29]/50 ml-2">フレーム</span>
+              <span className="font-serif text-[#2C2A29]/50 ml-2 text-[10px] tracking-[0.2em] uppercase">FRAME</span>
             </h2>
             <h3 className="font-heading text-4xl md:text-5xl lg:text-6xl text-[#2C2A29] relative inline-block z-10">
               Format Cetak Fisik
@@ -128,7 +128,7 @@ export const ThemesSection = () => {
                <div>
                  <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] mb-4 font-sans font-medium flex items-center gap-4">
                   Color Filters
-                  <span className="font-serif text-[#2C2A29]/50 ml-2">フィルター</span>
+                  <span className="font-serif text-[#2C2A29]/50 ml-2 text-[10px] tracking-[0.2em] uppercase">FILTER</span>
                 </h2>
                 <h3 className="font-heading text-4xl md:text-5xl text-[#2C2A29] tracking-tight">Tema Estetik</h3>
                </div>

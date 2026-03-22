@@ -13,14 +13,14 @@ export const LocationSection = () => {
         STUDIO
       </div>
       <div className="absolute top-24 left-6 md:left-24 z-0 opacity-[0.1]">
-         <span className="font-serif text-4xl text-[#8B5E56]" style={{ writingMode: 'vertical-rl' }}>撮影場所</span>
+         <span className="font-serif text-4xl text-[#8B5E56] tracking-[0.3em] uppercase" style={{ writingMode: 'vertical-rl' }}>STUDIO</span>
       </div>
       <FadeUp>
         <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] mb-12 font-sans font-medium flex items-center justify-center gap-4 relative z-10">
           <span className="w-8 h-px bg-[#8B5E56]"></span>
           Lokasi Studio
           <span className="font-serif text-[#2C2A29]/50 ml-2">
-            スタジオの場所
+            STUDIO LOCATION
           </span>
           <span className="w-8 h-px bg-[#8B5E56]"></span>
         </h2>

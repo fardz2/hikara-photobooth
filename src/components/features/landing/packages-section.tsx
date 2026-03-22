@@ -14,7 +14,7 @@ export const PackagesSection = () => {
       className="py-24 md:py-40 flex flex-col items-center justify-center text-center px-6 bg-[#F6F4F0] relative overflow-hidden"
     >
       <FadeRight className="absolute right-0 top-0 text-[#2C2A29]/5 font-serif text-[15rem] leading-none pointer-events-none select-none hidden lg:block overflow-hidden mix-blend-multiply">
-        パッケージ
+        PRICING
       </FadeRight>
       <div className="absolute left-6 md:left-24 bottom-24 hidden lg:block opacity-[0.2] z-0">
          <span className="font-sans text-[10px] tracking-[0.5em] text-[#2C2A29] uppercase border-l border-[#8B5E56] pl-4">SELECT PLAN</span>
@@ -27,7 +27,7 @@ export const PackagesSection = () => {
         <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] mb-20 font-sans font-medium flex items-center gap-4 relative z-10">
           <span className="w-8 h-px bg-[#8B5E56]"></span>
           Paket
-          <span className="font-serif text-[#2C2A29]/50 ml-2">パッケージ</span>
+          <span className="font-serif text-[#2C2A29]/50 ml-2 text-[10px] tracking-[0.2em] uppercase">PRICING</span>
           <span className="w-8 h-px bg-[#8B5E56]"></span>
         </h2>
       </FadeUp>
