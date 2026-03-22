@@ -70,3 +70,78 @@ export const StaggerItem = ({ children, className = "" }: { children?: React.Rea
   };
   return <motion.div variants={itemVariants} className={className}>{children}</motion.div>;
 };
+
+export const FadeRight = ({ children, delay = 0, className = "" }: { children?: React.ReactNode, delay?: number, className?: string }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -100 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 1.5, delay, ease: slowEase }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+export const InfiniteMarquee = ({ children, className = "", duration = 30 }: { children?: React.ReactNode, className?: string, duration?: number }) => {
+  return (
+    <motion.div
+      className={className}
+      animate={{ x: ["0%", "-50%"] }}
+      transition={{ repeat: Infinity, ease: "linear", duration }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+export const TextReveal = ({ text, delay = 0, className = "" }: { text: string, delay?: number, className?: string }) => {
+  const words = text.split(" ");
+  return (
+    <span className={`inline-block ${className}`}>
+      {words.map((word, wordIndex) => (
+        <span key={wordIndex} className="inline-block overflow-hidden mr-[0.25em] align-bottom pb-2">
+          <motion.span
+            initial={{ y: "150%" }}
+            animate={{ y: "0%" }}
+            transition={{
+              duration: 1.4,
+              delay: delay + wordIndex * 0.15,
+              ease: slowEase,
+            }}
+            className="inline-block"
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
+};
+
+export const ImageMaskReveal = ({ src, alt, className = "", delay = 0 }: { src: string, alt: string, className?: string, delay?: number }) => {
+  return (
+    <div className={`relative overflow-hidden group ${className}`}>
+      <motion.div
+        initial={{ y: "0%" }}
+        whileInView={{ y: "-100%" }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1.6, delay, ease: slowEase }}
+        className="absolute inset-0 z-10 bg-[#EFEBDE] origin-bottom"
+      />
+      <motion.img
+        initial={{ scale: 1.15, filter: "grayscale(100%) opacity(0.8)" }}
+        whileInView={{ scale: 1, filter: "grayscale(30%) opacity(1)" }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 2.2, delay: delay + 0.2, ease: slowEase }}
+        src={src}
+        alt={alt}
+        className="w-full h-full object-cover transition-all duration-1000 ease-out group-hover:scale-105 group-hover:filter-none group-hover:opacity-100"
+      />
+      <div className="absolute inset-0 bg-transparent border border-[#2C2A29]/0 group-hover:border-[#F6F4F0]/30 transition-all duration-700 pointer-events-none z-20 mix-blend-overlay"></div>
+    </div>
+  );
+};
+

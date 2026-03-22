@@ -2,12 +2,13 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { FadeUp, slowEase } from "@/components/ui/motion";
+import { FadeUp, TextReveal, slowEase } from "@/components/ui/motion";
+import { Magnetic } from "@/components/ui/magnetic";
 
 export const HeroSection = () => {
   const heroRef = useRef(null);
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroBgY = useTransform(heroScroll, [0, 1], ["0%", "30%"]);
+  const heroBgY = useTransform(heroScroll, [0, 1], ["0%", "15%"]);
   const heroTextOpacity = useTransform(heroScroll, [0, 0.8], [1, 0]);
   const heroTextY = useTransform(heroScroll, [0, 1], ["0%", "50%"]);
 
@@ -20,6 +21,43 @@ export const HeroSection = () => {
         <span className="font-heading text-[25vw] leading-none text-[#2C2A29] whitespace-nowrap tracking-tighter">
           HIKARA
         </span>
+      </motion.div>
+
+      {/* Floating Polaroids */}
+      <motion.div 
+        initial={{ opacity: 0, y: 50, rotate: -10 }}
+        animate={{ opacity: 1, y: 0, rotate: -12 }}
+        transition={{ duration: 1.5, delay: 1 }}
+        style={{ y: useTransform(heroScroll, [0, 1], ["0%", "-50%"]) }}
+        className="absolute left-[10%] top-[20%] w-32 md:w-48 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
+      >
+         <div className="aspect-3/4 bg-[#EFEBDE] overflow-hidden">
+           <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover filter grayscale opacity-80" alt="Floating Polaroid 1" />
+         </div>
+      </motion.div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 50, rotate: 10 }}
+        animate={{ opacity: 1, y: 0, rotate: 15 }}
+        transition={{ duration: 1.5, delay: 1.2 }}
+        style={{ y: useTransform(heroScroll, [0, 1], ["0%", "-80%"]) }}
+        className="absolute right-[5%] max-w-[200px] top-[15%] w-32 md:w-40 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
+      >
+         <div className="aspect-square bg-[#EFEBDE] overflow-hidden">
+           <img src="https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover filter grayscale opacity-80" alt="Floating Polaroid 2" />
+         </div>
+      </motion.div>
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 50, rotate: -5 }}
+        animate={{ opacity: 1, y: 0, rotate: -5 }}
+        transition={{ duration: 1.5, delay: 1.4 }}
+        style={{ y: useTransform(heroScroll, [0, 1], ["0%", "-30%"]) }}
+        className="absolute right-[15%] bottom-[10%] w-40 md:w-56 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
+      >
+         <div className="aspect-4/3 bg-[#EFEBDE] overflow-hidden">
+           <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover filter grayscale opacity-80" alt="Floating Polaroid 3" />
+         </div>
       </motion.div>
 
       <motion.div 
@@ -50,24 +88,15 @@ export const HeroSection = () => {
           <h1 className="flex flex-col items-center">
             <span className="sr-only">HIKARA Photobox Kotabaru - Studio Foto Premium & Estetik. </span>
             <div className="overflow-hidden">
-              <motion.span 
-                initial={{ y: "100%" }}
-                animate={{ y: "0%" }}
-                transition={{ duration: 1.2, delay: 0.3, ease: slowEase }}
-                className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide"
-              >
-                MOMEN KECIL,
-              </motion.span>
+              <h1 className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide">
+                <TextReveal text="MOMEN KECIL," delay={0.2} />
+              </h1>
             </div>
             <div className="overflow-hidden">
-              <motion.span 
-                initial={{ y: "100%" }}
-                animate={{ y: "0%" }}
-                transition={{ duration: 1.2, delay: 0.5, ease: slowEase }}
-                className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide"
-              >
-                <span className="text-[#8B5E56] italic font-serif pr-2">KENANGAN</span> ABADI
-              </motion.span>
+              <h1 className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide mt-2">
+                <span className="text-[#8B5E56] italic font-serif pr-2">KENANGAN</span>
+                <TextReveal text="ABADI" delay={0.4} />
+              </h1>
             </div>
           </h1>
         </FadeUp>
@@ -80,12 +109,14 @@ export const HeroSection = () => {
         </FadeUp>
 
         <FadeUp delay={1.1}>
-          <a
-            href="#packages"
-            className="inline-block border border-[#2C2A29] text-[#2C2A29] hover:bg-[#2C2A29] hover:text-[#F6F4F0] transition-all duration-700 text-[10px] md:text-xs font-medium tracking-[0.3em] uppercase px-10 py-5"
-          >
-            Book Sekarang
-          </a>
+          <Magnetic intensity={0.15}>
+            <a
+              href="#packages"
+              className="inline-block border border-[#2C2A29] text-[#2C2A29] hover:bg-[#2C2A29] hover:text-[#F6F4F0] transition-colors duration-700 text-[10px] md:text-xs font-medium tracking-[0.3em] uppercase px-10 py-5"
+            >
+              Book Sekarang
+            </a>
+          </Magnetic>
         </FadeUp>
       </motion.div>
     </section>
