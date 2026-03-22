@@ -46,14 +46,12 @@ export const LocationSection = () => {
                 src="https://maps.google.com/maps?q=Hikara.photobox%2C%20Jl.%20Veteran%2C%20Dirgahayu%2C%20Kec.%20Pulau%20Laut%20Utara%2C%20Kab.%20Kotabaru%2C%20Kalimantan%20Selatan%2072111&t=&z=16&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="100%"
-                style={{
-                  border: 0,
-                  filter: "grayscale(100%) contrast(1.1) opacity(0.8)",
-                }}
-                allowFullScreen={false}
+                style={{ border: 0 }}
+                allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className="transition-all duration-1000 ease-out group-hover:filter-none absolute inset-0"
+                className="filter md:grayscale md:hover:grayscale-0 transition-all duration-700"
+                title="Peta Lokasi HIKARA Photobox Kotabaru"
               ></iframe>
               <div className="absolute inset-0 bg-transparent border border-[#2C2A29]/0 group-hover:border-white/20 transition-all duration-500 pointer-events-none mix-blend-overlay"></div>
             </div>

@@ -86,7 +86,7 @@ export const ThemesSection = () => {
               </div>
               
               <div className="text-center md:max-w-[200px] mt-4">
-                <h4 className="font-heading text-xl text-[#2C2A29] uppercase tracking-widest mb-1">Classic Strip</h4>
+                <h3 className="font-heading text-xl text-[#2C2A29] uppercase tracking-widest mb-1">Classic Strip</h3>
                 <p className="text-[10px] md:text-xs text-[#5A5550] tracking-widest uppercase mb-3">2x6 Inch</p>
                 <p className="text-xs text-[#5A5550] leading-relaxed hidden md:block">Format abadi dengan 4 ruang pose vertikal. Ideal untuk disimpan di dompet.</p>
               </div>
@@ -112,7 +112,7 @@ export const ThemesSection = () => {
               </div>
 
               <div className="text-center md:max-w-[240px] mt-4">
-                <h4 className="font-heading text-xl text-[#2C2A29] uppercase tracking-widest mb-1">Postcard Wide</h4>
+                <h3 className="font-heading text-xl text-[#2C2A29] uppercase tracking-widest mb-1">Postcard Wide</h3>
                 <p className="text-[10px] md:text-xs text-[#5A5550] tracking-widest uppercase mb-3">4x6 Inch</p>
                 <p className="text-xs text-[#5A5550] leading-relaxed hidden md:block">Kanvas lebih lebar untuk grup besar, dengan opsi 1 foto utuh atau grid.</p>
               </div>
@@ -151,7 +151,7 @@ export const ThemesSection = () => {
                 </div>
                 <FadeUp delay={0.3} className="w-full md:w-1/2 pt-2 md:pt-10 flex flex-col justify-center">
                   <span className="text-[9px] tracking-[0.3em] font-sans text-[#8B5E56] mb-4 uppercase inline-block border border-[#8B5E56]/30 px-3 py-1 rounded-full w-fit">Filter {idx + 1}</span>
-                  <h4 className="font-heading text-2xl md:text-3xl text-[#2C2A29] mb-4 group-hover:text-[#8B5E56] transition-colors duration-500">{theme.name}</h4>
+                  <h3 className="font-heading text-2xl md:text-3xl text-[#2C2A29] mb-4 group-hover:text-[#8B5E56] transition-colors duration-500">{theme.name}</h3>
                   <p className="text-sm text-[#5A5550] leading-loose tracking-wide">{theme.desc}</p>
                 </FadeUp>
               </div>

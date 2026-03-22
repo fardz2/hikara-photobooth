@@ -13,7 +13,7 @@ export const Nav = () => {
       className="absolute top-0 left-0 right-0 z-40 p-6 md:p-12 flex justify-between items-center"
     >
       <div className="flex items-center gap-4">
-        <img src="/logo.png" alt="HIKARA" className="h-10 md:h-12 w-auto mix-blend-multiply opacity-90" />
+        <img src="/logo.png" width="160" height="48" alt="HIKARA" className="h-10 md:h-12 w-auto mix-blend-multiply opacity-90" />
       </div>
       <div className="flex gap-4 md:gap-6 text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium text-[#2C2A29]">
         <Magnetic intensity={0.1}>

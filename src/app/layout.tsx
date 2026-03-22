@@ -36,6 +36,14 @@ export const metadata: Metadata = {
       "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru. Berkonsep estetika modern minimalis.",
     url: "https://hikara-photobox.vercel.app",
     siteName: "HIKARA Photobox",
+    images: [
+      {
+        url: "https://hikara-photobox.vercel.app/logo.png",
+        width: 800,
+        height: 600,
+        alt: "HIKARA Photobox Logo",
+      },
+    ],
     locale: "id_ID",
     type: "website",
   },
@@ -44,6 +52,7 @@ export const metadata: Metadata = {
     title: "HIKARA Photobox | Kotabaru",
     description:
       "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru.",
+    images: ["https://hikara-photobox.vercel.app/logo.png"],
   },
   verification: {
     google: "qjmTk4oz596BvD7Oj8SnqGvG_QEbNLFQiDPEf7zNcoA",

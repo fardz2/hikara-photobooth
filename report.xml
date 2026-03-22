@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<audit version="0.0.38">
+<site url="https://hikara-photobox.vercel.app" crawled="1" date="2026-03-22T14:16:35.294Z"/>
+<score overall="49" grade="F">
+ <cat name="Performance" score="82"/>
+ <cat name="Accessibility" score="91"/>
+ <cat name="E-E-A-T" score="53"/>
+ <cat name="Security" score="82"/>
+ <cat name="Core SEO" score="86"/>
+ <cat name="Content" score="80"/>
+ <cat name="Images" score="86"/>
+ <cat name="Links" score="89"/>
+ <cat name="Legal Compliance" score="44"/>
+ <cat name="Crawlability" score="97"/>
+ <cat name="Internationalization" score="100"/>
+ <cat name="Mobile" score="100"/>
+ <cat name="Structured Data" score="100"/>
+ <cat name="URL Structure" score="100"/>
+</score>
+<summary passed="101" warnings="24" failed="2"/>
+<issues>
+ <category name="Crawlability" errors="0" warnings="1">
+  <rule id="crawl/canonical-chain" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/crawl/canonical-chain">
+   Page redirects before content is served
+   Pages (1): /
+   Items (1):
+    - / (https://hikara-photobox.vercel.app → https://hikara-photobox.vercel.app/) [finalUrl: https://hikara-photobox.vercel.app/, chain: {&quot;sourceUrl&quot;:&quot;https://hikara-photobox.vercel.app/&quot;,&quot;finalUrl&quot;:&quot;https://hikara-photobox.vercel.app/&quot;,&quot;hops&quot;:[{&quot;url&quot;:&quot;https://hikara-photobox.vercel.app/&quot;,&quot;statusCode&quot;:200,&quot;type&quot;:&quot;http&quot;}],&quot;chainLength&quot;…]
+  </rule>
+ </category>
+ <category name="Core SEO" errors="0" warnings="3">
+  <rule id="core/canonical" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/core/canonical">
+   Missing canonical URL
+   Pages (1): /
+  </rule>
+  <rule id="core/og-tags" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/core/og-tags">
+   Missing og:image - social shares will lack imagery
+   Pages (1): /
+  </rule>
+  <rule id="core/twitter-cards" severity="info" status="warn" docs="https://docs.squirrelscan.com/rules/core/twitter-cards">
+   summary_large_image card requires an image
+   Pages (1): /
+  </rule>
+ </category>
+ <category name="Security" errors="0" warnings="3">
+  <rule id="security/csp" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/security/csp">
+   No Content-Security-Policy header
+  </rule>
+  <rule id="security/x-frame-options" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/security/x-frame-options">
+   No clickjacking protection
+  </rule>
+  <rule id="security/http-to-https" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/security/http-to-https">
+   1 HTTP URL(s) redirect to HTTPS
+   Items (1):
+    - http://hikara-photobox.vercel.app/ (http://hikara-photobox.vercel.app/ → https://hikara-photobox.vercel.app/ (308)) [statusCode: 308, chain: {&quot;sourceUrl&quot;:&quot;http://hikara-photobox.vercel.app/&quot;,&quot;finalUrl&quot;:&quot;https://hikara-photobox.vercel.app/&quot;,&quot;hops&quot;:[{&quot;url&quot;:&quot;http://hikara-photobox.vercel.app/&quot;,&quot;statusCode&quot;:308,&quot;type&quot;:&quot;http&quot;},{&quot;url&quot;:&quot;https://…]
+  </rule>
+ </category>
+ <category name="Links" errors="0" warnings="2">
+  <rule id="links/internal-links" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/links/internal-links">
+   Too few internal links (0, min 1)
+   Pages (1): /
+   Items (1):
+    - / (Too few internal links (0, min 1))
+  </rule>
+  <rule id="links/dead-end-pages" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/links/dead-end-pages">
+   Page has no outgoing internal links (dead-end)
+   Pages (1): /
+  </rule>
+ </category>
+ <category name="Content" errors="0" warnings="2">
+  <rule id="content/keyword-stuffing" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/content/keyword-stuffing">
+   2 word(s) may be overused
+   Pages (1): /
+   Items (2):
+    - photoboxmemoriesstudio (&quot;photoboxmemoriesstudio&quot; (4.1%)) [count: 12, density: 4.137931034482759]
+    - qualitylighthikara (&quot;qualitylighthikara&quot; (3.4%)) [count: 10, density: 3.4482758620689653]
+  </rule>
+  <rule id="content/word-count" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/content/word-count">
+   Thin content: 287 words (min 300)
+   Pages (1): /
+   Items (1):
+    - / (Thin content: 287 words (min 300))
+  </rule>
+ </category>
+ <category name="Images" errors="0" warnings="2">
+  <rule id="images/offscreen-lazy" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/images/offscreen-lazy">
+   17 below-fold image(s) without lazy loading
+   Pages (1): /
+   Items (5/10):
+    - photo-1494790108377-be9c29b29330
+    - photo-1544005313-94ddf0286df2
+    - photo-1544005313-94ddf0286df2
+    - photo-1518599904199-0ca897819ddb
+    - photo-1494790108377-be9c29b29330
+  </rule>
+  <rule id="images/dimensions" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/images/dimensions">
+   20 image(s) missing width/height (causes CLS)
+   Pages (1): /
+   Items (5/20):
+    - /logo.png | &lt;img src=&quot;https://hikara-photobox.vercel.app/logo.png&quot; alt=&quot;HIKARA&quot;&gt;
+    - https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&amp;w=400&amp;auto=format&amp;fit=crop | &lt;img src=&quot;https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&amp;w=400&amp;auto=format&amp;fit=crop&quot; alt=&quot;HIKARA Photobox Kotabaru - Sesi Foto Estetik Wanita&quot;&gt;
+    - https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&amp;w=400&amp;auto=format&amp;fit=crop | &lt;img src=&quot;https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&amp;w=400&amp;auto=format&amp;fit=crop&quot; alt=&quot;HIKARA Studio Foto Premium - Pasangan Minimalis&quot;&gt;
+    - https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&amp;w=400&amp;auto=format&amp;fit=crop | &lt;img src=&quot;https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&amp;w=400&amp;auto=format&amp;fit=crop&quot; alt=&quot;HIKARA Photobox Kotabaru - Foto Hitam Putih Estetik&quot;&gt;
+    - https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&amp;w=800&amp;auto=format&amp;fit=crop | &lt;img src=&quot;https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&amp;w=800&amp;auto=format&amp;fit=crop&quot; alt=&quot;Process&quot;&gt;
+  </rule>
+ </category>
+ <category name="Performance" errors="1" warnings="3">
+  <rule id="perf/lcp-hints" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/lcp-hints">
+   2 potential LCP image(s) without preload
+   Pages (1): /
+   Items (2):
+    - https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&amp;w=400&amp;auto=format&amp;fit=crop
+    - https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&amp;w=400&amp;auto=format&amp;fit=crop
+  </rule>
+  <rule id="perf/cls-hints" severity="warning" status="fail" docs="https://docs.squirrelscan.com/rules/perf/cls-hints">
+   20 image(s) without width/height (CLS risk)
+   Pages (1): /
+   Items (5/20):
+    - /logo.png
+    - https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&amp;w=400&amp;auto=format&amp;fit=crop
+    - https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&amp;w=400&amp;auto=format&amp;fit=crop
+    - https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&amp;w=400&amp;auto=format&amp;fit=crop
+    - https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&amp;w=800&amp;auto=format&amp;fit=crop
+  </rule>
+  <rule id="perf/critical-request-chains" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/critical-request-chains">
+   2 critical request chain(s) found
+   Pages (1): /
+   Items (2):
+    - CSS: /_next/static/chunks/0xw2aj3y3op~n.css
+    - JS: /_next/static/chunks/03~yq9q893hmn.js
+  </rule>
+  <rule id="perf/unminified-js" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/unminified-js">
+   1 JavaScript file(s) appear unminified
+   Pages (1): /
+   Items (1):
+    - 0p5.qr0b94vxo.js (195.4KB, ~188.5KB savings) [reason: 4 comments]
+  </rule>
+ </category>
+ <category name="Accessibility" errors="1" warnings="2">
+  <rule id="a11y/frame-title" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/a11y/frame-title">
+   1 iframe(s) without title attribute
+   Pages (1): /
+   Items (1):
+    - iframe (maps.google.com)
+  </rule>
+  <rule id="a11y/color-contrast" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/a11y/color-contrast">
+   4 potential color contrast issue(s)
+   Pages (1): /
+   Items (4):
+    - img with class &quot;w-full h-full object-cover gra...&quot; may have low contrast
+    - span with class &quot;font-serif text-8xl md:text-9x...&quot; may have low contrast
+    - White text (verify background): 1 instance(s)
+    - Very light text color: 1 instance(s)
+  </rule>
+  <rule id="a11y/heading-order" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/a11y/heading-order">
+   1 heading level skip(s) detected
+   Pages (1): /
+   Items (1):
+    - H4 after H2
+  </rule>
+ </category>
+ <category name="E-E-A-T" errors="0" warnings="5">
+  <rule id="eeat/about-page" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/eeat/about-page">
+   No About page found
+  </rule>
+  <rule id="eeat/author-byline" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/eeat/author-byline">
+   No content pages have author attribution
+  </rule>
+  <rule id="eeat/contact-page" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/eeat/contact-page">
+   No Contact page found
+  </rule>
+  <rule id="eeat/privacy-policy" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/eeat/privacy-policy">
+   No Privacy Policy page found
+  </rule>
+  <rule id="eeat/content-dates" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/eeat/content-dates">
+   No content pages have datePublished
+  </rule>
+ </category>
+ <category name="Legal Compliance" errors="0" warnings="1">
+  <rule id="legal/privacy-policy" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/legal/privacy-policy">
+   No privacy policy link found across site
+  </rule>
+ </category>
+</issues>
+</audit>

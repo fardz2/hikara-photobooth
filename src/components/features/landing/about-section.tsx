@@ -50,20 +50,20 @@ export const AboutSection = () => {
            </div>
            <span className="font-serif text-8xl md:text-9xl text-[#8B5E56] opacity-30 relative z-10 mix-blend-multiply">H</span>
            <div className="relative z-10 mt-24">
-             <h4 className="text-sm md:text-base tracking-[0.3em] uppercase text-[#2C2A29] font-heading font-bold mb-4">Filosofi Eksklusif</h4>
+             <h3 className="text-sm md:text-base tracking-[0.3em] uppercase text-[#2C2A29] font-heading font-bold mb-4">Filosofi Eksklusif</h3>
              <p className="text-xs leading-loose tracking-widest text-[#5A5550] max-w-sm uppercase">Ruang privat untuk berekspresi tanpa batas dengan sistem lighting level komersial.</p>
            </div>
         </StaggerItem>
 
         <StaggerItem className="col-span-1 border border-[#2C2A29]/10 p-8 flex flex-col justify-center items-start text-left bg-white shadow-2xl shadow-[#2C2A29]/5 group hover:border-[#8B5E56]/50 transition-colors">
           <span className="text-[10px] tracking-[0.3em] font-medium text-[#8B5E56] mb-4 uppercase">Langkah 01</span>
-          <h4 className="font-heading text-xl text-[#2C2A29] mb-2 group-hover:text-[#8B5E56] transition-colors">Reservasi Studio</h4>
+          <h3 className="font-heading text-xl text-[#2C2A29] mb-2 group-hover:text-[#8B5E56] transition-colors">Reservasi Studio</h3>
           <p className="text-xs text-[#5A5550] leading-relaxed">Booking waktu spesifik untuk memastikan zero-waiting time dan kenyamanan.</p>
         </StaggerItem>
 
         <StaggerItem className="col-span-1 border border-[#2C2A29]/10 p-8 flex flex-col justify-center items-start text-left bg-white shadow-2xl shadow-[#2C2A29]/5 group hover:border-[#8B5E56]/50 transition-colors">
           <span className="text-[10px] tracking-[0.3em] font-medium text-[#8B5E56] mb-4 uppercase">Langkah 02</span>
-          <h4 className="font-heading text-xl text-[#2C2A29] mb-2 group-hover:text-[#8B5E56] transition-colors">Premium Print</h4>
+          <h3 className="font-heading text-xl text-[#2C2A29] mb-2 group-hover:text-[#8B5E56] transition-colors">Premium Print</h3>
           <p className="text-xs text-[#5A5550] leading-relaxed">Terima foto cetak fisik berkelas editorial majalah.</p>
         </StaggerItem>
       </StaggerContainer>
