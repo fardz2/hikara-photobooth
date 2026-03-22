@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   keywords: [
     "Photobox Kotabaru",
     "Studio Foto Kotabaru",
+    "Photobooth Kotabaru",
+    "Photo Studio Kalimantan Selatan",
+    "Kotabaru Kalimantan Selatan",
     "Foto Estetik",
     "Modern Minimalist Photo Studio",
     "HIKARA Photobox",
