@@ -14,24 +14,24 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "HIKARA Photobooth | Studio Foto Premium & Estetik di Kotabaru",
-  description: "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobooth Kotabaru. Studio foto berkonsep Japanese Zen minimalis. Pesan sesi Anda sekarang!",
-  keywords: ["Photobooth Kotabaru", "Studio Foto Kotabaru", "Foto Estetik", "Japanese Minimalist Photo Studio", "HIKARA Photobooth"],
+  title: "HIKARA Photobox | Studio Foto Premium & Estetik di Kotabaru",
+  description: "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru. Studio foto berkonsep Japanese Zen minimalis. Pesan sesi Anda sekarang!",
+  keywords: ["Photobox Kotabaru", "Studio Foto Kotabaru", "Foto Estetik", "Japanese Minimalist Photo Studio", "HIKARA Photobox"],
   authors: [{ name: "HIKARA" }],
   creator: "HIKARA",
   publisher: "HIKARA",
   openGraph: {
-    title: "HIKARA Photobooth | Studio Foto Premium di Kotabaru",
-    description: "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobooth Kotabaru. Berkonsep Japanese Zen minimalis.",
+    title: "HIKARA Photobox | Studio Foto Premium di Kotabaru",
+    description: "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru. Berkonsep Japanese Zen minimalis.",
     url: "https://hikara.co",
-    siteName: "HIKARA Photobooth",
+    siteName: "HIKARA Photobox",
     locale: "id_ID",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "HIKARA Photobooth | Kotabaru",
-    description: "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobooth Kotabaru.",
+    title: "HIKARA Photobox | Kotabaru",
+    description: "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru.",
   },
 };
 export default function RootLayout({
@@ -42,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={cn("h-full", "antialiased", montserrat.variable, playfair.variable, "font-sans")}
+      className={cn("relative", "h-full", "antialiased", montserrat.variable, playfair.variable, "font-sans")}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

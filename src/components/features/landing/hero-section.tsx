@@ -44,11 +44,11 @@ export const HeroSection = () => {
 
       <motion.div style={{ y: heroTextY, opacity: heroTextOpacity }} className="max-w-4xl z-10">
         <FadeUp delay={0.2} className="flex flex-col items-center gap-4 mb-8">
-          <span className="text-[#8B5E56] text-xs md:text-sm tracking-[0.5em] uppercase font-heading font-medium">HIKARA PHOTOBOOTH</span>
+          <span className="text-[#8B5E56] text-xs md:text-sm tracking-[0.5em] uppercase font-heading font-medium">HIKARA PHOTOBOX</span>
           <span className="w-12 h-px bg-[#8B5E56]/50 mb-2"></span>
           
           <h1 className="flex flex-col items-center">
-            <span className="sr-only">HIKARA Photobooth Kotabaru - Studio Foto Premium & Estetik. </span>
+            <span className="sr-only">HIKARA Photobox Kotabaru - Studio Foto Premium & Estetik. </span>
             <div className="overflow-hidden">
               <motion.span 
                 initial={{ y: "100%" }}
@@ -74,7 +74,7 @@ export const HeroSection = () => {
 
         <FadeUp delay={0.8}>
           <p className="font-light text-sm md:text-base tracking-[0.2em] leading-relaxed text-[#5A5550] mb-12 max-w-lg mx-auto uppercase">
-            Photobooth estetik dengan sentuhan minimalis. 
+            Photobox estetik dengan sentuhan minimalis. 
             <span className="block mt-2 font-serif text-lg tracking-widest text-[#8B5E56] capitalize">Tangkap versi terbaik dari dirimu.</span>
           </p>
         </FadeUp>

@@ -30,7 +30,7 @@ export const LocationSection = () => {
           <div className="w-full aspect-square md:aspect-21/9 bg-[#EFEBDE]/30 relative group overflow-hidden border border-[#2C2A29]/10 p-2 md:p-4">
             <div className="w-full h-full relative overflow-hidden bg-[#EFEBDE]">
               <iframe 
-                src="https://maps.google.com/maps?q=Q63F%2BJ9R%2C%20Jl.%20Veteran%2C%20Dirgahayu%2C%20Kotabaru%2C%20Kalimantan%20Selatan&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+                src="https://maps.google.com/maps?q=Hikara.photobox%2C%20Jl.%20Veteran%2C%20Dirgahayu%2C%20Kec.%20Pulau%20Laut%20Utara%2C%20Kab.%20Kotabaru%2C%20Kalimantan%20Selatan%2072111&t=&z=16&ie=UTF8&iwloc=&output=embed" 
                 width="100%" 
                 height="100%" 
                 style={{ border: 0, filter: 'grayscale(100%) contrast(1.1) opacity(0.7)' }} 

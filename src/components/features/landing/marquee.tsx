@@ -12,7 +12,7 @@ export const Marquee = () => {
       >
         {[...Array(6)].map((_, i) => (
           <span key={i} className="flex items-center gap-16">
-            <span>HIKARA PHOTOBOOTH</span>
+            <span>HIKARA PHOTOBOX</span>
             <span className="font-serif text-sm">永遠の思い出</span>
             <span>STUDIO QUALITY</span>
             <span className="font-serif text-sm">光</span>

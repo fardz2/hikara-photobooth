@@ -21,7 +21,7 @@ export const Footer = () => {
 
         <StaggerItem>
           <p className="text-[9px] md:text-[10px] text-[#5A5550]/60 tracking-[0.2em] uppercase max-w-xs leading-loose">
-            &copy; {new Date().getFullYear()} Hikara Photobooth. <br />
+            &copy; {new Date().getFullYear()} Hikara Photobox. <br />
             Minimalist Photo Experience. All Rights Reserved.
           </p>
         </StaggerItem>
