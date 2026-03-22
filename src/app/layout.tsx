@@ -42,6 +42,9 @@ export const metadata: Metadata = {
     description:
       "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru.",
   },
+  verification: {
+    google: "tl8qppbDyXe6GvLAeDKjJbOS9eVUAbWS9aB-FQ6GpFI",
+  },
 };
 export default function RootLayout({
   children,
