@@ -1,6 +1,7 @@
 "use client";
 
 import { FadeUp, StaggerContainer, StaggerItem } from "@/components/ui/motion";
+import Image from "next/image";
 
 export const AboutSection = () => {
   return (
@@ -43,9 +44,20 @@ export const AboutSection = () => {
 
       <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-16 max-w-6xl mx-auto w-full border-t border-[#2C2A29]/10 pt-16 h-auto md:h-[500px]">
         {/* Bento Cell 1: Large Image/Title Span 2 */}
-        <StaggerItem className="col-span-1 md:col-span-2 row-span-2 bg-[#EFEBDE]/50 border border-[#2C2A29]/5 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden group text-left">
+        <StaggerItem className="col-span-1 md:col-span-2 row-span-2 bg-[#EFEBDE]/50 border border-[#2C2A29]/5 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden group text-left rounded-tl-[100px] rounded-br-[100px]">
+           <div className="absolute top-8 right-8 z-20 opacity-80 mix-blend-multiply hidden md:block animate-[spin_15s_linear_infinite]">
+             <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <path id="curve" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="transparent" />
+               <text className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-heading fill-[#8B5E56] font-bold">
+                 <textPath href="#curve" startOffset="0%">
+                   PREMIUM PHOTO EXPERIENCE • EST. 2024 • 
+                 </textPath>
+               </text>
+             </svg>
+           </div>
+           
            <div className="absolute inset-0 z-0">
-             <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" alt="Process" />
+             <Image src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop" alt="Process" fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" />
              <div className="absolute inset-0 bg-linear-to-t from-[#F6F4F0] via-[#F6F4F0]/80 to-transparent"></div>
            </div>
            <span className="font-serif text-8xl md:text-9xl text-[#8B5E56] opacity-30 relative z-10 mix-blend-multiply">H</span>

@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { FadeUp, TextReveal, slowEase } from "@/components/ui/motion";
 import { Magnetic } from "@/components/ui/magnetic";
+import Image from "next/image";
 
 export const HeroSection = () => {
   const heroRef = useRef(null);
@@ -11,6 +12,7 @@ export const HeroSection = () => {
   const heroBgY = useTransform(heroScroll, [0, 1], ["0%", "15%"]);
   const heroTextOpacity = useTransform(heroScroll, [0, 0.8], [1, 0]);
   const heroTextY = useTransform(heroScroll, [0, 1], ["0%", "50%"]);
+  const imageScale = useTransform(heroScroll, [0, 1], [1.15, 1]);
 
   return (
     <section ref={heroRef} className="relative min-h-[95vh] flex flex-col items-center justify-center text-center px-6 pt-24 overflow-hidden">
@@ -32,7 +34,9 @@ export const HeroSection = () => {
         className="absolute left-[10%] top-[20%] w-32 md:w-48 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
          <div className="aspect-3/4 bg-[#EFEBDE] overflow-hidden">
-           <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" width="400" height="533" fetchPriority="high" className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Photobox Kotabaru - Sesi Foto Estetik Wanita" />
+           <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
+             <Image src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" width={400} height={533} priority className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Photobox Kotabaru - Sesi Foto Estetik Wanita" />
+           </motion.div>
          </div>
       </motion.div>
 
@@ -44,7 +48,9 @@ export const HeroSection = () => {
         className="absolute right-[5%] max-w-[200px] top-[15%] w-32 md:w-40 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
          <div className="aspect-square bg-[#EFEBDE] overflow-hidden">
-           <img src="https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop" width="400" height="400" fetchPriority="high" className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Studio Foto Premium - Pasangan Minimalis" />
+           <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
+             <Image src="https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop" width={400} height={400} priority className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Studio Foto Premium - Pasangan Minimalis" />
+           </motion.div>
          </div>
       </motion.div>
       
@@ -56,7 +62,9 @@ export const HeroSection = () => {
         className="absolute right-[15%] bottom-[10%] w-40 md:w-56 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
          <div className="aspect-4/3 bg-[#EFEBDE] overflow-hidden">
-           <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" width="400" height="300" fetchPriority="high" className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Photobox Kotabaru - Foto Hitam Putih Estetik" />
+           <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
+             <Image src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" width={400} height={300} priority className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Photobox Kotabaru - Foto Hitam Putih Estetik" />
+           </motion.div>
          </div>
       </motion.div>
 

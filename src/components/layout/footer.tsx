@@ -1,13 +1,14 @@
 "use client";
 
 import { StaggerContainer, StaggerItem } from "@/components/ui/motion";
+import Image from "next/image";
 
 export const Footer = () => {
   return (
     <footer className="h-full flex flex-col justify-end py-12 text-center bg-[#F6F4F0] relative z-0">
       <div className="container mx-auto px-6 flex flex-col items-center justify-center gap-10">
         <div>
-          <img src="/logo.png" alt="HIKARA" className="h-16 md:h-20 w-auto mix-blend-multiply opacity-80" />
+          <Image src="/logo.png" width={160} height={48} alt="HIKARA" className="h-16 md:h-20 w-auto mix-blend-multiply opacity-80" />
         </div>
         
         <div className="flex flex-wrap justify-center gap-8 md:gap-12 text-[10px] md:text-xs uppercase tracking-[0.3em] text-[#5A5550] font-medium">

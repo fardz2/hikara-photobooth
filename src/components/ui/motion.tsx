@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
 
 export const slowEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
@@ -28,15 +29,20 @@ export const RevealImage = ({ src, alt, className = "", delay = 0 }: { src: stri
       transition={{ duration: 1.5, delay, ease: slowEase }}
       className={`relative overflow-hidden ${className}`}
     >
-      <motion.img
+      <motion.div
         initial={{ scale: 1.15 }}
         whileInView={{ scale: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1.5, delay: delay + 0.1, ease: slowEase }}
-        src={src}
-        alt={alt}
-        className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 ease-out group-hover:scale-105"
-      />
+        className="w-full h-full relative group-hover:scale-105 transition-all duration-1000 ease-out"
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 ease-out"
+        />
+      </motion.div>
       <div className="absolute inset-0 bg-transparent border border-white/0 group-hover:border-white/20 transition-all duration-500 pointer-events-none m-4"></div>
     </motion.div>
   );
@@ -131,17 +137,43 @@ export const ImageMaskReveal = ({ src, alt, className = "", delay = 0 }: { src: 
         transition={{ duration: 1.6, delay, ease: slowEase }}
         className="absolute inset-0 z-10 bg-[#EFEBDE] origin-bottom"
       />
-      <motion.img
+      <motion.div
         initial={{ scale: 1.15, filter: "grayscale(100%) opacity(0.8)" }}
         whileInView={{ scale: 1, filter: "grayscale(30%) opacity(1)" }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 2.2, delay: delay + 0.2, ease: slowEase }}
-        src={src}
-        alt={alt}
-        className="w-full h-full object-cover transition-all duration-1000 ease-out group-hover:scale-105 group-hover:filter-none group-hover:opacity-100"
-      />
+        className="w-full h-full relative group-hover:scale-105 group-hover:filter-none group-hover:opacity-100 transition-all duration-1000 ease-out"
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover transition-all duration-1000 ease-out"
+        />
+      </motion.div>
       <div className="absolute inset-0 bg-transparent border border-[#2C2A29]/0 group-hover:border-[#F6F4F0]/30 transition-all duration-700 pointer-events-none z-20 mix-blend-overlay"></div>
     </div>
+  );
+};
+
+export const ParallaxElement = ({ 
+  children, 
+  className = "", 
+  offset = 150,
+  direction = "up"
+}: { 
+  children: React.ReactNode, 
+  className?: string, 
+  offset?: number,
+  direction?: "up" | "down"
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], direction === "up" ? [offset, -offset] : [-offset, offset]);
+  return (
+    <motion.div ref={ref} style={{ y }} className={className}>
+      {children}
+    </motion.div>
   );
 };
 

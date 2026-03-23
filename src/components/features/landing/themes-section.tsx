@@ -1,6 +1,7 @@
 "use client";
 
 import { FadeUp, ImageMaskReveal } from "@/components/ui/motion";
+import Image from "next/image";
 
 const STRIP_IMAGES = [
   "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop",
@@ -74,7 +75,7 @@ export const ThemesSection = () => {
                 <div className="w-32 md:w-40 bg-white p-3 shadow-2xl shadow-[#2C2A29]/10 flex flex-col gap-2 transform transition-all duration-700 group-hover:-translate-y-4 -rotate-3 border border-[#2C2A29]/10 hover:rotate-0 relative z-10">
                   {STRIP_IMAGES.map((img, i) => (
                     <div key={i} className="aspect-4/3 bg-[#EFEBDE]/80 w-full overflow-hidden flex items-center justify-center relative">
-                      <img src={img} alt="Strip Pose" className="w-full h-full object-cover filter grayscale opacity-90 transition-all duration-700 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105" />
+                      <Image src={img} alt="Strip Pose" fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover filter grayscale opacity-90 transition-all duration-700 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105" />
                     </div>
                   ))}
                   <div className="pt-3 pb-1 flex justify-center items-center gap-2">
@@ -99,7 +100,7 @@ export const ThemesSection = () => {
               
                 <div className="w-72 md:w-80 bg-white p-3 py-4 shadow-2xl shadow-[#2C2A29]/10 flex flex-col transform transition-all duration-700 group-hover:-translate-y-4 rotate-2 border border-[#2C2A29]/10 hover:rotate-0 relative z-10">
                   <div className="aspect-3/2 bg-[#EFEBDE]/80 w-full overflow-hidden p-[2px] flex items-center justify-center relative">
-                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop" alt="Postcard Pose" className="w-full h-full object-cover filter grayscale opacity-90 transition-all duration-700 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105" />
+                    <Image src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop" alt="Postcard Pose" fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover filter grayscale opacity-90 transition-all duration-700 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105" />
                   </div>
                   <div className="pt-5 pb-2 flex justify-between items-end px-3">
                     <div className="flex flex-col gap-1">
@@ -146,7 +147,7 @@ export const ThemesSection = () => {
                     delay={0.1}
                     src={theme.img} 
                     alt={theme.name} 
-                    className="aspect-square md:aspect-4/5 bg-[#EFEBDE] w-full shadow-lg"
+                    className="aspect-square md:aspect-4/5 bg-[#EFEBDE] w-full shadow-lg rounded-t-full"
                   />
                 </div>
                 <FadeUp delay={0.3} className="w-full md:w-1/2 pt-2 md:pt-10 flex flex-col justify-center">

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { FadeUp } from "@/components/ui/motion";
+import Image from "next/image";
 
 const GALLERY_IMAGES = [
   "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
@@ -47,10 +48,12 @@ export const GallerySection = () => {
               <div className="aspect-3/4 overflow-hidden bg-[#EFEBDE] relative shadow-2xl shadow-[#2C2A29]/10">
                 {/* Custom Hover Mask Reveal (Desktop Only) */}
                 <div className="absolute inset-0 bg-[#EFEBDE] z-10 origin-bottom transform transition-transform duration-1000 md:group-hover:scale-y-0 scale-y-0 md:scale-y-100"></div>
-                <img
+                <Image
                   src={img}
                   alt={`HIKARA Studio Foto Kotabaru - Instalasi Galeri Estetik ${idx + 1}`}
-                  className="w-full h-full object-cover filter md:grayscale md:opacity-90 transition-all duration-1000 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 800px"
+                  className="object-cover filter md:grayscale md:opacity-90 transition-all duration-1000 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:scale-105"
                 />
                 {/* Overlay Border */}
                 <div className="absolute inset-0 border border-white/0 md:group-hover:border-white/30 z-20 transition-colors duration-700 pointer-events-none m-4 mix-blend-overlay"></div>
