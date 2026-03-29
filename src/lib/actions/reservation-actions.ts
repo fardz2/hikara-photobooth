@@ -12,6 +12,7 @@ type ReservationInput = {
   time: string;
   package: string;
   addons: string[];
+  extraPeopleCount?: number;
 };
 
 export async function submitReservation(data: ReservationInput) {
@@ -30,6 +31,23 @@ export async function submitReservation(data: ReservationInput) {
   const dateStr = format(dateObj, "yyyy-MM-dd");
 
   console.log(`[BE] Handling reservation for ${dateStr} at ${data.time}`);
+
+  // Calculate Price Server Side
+  const BASE_PRICE = 35000;
+  const EXTRA_PERSON_PRICE = 5000;
+  const ADDON_PRICES: Record<string, number> = {
+    "extra_print": 10000,
+    "custom_frame": 15000,
+  };
+
+  let totalPrice = BASE_PRICE;
+  totalPrice += (data.extraPeopleCount || 0) * EXTRA_PERSON_PRICE;
+  
+  data.addons.forEach(addonId => {
+    if (ADDON_PRICES[addonId]) {
+      totalPrice += ADDON_PRICES[addonId];
+    }
+  });
 
   // 1. Use service for availability check
   try {
@@ -51,8 +69,9 @@ export async function submitReservation(data: ReservationInput) {
       time: data.time,
       package: data.package,
       addons: data.addons,
+      extra_people_count: data.extraPeopleCount || 0,
       payment_method: "tunai", // Default for online to be paid on site
-      total_price: 35000, 
+      total_price: totalPrice, 
       is_walk_in: false,
       status: "pending",
       created_at: new Date().toISOString(),
@@ -62,7 +81,7 @@ export async function submitReservation(data: ReservationInput) {
     return { success: false, message: `Gagal menyimpan: ${insertError.message}` };
   }
 
-  console.log(`[BE] Reservation SUCCESS for ${data.name} on ${dateStr}`);
+  console.log(`[BE] Reservation SUCCESS for ${data.name} on ${dateStr} - Total: ${totalPrice}`);
   revalidatePath("/reservasi");
   return { success: true, message: "Reservasi berhasil dikirim! Kami akan menghubungi Anda via WhatsApp." };
 }

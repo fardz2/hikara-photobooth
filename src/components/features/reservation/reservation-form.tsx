@@ -26,13 +26,14 @@ import { Calendar01Icon, Clock01Icon, Loading03Icon, Tick02Icon } from "@hugeico
 
 // Constants
 const PRICELIST = [
-  { id: "paket_utama", label: "Foto per Sesi + Print 2 Photostrip", price: 35000 },
+  { id: "paket_utama", label: "Foto per Sesi + 2 Photostrip (Maks 4 Orang)", price: 35000 },
 ];
 const ADDONS = [
-  { id: "extra_orang", label: "Tambahan per Orang", price: 5000 },
   { id: "extra_print", label: "Extra Print", price: 10000 },
   { id: "custom_frame", label: "Custom Frame Birthday, Dll", price: 15000 },
 ];
+
+const EXTRA_PERSON_PRICE = 5000;
 
 const START_HOUR = 10;
 const END_HOUR = 23;
@@ -61,6 +62,7 @@ const FormSchema = z.object({
   time: z.string().min(1, "Pilih waktu sesi"),
   package: z.string().min(1, "Pilih paket"),
   addons: z.array(z.string()).default([]),
+  extraPeopleCount: z.number().min(0).max(5).default(0),
 });
 
 type FormValues = z.output<typeof FormSchema>;
@@ -78,6 +80,7 @@ export const ReservationForm = () => {
       phone: "",
       package: "paket_utama",
       addons: [],
+      extraPeopleCount: 0,
     }
   });
 
@@ -87,6 +90,7 @@ export const ReservationForm = () => {
   const selectedTime = watch("time");
   const selectedAddons = watch("addons");
   const pkg = watch("package");
+  const extraPeopleCount = watch("extraPeopleCount");
 
   const [isPending, startTransition] = useTransition();
 
@@ -96,7 +100,8 @@ export const ReservationForm = () => {
     const addon = ADDONS.find(a => a.id === addonId);
     return acc + (addon?.price || 0);
   }, 0);
-  const totalPrice = basePrice + addonsPrice;
+  const extraPeoplePrice = extraPeopleCount * EXTRA_PERSON_PRICE;
+  const totalPrice = basePrice + addonsPrice + extraPeoplePrice;
 
   const handleDateChange = useCallback(async (date: Date) => {
     setValue("date", date);
@@ -128,6 +133,7 @@ export const ReservationForm = () => {
         ...data,
         phone: `62${data.phone}`,
         addons: data.addons ?? [],
+        extraPeopleCount: data.extraPeopleCount,
       });
       if (result.success) {
         toast.success(result.message);
@@ -141,6 +147,7 @@ export const ReservationForm = () => {
           package: currentPackage,
           time: "",
           addons: [],
+          extraPeopleCount: 0,
         });
         
         // Refresh booked slots after success
@@ -208,7 +215,7 @@ export const ReservationForm = () => {
 
           <div className="flex flex-col gap-2">
             <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Waktu Sesi</label>
-            <Select onValueChange={(val) => setValue("time", val)} disabled={isFetchingSlots}>
+            <Select onValueChange={(val) => setValue("time", val)} disabled={isFetchingSlots} value={selectedTime}>
               <SelectTrigger className="w-full border-[#2C2A29]/20 focus-visible:ring-[#8B5E56] h-11">
                 <SelectValue placeholder={
                   !selectedDate ? "Pilih tanggal lebih dulu" 
@@ -246,7 +253,7 @@ export const ReservationForm = () => {
             {errors.time && <span className="text-red-500 text-xs mt-1">{errors.time.message}</span>}
           </div>
         </div>
-
+        
         {/* Paket Utama */}
         <div className="flex flex-col gap-2">
           <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Paket Utama</label>
@@ -264,13 +271,54 @@ export const ReservationForm = () => {
           </div>
         </div>
 
+        {/* Extra People Count */}
+        <div className="flex flex-col gap-3 pt-4 border-t border-[#2C2A29]/10">
+          <div className="flex justify-between items-center">
+            <div className="flex flex-col">
+              <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Tambahan Orang</label>
+              <span className="text-[10px] text-[#5A5550]/60 italic">+{extraPeopleCount > 0 ? extraPeopleCount : 0} orang eksklusif</span>
+            </div>
+            
+            <div className="flex items-center gap-3 bg-[#EFEBDE]/30 p-1.5 rounded-lg border border-[#2C2A29]/5">
+              <Button 
+                type="button"
+                variant="ghost" 
+                size="icon" 
+                className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
+                onClick={() => setValue("extraPeopleCount", Math.max(0, extraPeopleCount - 1))}
+                disabled={extraPeopleCount <= 0}
+              >
+                <span className="text-lg font-bold">−</span>
+              </Button>
+              <div className="w-8 text-center">
+                <span className="text-sm font-bold text-[#2C2A29]">{extraPeopleCount}</span>
+              </div>
+              <Button 
+                type="button"
+                variant="ghost" 
+                size="icon" 
+                className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
+                onClick={() => setValue("extraPeopleCount", Math.min(5, extraPeopleCount + 1))}
+                disabled={extraPeopleCount >= 5}
+              >
+                <span className="text-lg font-bold">+</span>
+              </Button>
+            </div>
+          </div>
+          <div className="flex justify-between items-center text-[10px] tracking-wide text-[#5A5550]">
+            <span>Maksimal 5 orang tambahan</span>
+            <span className="font-bold text-[#8B5E56]">Rp {(extraPeopleCount * EXTRA_PERSON_PRICE).toLocaleString('id-ID')}</span>
+          </div>
+        </div>
+
         {/* Add-ons */}
         <div className="flex flex-col gap-3 pt-4 border-t border-[#2C2A29]/10">
-          <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Add-ons (Opsional)</label>
+          <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Add-ons Lainnya (Opsional)</label>
           {ADDONS.map((addon) => (
             <div key={addon.id} className="flex items-center space-x-2">
               <Checkbox 
                 id={addon.id} 
+                checked={selectedAddons.includes(addon.id)}
                 onCheckedChange={(checked) => handleAddonToggle(addon.id, checked === true)}
               />
               <label

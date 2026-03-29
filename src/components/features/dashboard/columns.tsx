@@ -25,6 +25,8 @@ export type Reservation = {
   package: string;
   addons: string[] | null;
   status: "pending" | "confirmed" | "cancelled";
+  extra_people_count?: number;
+  total_price?: number;
 };
 
 export const columns: ColumnDef<Reservation>[] = [
@@ -45,6 +47,20 @@ export const columns: ColumnDef<Reservation>[] = [
           >
             {phone}
           </a>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "total_people",
+    header: "Orang",
+    cell: ({ row }) => {
+      const extra = row.original.extra_people_count || 0;
+      const total = 4 + extra;
+      return (
+        <div className="flex flex-col">
+          <span className="text-xs text-[#2C2A29] font-bold">{total} Orang</span>
+          {extra > 0 && <span className="text-[8px] text-[#8B5E56] uppercase tracking-tighter">(+{extra} Extra)</span>}
         </div>
       );
     },
@@ -79,12 +95,13 @@ export const columns: ColumnDef<Reservation>[] = [
     },
   },
   {
-    accessorKey: "package",
-    header: "Paket",
+    accessorKey: "total_price",
+    header: "Total",
     cell: ({ row }) => {
+      const price = row.getValue("total_price") as number || 35000;
       return (
-        <span className="text-[10px] text-[#5A5550] uppercase tracking-widest">
-          {row.getValue("package")}
+        <span className="text-[10px] font-bold text-[#8B5E56]">
+          Rp {price.toLocaleString('id-ID')}
         </span>
       );
     },
@@ -95,7 +112,7 @@ export const columns: ColumnDef<Reservation>[] = [
     cell: ({ row }) => {
       const addons = row.getValue("addons") as string[] | null;
       return (
-        <div className="flex gap-1 flex-wrap max-w-[200px]">
+        <div className="flex gap-1 flex-wrap max-w-[150px]">
           {addons && addons.length > 0 ? (
             addons.map((addon, i) => (
               <span key={i} className="text-[8px] bg-[#EFEBDE]/50 border border-[#2C2A29]/5 text-[#5A5550] px-2 py-1 uppercase tracking-tighter shadow-sm">
