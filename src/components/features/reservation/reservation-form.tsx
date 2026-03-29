@@ -57,15 +57,9 @@ const FormSchema = z.object({
     .min(8, "Nomor HP minimal 8 digit")
     .max(13, "Nomor HP maksimal 13 digit")
     .regex(/^\d+$/, "Hanya boleh berisi angka"),
-  date: z.date({
-    required_error: "Pilih tanggal reservasi",
-  }),
-  time: z.string({
-    required_error: "Pilih waktu sesi",
-  }),
-  package: z.string({
-    required_error: "Pilih paket",
-  }),
+  date: z.date().refine((val) => !!val, "Pilih tanggal reservasi"),
+  time: z.string().min(1, "Pilih waktu sesi"),
+  package: z.string().min(1, "Pilih paket"),
   addons: z.array(z.string()).default([]),
 });
 
