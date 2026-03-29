@@ -1,5 +1,3 @@
-"use client";
-
 import { InfiniteMarquee } from "@/components/ui/motion";
 
 export const Marquee = () => {

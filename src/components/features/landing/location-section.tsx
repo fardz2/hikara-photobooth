@@ -1,5 +1,3 @@
-"use client";
-
 import { FadeUp, ParallaxElement } from "@/components/ui/motion";
 
 export const LocationSection = () => {
@@ -10,17 +8,17 @@ export const LocationSection = () => {
     >
       {/* Decorative Background */}
       <ParallaxElement direction="up" offset={150} className="absolute bottom-0 right-[-5%] text-[#F6F4F0] opacity-[0.03] font-heading text-[25vw] leading-none pointer-events-none whitespace-nowrap z-0 tracking-tighter mix-blend-overlay">
-        STUDIO
+        LOKASI
       </ParallaxElement>
       <div className="absolute top-24 left-6 md:left-24 z-0 opacity-[0.15]">
-         <span className="font-serif text-4xl text-[#8B5E56] tracking-[0.3em] uppercase" style={{ writingMode: 'vertical-rl' }}>STUDIO</span>
+         <span className="font-serif text-4xl text-[#8B5E56] tracking-[0.3em] uppercase" style={{ writingMode: 'vertical-rl' }}>LOKASI</span>
       </div>
       <FadeUp>
         <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] mb-12 font-sans font-medium flex items-center justify-center gap-4 relative z-10">
           <span className="w-8 h-px bg-[#8B5E56]"></span>
           Lokasi Studio
           <span className="font-serif text-[#F6F4F0]/50 ml-2">
-            STUDIO LOCATION
+            LOKASI KAMI
           </span>
           <span className="w-8 h-px bg-[#8B5E56]"></span>
         </h2>

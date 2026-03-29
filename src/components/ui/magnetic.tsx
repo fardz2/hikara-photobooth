@@ -1,3 +1,5 @@
+"use client";
+
 import { ReactElement, cloneElement, useEffect, useRef } from "react";
 import { motion, useSpring, useTransform } from "framer-motion";
 

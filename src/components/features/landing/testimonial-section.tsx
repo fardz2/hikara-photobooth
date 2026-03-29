@@ -36,7 +36,7 @@ export const TestimonialSection = () => {
     <section className="py-32 md:py-48 bg-[#EFEBDE]/30 flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
       {/* Decorative */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#2C2A29] opacity-[0.02] font-heading text-[25vw] leading-none pointer-events-none whitespace-nowrap z-0 mix-blend-multiply">
-        STORIES
+        CERITA
       </div>
 
       <FadeUp>

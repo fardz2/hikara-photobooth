@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { FadeUp, TextReveal, slowEase } from "@/components/ui/motion";
 import { Magnetic } from "@/components/ui/magnetic";
 import Image from "next/image";
+import Link from "next/link";
 
 export const HeroSection = () => {
   const heroRef = useRef(null);
@@ -85,7 +86,7 @@ export const HeroSection = () => {
         className="absolute left-6 md:left-16 top-1/2 -translate-y-1/2 text-[#2C2A29]/20 font-serif text-sm tracking-[1em] uppercase pointer-events-none hidden sm:block" 
         style={{ writingMode: 'vertical-rl' }}
       >
-        Capture The Moment
+        Abadikan Momen
       </motion.div>
 
       <motion.div style={{ y: heroTextY, opacity: heroTextOpacity }} className="max-w-4xl z-10">
@@ -118,12 +119,12 @@ export const HeroSection = () => {
 
         <FadeUp delay={1.1}>
           <Magnetic intensity={0.15}>
-            <a
-              href="#packages"
+            <Link
+              href="/reservasi"
               className="inline-block border border-[#2C2A29] text-[#2C2A29] hover:bg-[#2C2A29] hover:text-[#F6F4F0] transition-colors duration-700 text-[10px] md:text-xs font-medium tracking-[0.3em] uppercase px-10 py-5"
             >
-              Book Sekarang
-            </a>
+              Book Now
+            </Link>
           </Magnetic>
         </FadeUp>
       </motion.div>

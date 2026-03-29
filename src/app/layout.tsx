@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { LenisProvider } from "@/components/providers/lenis-provider";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -63,23 +64,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "PhotographyBusiness",
-    "name": "HIKARA Photobox",
-    "image": "https://hikara-photobox.vercel.app/logo.png",
-    "@id": "https://hikara-photobox.vercel.app",
-    "url": "https://hikara-photobox.vercel.app",
-    "telephone": "",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Kotabaru",
-      "addressRegion": "Kalimantan Selatan",
-      "addressCountry": "ID"
-    },
-    "description": "Studio foto berkonsep estetika modern minimalis di Kotabaru, Kalimantan Selatan."
-  };
-
   return (
     <html
       lang="id"
@@ -92,13 +76,10 @@ export default function RootLayout({
         "font-sans",
       )}
     >
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+      </body>
     </html>
   );
 }
+

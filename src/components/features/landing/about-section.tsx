@@ -1,5 +1,3 @@
-"use client";
-
 import { FadeUp, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import Image from "next/image";
 
@@ -11,10 +9,10 @@ export const AboutSection = () => {
     >
       {/* Decorative Background */}
       <div className="absolute top-1/2 -translate-y-1/2 text-[#2C2A29] opacity-[0.02] font-heading text-[25vw] leading-none pointer-events-none whitespace-nowrap z-0 tracking-tighter mix-blend-multiply">
-        ABOUT US
+        STUDIO KAMI
       </div>
       <div className="absolute left-6 md:left-24 top-24 md:top-40 hidden lg:block opacity-[0.15] z-0">
-         <span className="font-serif text-4xl text-[#8B5E56] tracking-[0.3em] uppercase" style={{ writingMode: 'vertical-rl' }}>VISION</span>
+         <span className="font-serif text-4xl text-[#8B5E56] tracking-[0.3em] uppercase" style={{ writingMode: 'vertical-rl' }}>VISI</span>
       </div>
       <div className="absolute right-6 md:right-24 bottom-24 hidden lg:block opacity-[0.15] z-0">
          <span className="font-sans text-[10px] tracking-[0.5em] text-[#2C2A29] uppercase border-l border-[#8B5E56] pl-4">HIKARA STUDIO</span>
@@ -25,7 +23,7 @@ export const AboutSection = () => {
           <span className="w-8 h-px bg-[#8B5E56]"></span>
           Tentang Kami
           <span className="font-serif text-[#2C2A29]/50 ml-2">
-            ABOUT US
+            HIKARA
           </span>
           <span className="w-8 h-px bg-[#8B5E56]"></span>
         </h2>
@@ -50,7 +48,7 @@ export const AboutSection = () => {
                <path id="curve" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="transparent" />
                <text className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-heading fill-[#8B5E56] font-bold">
                  <textPath href="#curve" startOffset="0%">
-                   PREMIUM PHOTO EXPERIENCE • EST. 2024 • 
+                   PENGALAMAN FOTO PREMIUM • SEJAK 2024 • 
                  </textPath>
                </text>
              </svg>
@@ -70,7 +68,7 @@ export const AboutSection = () => {
         <StaggerItem className="col-span-1 border border-[#2C2A29]/10 p-8 flex flex-col justify-center items-start text-left bg-white shadow-2xl shadow-[#2C2A29]/5 group hover:border-[#8B5E56]/50 transition-colors">
           <span className="text-[10px] tracking-[0.3em] font-medium text-[#8B5E56] mb-4 uppercase">Langkah 01</span>
           <h3 className="font-heading text-xl text-[#2C2A29] mb-2 group-hover:text-[#8B5E56] transition-colors">Reservasi Studio</h3>
-          <p className="text-xs text-[#5A5550] leading-relaxed">Booking waktu spesifik untuk memastikan zero-waiting time dan kenyamanan.</p>
+          <p className="text-xs text-[#5A5550] leading-relaxed">Booking waktu spesifik untuk kenyamanan sesi tanpa antre (zero-waiting).</p>
         </StaggerItem>
 
         <StaggerItem className="col-span-1 border border-[#2C2A29]/10 p-8 flex flex-col justify-center items-start text-left bg-white shadow-2xl shadow-[#2C2A29]/5 group hover:border-[#8B5E56]/50 transition-colors">

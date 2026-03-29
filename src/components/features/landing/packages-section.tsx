@@ -1,5 +1,3 @@
-"use client";
-
 import {
   FadeUp,
   FadeRight,
@@ -15,13 +13,13 @@ export const PackagesSection = () => {
       className="py-24 md:py-40 flex flex-col px-6 bg-[#F6F4F0] relative overflow-hidden"
     >
       <ParallaxElement direction="up" offset={200} className="absolute right-0 top-0 text-[#2C2A29]/5 font-serif text-[15rem] leading-none pointer-events-none select-none hidden lg:block overflow-visible mix-blend-multiply">
-        PRICING
+        HARGA
       </ParallaxElement>
       <div className="absolute left-6 md:left-24 bottom-24 hidden lg:block opacity-[0.2] z-0">
-         <span className="font-sans text-[10px] tracking-[0.5em] text-[#2C2A29] uppercase border-l border-[#8B5E56] pl-4">SELECT PLAN</span>
+         <span className="font-sans text-[10px] tracking-[0.5em] text-[#2C2A29] uppercase border-l border-[#8B5E56] pl-4">PILIH PAKET</span>
       </div>
       <div className="absolute top-1/2 left-0 -translate-y-1/2 text-[#2C2A29] opacity-[0.02] font-heading text-[25vw] leading-none pointer-events-none whitespace-nowrap z-0 mix-blend-multiply origin-left -rotate-90">
-        PRICING
+        HARGA
       </div>
 
       <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 relative z-10">
@@ -30,7 +28,7 @@ export const PackagesSection = () => {
             <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] mb-8 font-sans font-medium flex items-center justify-center lg:justify-start gap-4">
               <span className="w-8 h-px bg-[#8B5E56] hidden lg:block"></span>
               Paket
-              <span className="font-serif text-[#2C2A29]/50 ml-2 text-[10px] tracking-[0.2em] uppercase">PRICING</span>
+              <span className="font-serif text-[#2C2A29]/50 ml-2 text-[10px] tracking-[0.2em] uppercase">HARGA</span>
               <span className="w-8 h-px bg-[#8B5E56] lg:hidden"></span>
             </h2>
           </FadeUp>
@@ -38,10 +36,10 @@ export const PackagesSection = () => {
           <FadeUp delay={0.2} className="mb-16 lg:mb-0">
             <h3 className="font-heading text-4xl md:text-5xl lg:text-5xl text-[#2C2A29] mb-8 tracking-tight">Investasi Momen Kita</h3>
             <p className="font-heading tracking-[0.15em] text-[#5A5550] text-sm md:text-base uppercase">
-              Monday - Sunday
+              Senin - Minggu
             </p>
             <p className="font-light tracking-[0.2em] text-[#2C2A29]/60 text-xs mt-2">
-              10 AM - 11 PM
+              10:00 - 23:00
             </p>
           </FadeUp>
         </div>

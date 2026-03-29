@@ -29,8 +29,8 @@ export const GallerySection = () => {
         <div className="absolute top-20 md:top-32 left-6 md:left-24 z-20">
           <FadeUp>
             <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] font-sans font-medium flex items-center gap-4 bg-[#F6F4F0]/80 backdrop-blur-sm p-2 rounded">
-              Gallery
-              <span className="font-serif text-[#2C2A29]/50 ml-2 text-[10px] tracking-[0.2em] uppercase">GALLERY</span>
+              Galeri
+              <span className="font-serif text-[#2C2A29]/50 ml-2 text-[10px] tracking-[0.2em] uppercase">GALERI</span>
             </h2>
           </FadeUp>
         </div>
@@ -38,7 +38,7 @@ export const GallerySection = () => {
         {/* Scroll Instruction */}
         <div className="absolute bottom-12 md:bottom-20 left-6 md:left-24 z-20 hidden md:flex items-center gap-4 opacity-50">
           <span className="w-12 h-px bg-[#2C2A29]"></span>
-          <span className="text-[10px] uppercase tracking-widest font-heading font-bold text-[#2C2A29]">Scroll Down to Slide</span>
+          <span className="text-[10px] uppercase tracking-widest font-heading font-bold text-[#2C2A29]">Scroll ke Bawah untuk Slide</span>
         </div>
 
         {/* Scrolling Strip */}
@@ -69,10 +69,10 @@ export const GallerySection = () => {
         
         {/* Background Typography */}
         <div className="absolute bottom-4 right-10 z-0 opacity-[0.03] pointer-events-none hidden md:block">
-          <h2 className="font-heading text-[18vw] leading-none text-[#2C2A29] tracking-tighter">MOMENTS</h2>
+          <h2 className="font-heading text-[18vw] leading-none text-[#2C2A29] tracking-tighter">MOMEN</h2>
         </div>
         <div className="absolute top-20 right-20 z-0 opacity-[0.03] pointer-events-none hidden lg:block">
-          <span className="font-serif text-[15vw] leading-none text-[#2C2A29] writing-vertical-rl">ART</span>
+          <span className="font-serif text-[15vw] leading-none text-[#2C2A29] writing-vertical-rl">SENI</span>
         </div>
 
       </div>
