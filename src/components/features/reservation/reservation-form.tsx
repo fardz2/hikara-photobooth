@@ -748,7 +748,7 @@ export const ReservationForm = () => {
       <Button
         type="submit"
         disabled={isPending || isUploading}
-        className="w-full bg-[#2C2A29] hover:bg-[#1a1817] text-white py-8 text-sm tracking-[0.3em] uppercase disabled:opacity-60 flex flex-col items-center justify-center gap-1 transition-all duration-500 shadow-lg group"
+        className="w-full bg-[#2C2A29] hover:bg-[#1a1817] text-white py-6 sm:py-8 h-auto text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] uppercase disabled:opacity-60 flex flex-col items-center justify-center gap-1 transition-all duration-500 shadow-lg group"
       >
         {isPending || isUploading ? (
           <div className="flex items-center gap-3">
@@ -757,19 +757,21 @@ export const ReservationForm = () => {
               strokeWidth={2}
               className="size-4 animate-spin text-white"
             />
-            <span>{isUploading ? "MENGUNGGAH BUKTI..." : "MEMPROSES..."}</span>
+            <span className="text-xs sm:text-sm text-center">
+              {isUploading ? "MENGUNGGAH BUKTI..." : "MEMPROSES..."}
+            </span>
           </div>
         ) : (
           <>
-            <div className="flex items-center gap-4 group-hover:scale-105 transition-transform duration-500">
+            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 group-hover:scale-105 transition-transform duration-500 w-full justify-center text-center">
               <span className="font-bold">PESAN SEKARANG</span>
-              <span className="opacity-20 font-light">|</span>
-              <span className="font-light">
+              <span className="hidden sm:inline opacity-20 font-light">|</span>
+              <span className="font-light text-[10px] sm:text-sm">
                 Rp {totalPrice.toLocaleString("id-ID")}
               </span>
             </div>
-            <span className="text-[9px] opacity-40 font-medium tracking-normal mt-1 flex items-center gap-1">
-              <HugeiconsIcon icon={Tick02Icon} className="size-2.5" />
+            <span className="text-[8px] sm:text-[9px] opacity-40 font-medium tracking-normal mt-1.5 sm:mt-1 flex items-center gap-1 text-center">
+              <HugeiconsIcon icon={Tick02Icon} className="size-2.5 hidden sm:block" />
               Satu kali klik untuk reservasi instan
             </span>
           </>
