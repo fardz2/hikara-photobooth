@@ -14,8 +14,32 @@ export const metadata: Metadata = {
 };
 
 export default function ReservasiPage() {
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://hikara-photobox.vercel.app"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Reservasi",
+        "item": "https://hikara-photobox.vercel.app/reservasi"
+      }
+    ]
+  };
+
   return (
-    <main className="pt-32 md:pt-48 pb-24 px-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-24">
+    <div className="pt-32 md:pt-48 pb-24 px-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        key="breadcrumb-json"
+      />
       <div className="w-full lg:w-1/3 flex flex-col gap-6">
         <h1 className="font-heading text-4xl md:text-5xl text-[#2C2A29] tracking-tight">
           Kunci Momen Anda
@@ -39,6 +63,6 @@ export default function ReservasiPage() {
           <ReservationForm />
         </Suspense>
       </div>
-    </main>
+    </div>
   );
 }

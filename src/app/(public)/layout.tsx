@@ -16,14 +16,42 @@ export default function PublicLayout({
     "image": "https://hikara-photobox.vercel.app/logo.png",
     "@id": "https://hikara-photobox.vercel.app",
     "url": "https://hikara-photobox.vercel.app",
-    "telephone": "",
+    "telephone": "+6281234567890",
+    "priceRange": "$$",
     "address": {
       "@type": "PostalAddress",
+      "streetAddress": "Jl. Veteran, Dirgahayu",
       "addressLocality": "Kotabaru",
       "addressRegion": "Kalimantan Selatan",
+      "postalCode": "72111",
       "addressCountry": "ID"
     },
-    "description": "Studio foto berkonsep estetika modern minimalis di Kotabaru, Kalimantan Selatan."
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -3.2389,
+      "longitude": 116.2234
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "10:00",
+        "closes": "23:00"
+      }
+    ],
+    "sameAs": [
+      "https://www.instagram.com/hikara.photobox",
+      "https://www.tiktok.com/@hikara.photobox"
+    ],
+    "description": "Studio foto berkonsep estetika modern minimalis di Kotabaru, Kalimantan Selatan. Abadikan momen kecil menjadi kenangan abadi."
   };
 
   return (

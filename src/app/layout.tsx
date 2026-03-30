@@ -15,6 +15,10 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hikara-photobox.vercel.app"),
+  alternates: {
+    canonical: "/",
+  },
   title: "HIKARA Photobox | Studio Foto Premium & Estetik di Kotabaru",
   description:
     "Abadikan momen kecil menjadi kenangan abadi di HIKARA Photobox Kotabaru. Studio foto berkonsep estetika modern minimalis. Pesan sesi Anda sekarang!",

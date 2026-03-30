@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { connection } from "next/server";
 
 export const Footer = async () => {
@@ -51,6 +52,12 @@ export const Footer = async () => {
           >
             Lokasi Studio
           </a>
+          <Link
+            href="/privacy-policy"
+            className="hover:text-[#8B5E56] hover:-translate-y-1 transition-all duration-300 pointer-events-auto"
+          >
+            Privacy Policy
+          </Link>
         </div>
 
         <div className="w-full max-w-sm h-px bg-[#2C2A29]/10 my-4"></div>
@@ -62,6 +69,9 @@ export const Footer = async () => {
           <p className="text-[9px] md:text-[10px] text-[#5A5550]/60 tracking-[0.2em] uppercase max-w-xs leading-loose mx-auto">
             &copy; {currentYear} Hikara Photobox. <br />
             Minimalist Photo Experience. All Rights Reserved.
+          </p>
+          <p className="text-[8px] text-[#5A5550]/40 uppercase tracking-widest mt-4">
+            Terakhir diperbarui: 30 Maret 2026
           </p>
         </div>
       </div>

@@ -169,8 +169,9 @@ export const ReservationForm = () => {
         {/* Nama & Telepon */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
-            <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Nama Lengkap</label>
+            <label htmlFor="name" className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Nama Lengkap</label>
             <Input 
+              id="name"
               {...register("name")} 
               placeholder="John Doe" 
               className="border-input focus-visible:ring-[3px] focus-visible:ring-ring/50 transition-all" 
@@ -178,12 +179,13 @@ export const ReservationForm = () => {
             {errors.name && <span className="text-red-500 text-xs">{errors.name.message}</span>}
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Nomor WhatsApp</label>
+            <label htmlFor="phone" className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Nomor WhatsApp</label>
             <InputGroup className="border-input">
               <InputGroupAddon>
                 <InputGroupText>+62</InputGroupText>
               </InputGroupAddon>
               <InputGroupInput 
+                id="phone"
                 {...register("phone")} 
                 placeholder="812XXXXXX" 
                 type="tel" 
@@ -197,15 +199,17 @@ export const ReservationForm = () => {
         {/* Tanggal & Waktu */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
-            <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Tanggal</label>
+            <label htmlFor="date-trigger" className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Tanggal</label>
             <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button
+                  id="date-trigger"
+                  aria-label="Pilih Tanggal Reservasi"
                   variant="outline"
                   onClick={() => setIsCalendarOpen(true)}
                   className={`w-full justify-start text-left font-normal border-input focus-visible:ring-[3px] focus-visible:ring-ring/50 ${!selectedDate && "text-muted-foreground"}`}
                 >
-                  <HugeiconsIcon icon={Calendar01Icon} strokeWidth={2} className="mr-2 h-4 w-4" />
+                  <HugeiconsIcon icon={Calendar01Icon} strokeWidth={2} className="mr-2 h-4 w-4" aria-hidden="true" />
                   {selectedDate ? format(selectedDate, "EEEE, dd MMMM yyyy", { locale: id }) : <span>Pilih Tanggal</span>}
                 </Button>
               </PopoverTrigger>
@@ -224,9 +228,13 @@ export const ReservationForm = () => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Waktu Sesi</label>
+            <label htmlFor="time-trigger" className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Waktu Sesi</label>
             <Select onValueChange={(val) => setValue("time", val)} disabled={isFetchingSlots} value={selectedTime}>
-              <SelectTrigger className="w-full border-input focus-visible:ring-[3px] focus-visible:ring-ring/50">
+              <SelectTrigger 
+                id="time-trigger" 
+                aria-label="Pilih Waktu Sesi"
+                className="w-full border-input focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              >
                 <SelectValue placeholder={
                   !selectedDate ? "Pilih tanggal lebih dulu" 
                   : isFetchingSlots ? "Memuat jadwal..." 
