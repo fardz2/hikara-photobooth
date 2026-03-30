@@ -1,13 +1,24 @@
 import { createClient } from "@/lib/supabase/server";
 
 export const reservationService = {
-  async getAllReservations() {
+  async getReservations(from?: string, to?: string, status?: string) {
     const supabase = await createClient();
-    return supabase
+    let query = supabase
       .from("reservations")
       .select("*")
       .order("date", { ascending: false })
       .order("time", { ascending: true });
+
+    if (from) query = query.gte("date", from);
+    if (to) query = query.lte("date", to);
+    if (status && status !== "all") query = query.eq("status", status);
+
+    return query;
+  },
+
+  /** @deprecated use getReservations() */
+  async getAllReservations() {
+    return this.getReservations();
   },
 
   async getBookedSlots(date: string) {

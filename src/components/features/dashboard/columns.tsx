@@ -31,6 +31,8 @@ export type Reservation = {
   status: "pending" | "confirmed" | "cancelled";
   extra_people_count?: number;
   total_price?: number;
+  payment_method?: "tunai" | "qris";
+  payment_proof_url?: string | null;
 };
 
 export const columns: ColumnDef<Reservation>[] = [
@@ -111,6 +113,33 @@ export const columns: ColumnDef<Reservation>[] = [
     },
   },
   {
+    accessorKey: "payment_method",
+    header: "Pembayaran",
+    cell: ({ row }) => {
+      const method = row.original.payment_method || "tunai";
+      const proofUrl = row.original.payment_proof_url;
+      return (
+        <div className="flex flex-col gap-1">
+          <Badge variant="outline" className={`text-[8px] uppercase font-bold rounded-none tracking-widest px-2 py-0.5 w-fit ${
+            method === 'qris' ? "border-[#2C2A29]/20 text-[#2C2A29] bg-transparent" : "border-none bg-[#2C2A29] text-white"
+          }`}>
+            {method}
+          </Badge>
+          {method === 'qris' && proofUrl && (
+            <a 
+              href={proofUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-[8px] text-blue-600 font-bold hover:underline underline-offset-2 flex items-center gap-1"
+            >
+              Cek Bukti ↗
+            </a>
+          )}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "addons",
     header: "Tambahan",
     cell: ({ row }) => {
@@ -136,10 +165,10 @@ export const columns: ColumnDef<Reservation>[] = [
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       return (
-        <Badge variant="outline" className={`text-[8px] tracking-[0.2em] uppercase font-bold px-2 py-0.5 rounded-none border-none ${
-          status === 'confirmed' ? "bg-green-50 text-green-700" :
-          status === 'cancelled' ? "bg-red-50 text-red-700" :
-          "bg-amber-50 text-amber-700"
+        <Badge variant="outline" className={`text-[8px] tracking-[0.2em] uppercase font-bold px-2 py-0.5 rounded-none ${
+          status === 'confirmed' ? "border-emerald-600/20 text-emerald-700 bg-emerald-50/50" :
+          status === 'cancelled' ? "border-red-600/20 text-red-700 bg-red-50/50" :
+          "border-amber-600/20 text-amber-700 bg-amber-50/50"
         }`}>
           {status}
         </Badge>

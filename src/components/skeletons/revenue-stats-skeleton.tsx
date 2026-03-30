@@ -2,54 +2,43 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const RevenueStatsSkeleton = () => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-pulse">
-      {/* Sidebar Stats - Stacked Vertically */}
-      <div className="lg:col-span-4 space-y-6 flex flex-col h-full">
-        {/* Today Stats Skeleton */}
-        <div className="bg-white p-10 border border-[#2C2A29]/10 shadow-sm flex-1 space-y-8">
-           <div className="space-y-3">
-              <Skeleton className="h-3 w-20 opacity-20" />
-              <Skeleton className="h-4 w-32 opacity-20" />
-           </div>
-           
-           <Skeleton className="h-16 w-full opacity-20" />
-
-           <div className="pt-8 border-t border-[#2C2A29]/5 space-y-4">
-              <Skeleton className="h-6 w-full opacity-10" />
-              <Skeleton className="h-6 w-full opacity-10" />
-           </div>
-        </div>
-
-        {/* Month Stats Skeleton */}
-        <div className="bg-[#2C2A29] p-10 shadow-xl lg:h-64 flex flex-col justify-between">
-           <div className="space-y-3">
-              <Skeleton className="h-3 w-20 bg-[#F6F4F0]/20" />
-              <Skeleton className="h-4 w-32 bg-[#F6F4F0]/20" />
-           </div>
-           <div className="space-y-4">
-              <Skeleton className="h-16 w-full bg-[#F6F4F0]/20" />
-              <div className="flex justify-between items-center pt-4">
-                 <Skeleton className="h-1 w-12 bg-[#8B5E56]/40" />
-                 <Skeleton className="h-2 w-24 bg-[#F6F4F0]/10" />
-              </div>
-           </div>
-        </div>
+    <div className="space-y-8 animate-pulse">
+      {/* 4 KPI Cards Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="bg-white p-6 border border-[#2C2A29]/10 flex flex-col justify-between h-[140px]">
+            <div className="flex justify-between items-start mb-8">
+              <Skeleton className="h-3 w-20 rounded-none bg-[#2C2A29]/10" />
+              <Skeleton className="h-6 w-12 rounded-none bg-[#2C2A29]/10" />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-8 w-32 rounded-none bg-[#2C2A29]/10" />
+              <Skeleton className="h-2 w-16 rounded-none bg-[#2C2A29]/10" />
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Form Section Skeleton */}
-      <div className="lg:col-span-8 bg-white border border-[#2C2A29]/10 p-10 h-full flex flex-col gap-8">
-         <div className="space-y-4">
-            <Skeleton className="h-8 w-64 opacity-20" />
-            <Skeleton className="h-4 w-full opacity-10" />
-         </div>
-         <div className="grid grid-cols-2 gap-6">
-            <Skeleton className="h-12 w-full opacity-10" />
-            <Skeleton className="h-12 w-full opacity-10" />
-            <Skeleton className="h-12 w-full opacity-10" />
-            <Skeleton className="h-12 w-full opacity-10" />
-         </div>
-         <Skeleton className="h-32 w-full opacity-10" />
-         <Skeleton className="mt-auto h-14 w-full opacity-20" />
+      {/* Main Chart Card */}
+      <div className="bg-white p-8 border border-[#2C2A29]/10 mt-8 relative">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-4 w-40 rounded-none bg-[#2C2A29]/10" />
+            <Skeleton className="h-3 w-64 rounded-none bg-[#2C2A29]/5" />
+          </div>
+          <Skeleton className="h-10 w-32 bg-[#2C2A29]/80 rounded-none" />
+        </div>
+        
+        {/* Chart Bars */}
+        <div className="h-[300px] w-full flex items-end gap-2 mt-8">
+          {[30, 45, 25, 60, 40, 80, 50, 75, 40, 65, 90, 55, 30, 60, 100].map((height, i) => (
+            <Skeleton
+              key={i}
+              className="flex-1 rounded-none bg-[#2C2A29]/5"
+              style={{ height: `${height}%` }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

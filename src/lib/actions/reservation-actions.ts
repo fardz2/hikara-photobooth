@@ -15,6 +15,8 @@ type ReservationInput = {
   package: string;
   addons: string[];
   extraPeopleCount?: number;
+  paymentMethod: "tunai" | "qris";
+  paymentProofUrl?: string;
 };
 
 export async function submitReservation(data: ReservationInput) {
@@ -72,7 +74,8 @@ export async function submitReservation(data: ReservationInput) {
       package: data.package,
       addons: data.addons,
       extra_people_count: data.extraPeopleCount || 0,
-      payment_method: "tunai", // Default for online to be paid on site
+      payment_method: data.paymentMethod,
+      payment_proof_url: data.paymentProofUrl || null,
       total_price: totalPrice, 
       is_walk_in: false,
       status: "pending",
@@ -83,9 +86,13 @@ export async function submitReservation(data: ReservationInput) {
     return { success: false, message: `Gagal menyimpan: ${insertError.message}` };
   }
 
-  console.log(`[BE] Reservation SUCCESS for ${data.name} on ${dateStr} - Total: Rp ${totalPrice.toLocaleString('id-ID')}`);
+  console.log(`[BE] Reservation SUCCESS for ${data.name} on ${dateStr} - Total: Rp ${totalPrice.toLocaleString('id-ID')} (${data.paymentMethod})`);
   
   // 3. Send WhatsApp Notifications (Async, don't block response)
+  const paymentStatus = data.paymentMethod === "qris" 
+    ? "Dibayar via QRIS (Menunggu Konfirmasi)" 
+    : "Bayar di Studio (Tunai/QRIS)";
+
   const customerMsg = `*HIKARA PHOTOBOX - RESERVASI BERHASIL* 📸
 
 Halo *${data.name}*, 
@@ -94,16 +101,29 @@ Terima kasih telah melakukan reservasi di Hikara Photobox.
 *Detail Reservasi:*
 📅 Tanggal: ${format(new Date(dateStr), "EEEE, dd MMMM yyyy", { locale: idLocale })}
 ⏰ Waktu: ${data.time} WITA
-💵 Total Bayar: *Rp ${totalPrice.toLocaleString('id-ID')}*
+💳 Metode: *${data.paymentMethod === 'qris' ? 'QRIS' : 'Tunai di Tempat'}*
+💵 Total: *Rp ${totalPrice.toLocaleString('id-ID')}*
+📝 Status: ${paymentStatus}
 
 *Syarat & Ketentuan:*
 1. Harap datang 5-10 menit sebelum jadwal sesi.
-2. Pembayaran diselesaikan di studio (Tunai/QRIS).
-3. Tunjukkan pesan ini saat kedatangan.
+2. Tunjukkan pesan ini saat kedatangan.
+${data.paymentMethod === 'tunai' ? "3. Pembayaran diselesaikan di studio." : "3. Pembayaran sudah kami terima (via QRIS)."}
 
 Sampai jumpa di studio! ✨`;
 
-  const adminMsg = `*RESERVASI BARU MASUK!* 🔥
+  const adminMsg = data.paymentMethod === "qris" 
+    ? `*KONFIRMASI PEMBAYARAN QRIS!* 💳 🔥
+  
+👤 Nama: ${data.name}
+📱 WA: ${data.phone}
+📅 Tanggal: ${format(new Date(dateStr), "dd MMM yyyy", { locale: idLocale })}
+⏰ Waktu: ${data.time}
+💰 Total: *Rp ${totalPrice.toLocaleString('id-ID')}*
+📎 Bukti: ${data.paymentProofUrl || "Tidak ada bukti terlampir"}
+
+Segera cek dashboard untuk verifikasi bukti & konfirmasi!`
+    : `*RESERVASI BARU (TUNAI)!* 💵 🔥
   
 👤 Nama: ${data.name}
 📱 WA: ${data.phone}
@@ -111,15 +131,19 @@ Sampai jumpa di studio! ✨`;
 ⏰ Waktu: ${data.time}
 💰 Total: Rp ${totalPrice.toLocaleString('id-ID')}
 
-Cek dashboard admin untuk detail lebih lanjut.`;
+Konfirmasi kehadiran di dashboard admin.`;
 
-  // Use Promise.all to send both messages concurrently
-  Promise.all([
-    fonnteService.sendMessage(data.phone, customerMsg),
-    fonnteService.sendMessage(process.env.ADMIN_PHONE || "", adminMsg)
-  ]).catch(err => {
-    console.error("[BE] Error sending WhatsApp notifications:", err);
-  });
+  const adminPhone = process.env.ADMIN_PHONE;
+  if (!adminPhone) {
+    console.error("[BE] ADMIN_PHONE environment variable is NOT set!");
+  } else {
+    Promise.all([
+      fonnteService.sendMessage(data.phone, customerMsg),
+      fonnteService.sendMessage(adminPhone, adminMsg)
+    ]).catch(err => {
+      console.error("[BE] Error sending WhatsApp notifications:", err);
+    });
+  }
 
   revalidatePath("/reservasi");
   return { success: true, message: "Reservasi berhasil dikirim! Kami akan menghubungi Anda via WhatsApp." };
@@ -158,6 +182,24 @@ export async function updateReservationStatus(id: string, status: "confirmed" | 
   if (updateError) {
     console.error(`[BE] Error updating status for ${id}:`, updateError);
     return { success: false, message: updateError.message };
+  }
+
+  // 3. If confirmed & QRIS, send confirmation WA
+  if (status === "confirmed" && reservation.payment_method === "qris") {
+    const confirmMsg = `*KONFIRMASI PEMBAYARAN & RESERVASI* 📸
+
+Halo *${reservation.name}*, 
+Pembayaran QRIS Anda sebesar *Rp ${reservation.total_price.toLocaleString('id-ID')}* telah kami terima dan diverifikasi. 
+
+*Pesan untuk Anda:*
+📅 Tanggal: ${format(new Date(reservation.date), "EEEE, dd MMMM yyyy", { locale: idLocale })}
+⏰ Waktu: ${reservation.time} WITA
+
+Terima kasih telah melakukan pembayaran. Sampai jumpa di studio! ✨`;
+
+    fonnteService.sendMessage(reservation.phone, confirmMsg).catch(err => {
+      console.error("[BE] Error sending QRIS confirmation WA:", err);
+    });
   }
 
   revalidatePath("/dashboard/reservations");

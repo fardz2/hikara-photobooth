@@ -24,14 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { format } from "date-fns";
+
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -60,7 +53,7 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const isTodayFilterActive = table.getColumn("date")?.getFilterValue() === format(new Date(), "yyyy-MM-dd");
+
 
   return (
     <div className="space-y-4">
@@ -72,33 +65,15 @@ export function DataTable<TData, TValue>({
             onChange={(event) =>
               table.getColumn("name")?.setFilterValue(event.target.value)
             }
-            className="w-full sm:w-64 rounded-none border-[#2C2A29]/10 bg-white text-[10px] uppercase tracking-widest px-4 h-12 focus-visible:ring-0 focus-visible:border-[#8B5E56]/40 shadow-sm"
+            className="w-full sm:w-64 rounded-none border-[#2C2A29]/10 bg-white text-[10px] uppercase tracking-widest px-4 h-12 focus-visible:ring-0 focus-visible:border-[#2C2A29]/30 shadow-none hover:border-[#2C2A29]/30 transition-colors"
           />
-          
-          <Select
-            onValueChange={(value) => {
-              if (value === "all") {
-                table.getColumn("date")?.setFilterValue("");
-              } else if (value === "today") {
-                table.getColumn("date")?.setFilterValue(format(new Date(), "yyyy-MM-dd"));
-              }
-            }}
-          >
-            <SelectTrigger className="w-[180px] rounded-none border-[#2C2A29]/10 bg-white text-[10px] uppercase tracking-widest h-12 focus:ring-0 shadow-sm">
-              <SelectValue placeholder="Filter Jadwal" />
-            </SelectTrigger>
-            <SelectContent className="rounded-none border-[#2C2A29]/10">
-              <SelectItem value="all" className="text-[10px] uppercase tracking-widest">Semua Jadwal</SelectItem>
-              <SelectItem value="today" className="text-[10px] uppercase tracking-widest text-[#8B5E56] font-bold">Hari Ini</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         <div className="text-[8px] tracking-[0.3em] uppercase opacity-40 font-bold whitespace-nowrap">
            {table.getFilteredRowModel().rows.length} Hasil ditemukan
         </div>
       </div>
-      <div className="bg-white border border-[#2C2A29]/5 shadow-sm overflow-hidden">
+      <div className="bg-white border border-[#2C2A29]/10 overflow-hidden">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

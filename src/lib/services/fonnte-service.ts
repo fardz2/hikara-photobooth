@@ -50,6 +50,7 @@ class FonnteService {
       }
 
       const data = await response.json();
+      console.log("[FonnteService] Response:", JSON.stringify(data));
       
       if (!data || data.status === undefined) {
         console.error("[FonnteService] Invalid response format:", JSON.stringify(data));

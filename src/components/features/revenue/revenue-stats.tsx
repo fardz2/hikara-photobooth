@@ -1,76 +1,174 @@
 import { revenueService } from "@/lib/services/revenue-service";
+import { parseDateRangeParams } from "@/lib/utils/date-range";
 import { LogTransactionForm } from "@/components/features/revenue/log-transaction-form";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Analytics01Icon } from "@hugeicons/core-free-icons";
+import { Analytics01Icon, CashIcon, Coins02Icon } from "@hugeicons/core-free-icons";
+import { connection } from "next/server";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { RevenueChart } from "./revenue-chart";
 
-export const RevenueStats = async () => {
-  const stats = await revenueService.getRevenueStats();
+interface Props {
+  searchParams: Promise<{ range?: string; from?: string; to?: string }>;
+}
 
-  if (!stats) return <div className="p-8 text-[10px] tracking-widest uppercase text-red-600 bg-red-50 border border-red-100">Gagal memuat data pendapatan</div>;
+export const RevenueStats = async ({ searchParams }: Props) => {
+  await connection();
+  const params = await searchParams;
+  const { from, to, label } = parseDateRangeParams(params);
+  const stats = await revenueService.getRevenueStats(from, to);
+
+  if (!stats)
+    return (
+      <div className="p-8 text-[10px] tracking-widest uppercase text-red-600 bg-red-50 border border-red-100">
+        Gagal memuat data pendapatan
+      </div>
+    );
+
+  const percentTunai =
+    stats.total > 0 ? Math.round((stats.breakdown.tunai / stats.total) * 100) : 0;
+  const percentQris =
+    stats.total > 0 ? Math.round((stats.breakdown.qris_manual / stats.total) * 100) : 0;
+
+  const avgTransaction = stats.transactionCount > 0 
+    ? Math.round(stats.total / stats.transactionCount) 
+    : 0;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      {/* Sidebar Stats - Stacked Vertically */}
-      <div className="lg:col-span-4 space-y-6 flex flex-col h-full">
-        {/* Today Stats */}
-        <div className="bg-white p-10 border border-[#2C2A29]/10 shadow-sm relative overflow-hidden group flex-1">
-          <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-             <HugeiconsIcon icon={Analytics01Icon} size={100} />
+    <div className="space-y-6">
+      {/* 4 KPI Cards Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Total Pendapatan */}
+        <div className="relative bg-[#2C2A29] p-6 border border-[#2C2A29]/10 flex flex-col justify-between group overflow-hidden">
+          <div className="relative z-10 flex flex-col gap-1 items-start">
+            <p className="text-[9px] tracking-[0.2em] uppercase font-bold text-[#F6F4F0]/60">
+              Total Pendapatan
+            </p>
+            <h3 className="text-3xl font-heading text-[#F6F4F0] tracking-tight mt-2">
+              Rp {stats.total.toLocaleString("id-ID")}
+            </h3>
+            <p className="text-[8px] tracking-[0.2em] uppercase text-[#F6F4F0]/40 mt-1">
+              {stats.transactionCount} Transaksi Selesai
+            </p>
           </div>
-          
-          <div className="relative z-10 flex flex-col h-full justify-between">
-            <div>
-              <p className="text-[10px] tracking-[0.4em] uppercase font-bold text-[#5A5550]/60 mb-2">Revenue</p>
-              <h3 className="text-xs tracking-widest uppercase font-bold text-[#2C2A29]">Hari Ini</h3>
-            </div>
+          <div className="absolute right-4 bottom-4 opacity-10 text-white">
+            <HugeiconsIcon icon={Analytics01Icon} size={48} />
+          </div>
+        </div>
 
-            <div className="mt-8">
-              <h2 className="text-5xl font-heading text-[#2C2A29] leading-tight">
-                Rp {stats.today.toLocaleString("id-ID")}
-              </h2>
-              
-              <div className="mt-8 space-y-3 pt-6 border-t border-[#2C2A29]/5">
-                 <div className="flex items-baseline gap-2">
-                    <span className="text-[8px] uppercase tracking-widest text-[#5A5550] opacity-60 flex-none">Tunai</span>
-                    <span className="flex-1 border-b border-dotted border-[#2C2A29]/10" />
-                    <span className="text-sm font-bold text-[#8B5E56] flex-none">Rp {stats.breakdown.tunai.toLocaleString("id-ID")}</span>
-                 </div>
-                 <div className="flex items-baseline gap-2">
-                    <span className="text-[8px] uppercase tracking-widest text-[#5A5550] opacity-60 flex-none">QRIS</span>
-                    <span className="flex-1 border-b border-dotted border-[#2C2A29]/10" />
-                    <span className="text-sm font-bold text-[#8B5E56] flex-none">Rp {stats.breakdown.qris_manual.toLocaleString("id-ID")}</span>
-                 </div>
-              </div>
+        {/* Tunai */}
+        <div className="relative bg-white p-6 border border-[#2C2A29]/10 flex flex-col justify-between group overflow-hidden hover:border-[#2C2A29]/30 transition-all">
+          <div className="relative z-10 flex flex-col gap-1 items-start w-full">
+            <p className="text-[9px] tracking-[0.2em] uppercase font-bold text-[#5A5550]">
+              Pendapatan Tunai
+            </p>
+            <h3 className="text-2xl font-heading text-[#2C2A29] tracking-tight mt-2">
+              Rp {stats.breakdown.tunai.toLocaleString("id-ID")}
+            </h3>
+            <div className="w-full mt-3 flex items-center gap-2">
+               <div className="h-0.5 w-full bg-[#2C2A29]/5">
+                 <div className="h-full bg-[#8B5E56]" style={{ width: `${percentTunai}%` }} />
+               </div>
+               <span className="text-[8px] font-bold text-[#8B5E56]">{percentTunai}%</span>
             </div>
           </div>
         </div>
 
-        {/* Month Stats */}
-        <div className="bg-[#2C2A29] p-10 shadow-xl relative overflow-hidden group lg:h-64 flex flex-col justify-between">
-          <div className="absolute -bottom-6 -right-6 opacity-10 group-hover:opacity-20 transition-all duration-700">
-             <HugeiconsIcon icon={Analytics01Icon} size={150} className="text-white rotate-12" />
-          </div>
-
-          <div className="relative z-10">
-            <p className="text-[10px] tracking-[0.4em] uppercase font-bold text-[#F6F4F0]/40 mb-2">Estimation</p>
-            <h3 className="text-xs tracking-widest uppercase font-bold text-[#F6F4F0]">Bulan Ini</h3>
-          </div>
-
-          <div className="relative z-10">
-            <h2 className="text-5xl font-heading text-[#F6F4F0] leading-tight">
-              Rp {stats.month.toLocaleString("id-ID")}
-            </h2>
-            <div className="mt-6 flex items-center justify-between">
-               <div className="w-12 h-1 bg-[#8B5E56]"></div>
-               <span className="text-[8px] tracking-[0.3em] uppercase text-[#F6F4F0]/40 font-bold">Total Pemasukan</span>
+        {/* QRIS */}
+        <div className="relative bg-white p-6 border border-[#2C2A29]/10 flex flex-col justify-between group overflow-hidden hover:border-[#2C2A29]/30 transition-all">
+          <div className="relative z-10 flex flex-col gap-1 items-start w-full">
+            <p className="text-[9px] tracking-[0.2em] uppercase font-bold text-[#5A5550]">
+              QRIS & Transfer
+            </p>
+            <h3 className="text-2xl font-heading text-[#2C2A29] tracking-tight mt-2">
+              Rp {stats.breakdown.qris_manual.toLocaleString("id-ID")}
+            </h3>
+            <div className="w-full mt-3 flex items-center gap-2">
+               <div className="h-0.5 w-full bg-[#2C2A29]/5">
+                 <div className="h-full bg-[#2C2A29]" style={{ width: `${percentQris}%` }} />
+               </div>
+               <span className="text-[8px] font-bold text-[#2C2A29]">{percentQris}%</span>
             </div>
+          </div>
+        </div>
+
+        {/* Rata-rata */}
+        <div className="relative bg-[#FAFAFA] p-6 border border-[#2C2A29]/10 flex flex-col justify-between group overflow-hidden hover:border-[#2C2A29]/30 transition-all">
+          <div className="relative z-10 flex flex-col gap-1 items-start">
+            <p className="text-[9px] tracking-[0.2em] uppercase font-bold text-[#5A5550]/60">
+              Rata-rata Transaksi
+            </p>
+            <h3 className="text-2xl font-heading text-[#2C2A29] tracking-tight mt-2">
+              Rp {avgTransaction.toLocaleString("id-ID")}
+            </h3>
+          </div>
+          <div className="absolute right-4 bottom-4 opacity-5 text-[#2C2A29]">
+            <HugeiconsIcon icon={CashIcon} size={48} />
           </div>
         </div>
       </div>
 
-      {/* Form Section - Takes rest of the space (Right) */}
-      <div className="lg:col-span-8 h-full">
-         <LogTransactionForm />
+      {/* Main Bar Chart Container */}
+      <div className="bg-white p-8 border border-[#2C2A29]/10 relative group hover:border-[#2C2A29]/20 transition-all hidden md:block">
+        <div className="absolute inset-0 bg-linear-to-br from-transparent to-[#2C2A29]/1 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pb-6 border-b border-[#2C2A29]/5 gap-4">
+          <div>
+            <h3 className="text-xs font-bold tracking-[0.25em] uppercase text-[#2C2A29] flex items-center gap-2">
+              <HugeiconsIcon icon={Analytics01Icon} size={16} />
+              Grafik Tren Periodik
+            </h3>
+            <p className="text-[9px] tracking-[0.2em] uppercase text-[#5A5550]/50 mt-1.5">{label}</p>
+          </div>
+          
+          <Sheet>
+            <SheetTrigger asChild>
+              <button className="bg-[#2C2A29] text-white px-5 py-3 text-[9px] font-bold tracking-[0.2em] uppercase transition-colors hover:bg-[#8B5E56] flex items-center gap-2">
+                <HugeiconsIcon icon={Coins02Icon} size={14} />
+                + Catat Manual
+              </button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full sm:max-w-[540px] border-l border-[#2C2A29]/10 p-0 bg-white">
+              <SheetHeader className="p-8 border-b border-[#2C2A29]/10 bg-[#FAFAFA]">
+                <SheetTitle className="font-heading text-2xl text-[#2C2A29] text-left">Pencatatan Transaksi</SheetTitle>
+                <SheetDescription className="text-[10px] tracking-widest uppercase text-[#5A5550] text-left mt-2">
+                  Input data pendapatan manual di luar sistem reservasi otomatis.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="p-8 overflow-y-auto h-[calc(100vh-140px)]">
+                <LogTransactionForm />
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        <RevenueChart data={stats.chartData} />
+      </div>
+
+      {/* Mobile Form Trigger (Rendered when chart is hidden on very small screens) */}
+      <div className="md:hidden">
+         <Sheet>
+            <SheetTrigger asChild>
+              <button className="w-full bg-[#2C2A29] text-white px-5 py-4 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors hover:bg-[#8B5E56] flex items-center justify-center gap-2 border border-[#2C2A29]">
+                <HugeiconsIcon icon={Coins02Icon} size={14} />
+                + Catat Transaksi Manual
+              </button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="w-full h-[90vh] border-t border-[#2C2A29]/10 p-0 bg-white rounded-t-xl">
+              <SheetHeader className="p-6 border-b border-[#2C2A29]/10 bg-[#FAFAFA]">
+                <SheetTitle className="font-heading text-xl text-[#2C2A29] text-left">Pencatatan Transaksi</SheetTitle>
+              </SheetHeader>
+              <div className="p-6 overflow-y-auto h-[calc(90vh-80px)]">
+                <LogTransactionForm />
+              </div>
+            </SheetContent>
+          </Sheet>
       </div>
     </div>
   );

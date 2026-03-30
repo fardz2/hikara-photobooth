@@ -1,49 +1,45 @@
 import { createClient } from "@/lib/supabase/server";
-import { format, startOfMonth, endOfMonth } from "date-fns";
 
 export const revenueService = {
-  async getRevenueStats() {
+  async getRevenueStats(from: string, to: string) {
     const supabase = await createClient();
-    
-    const today = format(new Date(), "yyyy-MM-dd");
-    const monthStart = format(startOfMonth(new Date()), "yyyy-MM-dd");
-    const monthEnd = format(endOfMonth(new Date()), "yyyy-MM-dd");
 
-    const { data: todayData, error: todayError } = await supabase
+    const { data, error } = await supabase
       .from("reservations")
-      .select("total_price, payment_method")
-      .eq("date", today)
+      .select("total_price, payment_method, date")
+      .gte("date", from)
+      .lte("date", to)
       .eq("status", "confirmed");
 
-    const { data: monthData, error: monthError } = await supabase
-      .from("reservations")
-      .select("total_price, payment_method")
-      .gte("date", monthStart)
-      .lte("date", monthEnd)
-      .eq("status", "confirmed");
+    if (error || !data) return null;
 
-    if (todayError || monthError) return null;
+    const total = data.reduce((acc, row) => acc + (row.total_price || 0), 0);
 
-    const calculateTotal = (data: any[]) => {
-      return data.reduce((acc, row) => acc + (row.total_price || 0), 0);
-    };
-
-    const getBreakdown = (data: any[]) => {
-      const breakdown = { tunai: 0, qris_manual: 0 };
-      data.forEach(row => {
+    const breakdown = data.reduce(
+      (acc, row) => {
         if (row.payment_method === "qris_manual") {
-          breakdown.qris_manual += (row.total_price || 0);
+          acc.qris_manual += row.total_price || 0;
         } else {
-          breakdown.tunai += (row.total_price || 0);
+          acc.tunai += row.total_price || 0;
         }
-      });
-      return breakdown;
-    };
+        return acc;
+      },
+      { tunai: 0, qris_manual: 0 }
+    );
+
+    const countByDate: Record<string, number> = {};
+    data.forEach((row) => {
+      const d = row.date as string;
+      countByDate[d] = (countByDate[d] || 0) + (row.total_price || 0);
+    });
 
     return {
-      today: calculateTotal(todayData || []),
-      month: calculateTotal(monthData || []),
-      breakdown: getBreakdown(todayData || []),
+      total,
+      breakdown,
+      transactionCount: data.length,
+      chartData: Object.entries(countByDate)
+        .map(([date, amount]) => ({ date, amount }))
+        .sort((a, b) => a.date.localeCompare(b.date)),
     };
-  }
+  },
 };
