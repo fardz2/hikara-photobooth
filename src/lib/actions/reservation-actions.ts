@@ -2,8 +2,10 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { format } from "date-fns";
+import { id as idLocale } from "date-fns/locale";
 import { revalidatePath } from "next/cache";
 import { reservationService } from "@/lib/services/reservation-service";
+import { fonnteService } from "@/lib/services/fonnte-service";
 
 type ReservationInput = {
   name: string;
@@ -81,7 +83,44 @@ export async function submitReservation(data: ReservationInput) {
     return { success: false, message: `Gagal menyimpan: ${insertError.message}` };
   }
 
-  console.log(`[BE] Reservation SUCCESS for ${data.name} on ${dateStr} - Total: ${totalPrice}`);
+  console.log(`[BE] Reservation SUCCESS for ${data.name} on ${dateStr} - Total: Rp ${totalPrice.toLocaleString('id-ID')}`);
+  
+  // 3. Send WhatsApp Notifications (Async, don't block response)
+  const customerMsg = `*HIKARA PHOTOBOX - RESERVASI BERHASIL* 📸
+
+Halo *${data.name}*, 
+Terima kasih telah melakukan reservasi di Hikara Photobox.
+
+*Detail Reservasi:*
+📅 Tanggal: ${format(new Date(dateStr), "EEEE, dd MMMM yyyy", { locale: idLocale })}
+⏰ Waktu: ${data.time} WITA
+💵 Total Bayar: *Rp ${totalPrice.toLocaleString('id-ID')}*
+
+*Syarat & Ketentuan:*
+1. Harap datang 5-10 menit sebelum jadwal sesi.
+2. Pembayaran diselesaikan di studio (Tunai/QRIS).
+3. Tunjukkan pesan ini saat kedatangan.
+
+Sampai jumpa di studio! ✨`;
+
+  const adminMsg = `*RESERVASI BARU MASUK!* 🔥
+  
+👤 Nama: ${data.name}
+📱 WA: ${data.phone}
+📅 Tanggal: ${format(new Date(dateStr), "dd MMM yyyy", { locale: idLocale })}
+⏰ Waktu: ${data.time}
+💰 Total: Rp ${totalPrice.toLocaleString('id-ID')}
+
+Cek dashboard admin untuk detail lebih lanjut.`;
+
+  // Use Promise.all to send both messages concurrently
+  Promise.all([
+    fonnteService.sendMessage(data.phone, customerMsg),
+    fonnteService.sendMessage(process.env.ADMIN_PHONE || "", adminMsg)
+  ]).catch(err => {
+    console.error("[BE] Error sending WhatsApp notifications:", err);
+  });
+
   revalidatePath("/reservasi");
   return { success: true, message: "Reservasi berhasil dikirim! Kami akan menghubungi Anda via WhatsApp." };
 }
@@ -93,5 +132,36 @@ export async function getBookedSlots(date: string): Promise<string[]> {
     console.error(`[BE] Error fetching slots for ${date}:`, err);
     return [];
   }
+}
+
+export async function updateReservationStatus(id: string, status: "confirmed" | "cancelled" | "pending") {
+  const supabase = await createClient();
+  
+  // 1. Fetch reservation details first to get phone and name
+  const { data: reservation, error: fetchError } = await supabase
+    .from("reservations")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (fetchError || !reservation) {
+    console.error(`[BE] Error fetching reservation for notification:`, fetchError);
+    return { success: false, message: "Reservasi tidak ditemukan." };
+  }
+
+  // 2. Update the status
+  const { error: updateError } = await supabase
+    .from("reservations")
+    .update({ status })
+    .eq("id", id);
+
+  if (updateError) {
+    console.error(`[BE] Error updating status for ${id}:`, updateError);
+    return { success: false, message: updateError.message };
+  }
+
+  revalidatePath("/dashboard/reservations");
+  revalidatePath("/dashboard/pendapatan");
+  return { success: true };
 }
 

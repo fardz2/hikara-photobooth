@@ -29,7 +29,7 @@ export default function ReservasiPage() {
           <span className="font-medium text-[#2C2A29]">
             INFO OPERASIONAL
           </span>
-          <span>10:00 AM - 11:00 PM</span>
+          <span>10:00 - 23:00 WITA</span>
           <span>Monday - Sunday</span>
         </div>
       </div>

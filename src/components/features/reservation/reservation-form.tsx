@@ -4,7 +4,8 @@ import React, { useTransition, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { format, addDays, startOfDay, isBefore } from "date-fns";
+import { format, addDays, startOfDay, isBefore, isSameDay, addMinutes } from "date-fns";
+import { id } from "date-fns/locale";
 import { submitReservation, getBookedSlots } from "@/lib/actions/reservation-actions";
 import { toast } from "sonner";
 
@@ -20,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { InputGroup, InputGroupText } from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Calendar01Icon, Clock01Icon, Loading03Icon, Tick02Icon } from "@hugeicons/core-free-icons";
 
@@ -68,7 +69,9 @@ const FormSchema = z.object({
 type FormValues = z.output<typeof FormSchema>;
 
 export const ReservationForm = () => {
-  const tomorrow = startOfDay(addDays(new Date(), 1));
+  // WITA (Asia/Makassar) Today Calculation
+  const nowWita = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Makassar" }));
+  const today = startOfDay(nowWita);
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   const [isFetchingSlots, setIsFetchingSlots] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -167,18 +170,24 @@ export const ReservationForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
             <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Nama Lengkap</label>
-            <Input {...register("name")} placeholder="John Doe" className="border-[#2C2A29]/20 focus-visible:ring-[#8B5E56]" />
+            <Input 
+              {...register("name")} 
+              placeholder="John Doe" 
+              className="border-input focus-visible:ring-[3px] focus-visible:ring-ring/50 transition-all" 
+            />
             {errors.name && <span className="text-red-500 text-xs">{errors.name.message}</span>}
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Nomor WhatsApp</label>
-            <InputGroup>
-              <InputGroupText>+62</InputGroupText>
-              <Input 
+            <InputGroup className="border-input">
+              <InputGroupAddon>
+                <InputGroupText>+62</InputGroupText>
+              </InputGroupAddon>
+              <InputGroupInput 
                 {...register("phone")} 
                 placeholder="812XXXXXX" 
                 type="tel" 
-                className="rounded-none border-l-0 border-[#2C2A29]/20 focus-visible:ring-0 focus-visible:border-[#8B5E56] transition-all" 
+                className="transition-all" 
               />
             </InputGroup>
             {errors.phone && <span className="text-red-500 text-[10px] mt-1 italic">{errors.phone.message}</span>}
@@ -194,10 +203,10 @@ export const ReservationForm = () => {
                 <Button
                   variant="outline"
                   onClick={() => setIsCalendarOpen(true)}
-                  className={`w-full justify-start text-left font-normal border-[#2C2A29]/20 focus-visible:ring-[#8B5E56] ${!selectedDate && "text-muted-foreground"}`}
+                  className={`w-full justify-start text-left font-normal border-input focus-visible:ring-[3px] focus-visible:ring-ring/50 ${!selectedDate && "text-muted-foreground"}`}
                 >
                   <HugeiconsIcon icon={Calendar01Icon} strokeWidth={2} className="mr-2 h-4 w-4" />
-                  {selectedDate ? format(selectedDate, "PPP") : <span>Pilih Tanggal (min H+1)</span>}
+                  {selectedDate ? format(selectedDate, "EEEE, dd MMMM yyyy", { locale: id }) : <span>Pilih Tanggal</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -205,7 +214,8 @@ export const ReservationForm = () => {
                   mode="single"
                   selected={selectedDate}
                   onSelect={(date) => date && handleDateChange(date)}
-                  disabled={(date) => isBefore(startOfDay(date), tomorrow)}
+                  disabled={(date) => isBefore(startOfDay(date), today)}
+                  locale={id}
                   initialFocus
                 />
               </PopoverContent>
@@ -216,7 +226,7 @@ export const ReservationForm = () => {
           <div className="flex flex-col gap-2">
             <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">Waktu Sesi</label>
             <Select onValueChange={(val) => setValue("time", val)} disabled={isFetchingSlots} value={selectedTime}>
-              <SelectTrigger className="w-full border-[#2C2A29]/20 focus-visible:ring-[#8B5E56] h-11">
+              <SelectTrigger className="w-full border-input focus-visible:ring-[3px] focus-visible:ring-ring/50">
                 <SelectValue placeholder={
                   !selectedDate ? "Pilih tanggal lebih dulu" 
                   : isFetchingSlots ? "Memuat jadwal..." 
@@ -237,9 +247,22 @@ export const ReservationForm = () => {
                   <div className="grid grid-cols-3 gap-1 p-1">
                     {timeSlots.map((slot) => {
                       const isBooked = bookedSlots.includes(slot);
+                      
+                      // Check if slot is too close (less than 15 mins left)
+                      const [h, m] = slot.split(":").map(Number);
+                      const slotTime = new Date(selectedDate);
+                      slotTime.setHours(h, m, 0, 0);
+                      
+                      const nowWitaActual = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Makassar" }));
+                      // Disable if current time + 15 minutes is after slot time
+                      const fifteenMinutesFromNow = addMinutes(nowWitaActual, 15);
+                      const isTooClose = isSameDay(selectedDate, nowWitaActual) && isBefore(slotTime, fifteenMinutesFromNow);
+                      
+                      const isDisabled = isBooked || isTooClose;
+
                       return (
-                        <SelectItem key={slot} value={slot} disabled={isBooked} className="justify-center">
-                          <div className={`flex items-center gap-1.5 ${isBooked ? "opacity-30 line-through" : ""}`}>
+                        <SelectItem key={slot} value={slot} disabled={isDisabled} className="justify-center">
+                          <div className={`flex items-center gap-1.5 ${isDisabled ? "opacity-30 line-through" : ""}`}>
                             <HugeiconsIcon icon={Clock01Icon} strokeWidth={1.5} className="size-3.5" />
                             <span className="text-xs">{slot}</span>
                           </div>

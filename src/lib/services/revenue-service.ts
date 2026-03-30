@@ -13,14 +13,14 @@ export const revenueService = {
       .from("reservations")
       .select("total_price, payment_method")
       .eq("date", today)
-      .neq("status", "cancelled");
+      .eq("status", "confirmed");
 
     const { data: monthData, error: monthError } = await supabase
       .from("reservations")
       .select("total_price, payment_method")
       .gte("date", monthStart)
       .lte("date", monthEnd)
-      .neq("status", "cancelled");
+      .eq("status", "confirmed");
 
     if (todayError || monthError) return null;
 

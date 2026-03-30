@@ -13,9 +13,9 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col md:flex-row min-h-screen w-full bg-[#F6F4F0]/30 text-[#2C2A29]">
+    <div className="flex flex-col md:flex-row h-screen w-full bg-[#F6F4F0]/30 text-[#2C2A29] overflow-hidden">
       {/* Sidebar - Desktop Only */}
-      <aside className="hidden md:flex w-64 bg-white border-r border-[#2C2A29]/5 z-20 flex-col pt-8 shrink-0 h-screen sticky top-0">
+      <aside className="hidden md:flex w-64 bg-white border-r border-[#2C2A29]/5 z-30 flex-col pt-8 shrink-0 h-full sticky top-0 overflow-y-auto">
         <div className="px-8 mb-12">
            <Image src="/logo.png" width={120} height={36} alt="HIKARA" className="h-8 w-auto mix-blend-multiply opacity-90" />
            <p className="text-[9px] tracking-[0.3em] text-[#8B5E56] uppercase mt-2 font-medium">Panel Admin</p>
@@ -38,9 +38,9 @@ export default async function DashboardLayout({
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 relative z-10 min-h-screen">
+      <main className="flex-1 relative z-10 flex flex-col h-full overflow-hidden">
         {/* Desktop Header & Mobile Header Wrapper */}
-        <header className="h-20 bg-white border-b border-[#2C2A29]/5 flex items-center justify-between px-6 sticky top-0 z-20">
+        <header className="h-20 bg-white border-b border-[#2C2A29]/5 flex items-center justify-between px-6 sticky top-0 z-20 shrink-0">
            <div className="flex items-center gap-4">
               <MobileNav />
               <h2 className="text-[10px] tracking-[0.4em] uppercase font-medium text-[#8B5E56] hidden sm:block">Sistem Manajemen Hikara</h2>
@@ -54,8 +54,10 @@ export default async function DashboardLayout({
            </div>
         </header>
 
-        <div className="p-4 md:p-10 max-w-7xl mx-auto">
-          {children}
+        <div className="flex-1 overflow-y-auto w-full">
+          <div className="p-4 md:p-10 max-w-7xl mx-auto">
+            {children}
+          </div>
         </div>
       </main>
     </div>

@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Input } from "@/components/ui/input";
-import { InputGroup } from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupButton } from "@/components/ui/input-group";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ViewIcon, ViewOffSlashIcon, Loading03Icon } from "@hugeicons/core-free-icons";
 
@@ -72,7 +72,7 @@ export const LoginForm = () => {
               {...register("email")}
               type="email" 
               placeholder="masukkan email anda"
-              className="bg-[#F6F4F0] border-none px-6 py-6 text-sm h-14 rounded-none focus-visible:ring-[#8B5E56]"
+              className="border-input focus-visible:ring-[3px] focus-visible:ring-ring/50"
             />
             {errors.email && (
               <p className="text-[10px] text-red-500 uppercase tracking-tighter mt-1">{errors.email.message}</p>
@@ -81,25 +81,27 @@ export const LoginForm = () => {
           
           <div className="space-y-2">
             <label className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">Password</label>
-            <InputGroup className="bg-[#F6F4F0]">
-              <Input 
+            <InputGroup className="border-input shadow-none">
+              <InputGroupInput 
                 {...register("password")}
                 type={showPassword ? "text" : "password"} 
                 placeholder="••••••••"
-                className="bg-transparent border-[#2C2A29]/20 border-r-0 px-6 py-6 text-sm h-14 rounded-none focus-visible:ring-0 focus-visible:border-[#8B5E56] transition-all"
+                className="text-sm"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="flex items-center px-4 border border-l-0 border-[#2C2A29]/20 text-[#5A5550]/40 hover:text-[#8B5E56] transition-colors bg-transparent group-focus-within:border-[#8B5E56]"
-                aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
-              >
-                <HugeiconsIcon 
-                  icon={showPassword ? ViewOffSlashIcon : ViewIcon} 
-                  strokeWidth={2} 
-                  className="size-5" 
-                />
-              </button>
+              <InputGroupAddon align="inline-end" className="border-none">
+                <InputGroupButton
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-[#5A5550]/40 hover:text-[#8B5E56]"
+                  aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
+                >
+                  <HugeiconsIcon 
+                    icon={showPassword ? ViewOffSlashIcon : ViewIcon} 
+                    strokeWidth={2} 
+                    className="size-5" 
+                  />
+                </InputGroupButton>
+              </InputGroupAddon>
             </InputGroup>
             {errors.password && (
               <p className="text-[10px] text-red-500 uppercase tracking-tighter mt-1">{errors.password.message}</p>
@@ -108,7 +110,7 @@ export const LoginForm = () => {
 
           <button
             disabled={isPending}
-            className="w-full bg-[#2C2A29] text-[#F6F4F0] py-5 text-xs font-medium tracking-[0.3em] uppercase transition-all hover:bg-[#3A3532] disabled:opacity-50 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-3"
+            className="w-full bg-[#2C2A29] text-[#F6F4F0] py-3 text-[10px] font-medium tracking-[0.3em] uppercase transition-all hover:bg-[#3A3532] disabled:opacity-50 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-3"
           >
             {isPending ? (
               <>

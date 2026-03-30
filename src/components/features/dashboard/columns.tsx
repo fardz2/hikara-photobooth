@@ -15,6 +15,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { updateReservationStatus } from "@/lib/actions/reservation-actions";
+import { toast } from "sonner";
+import { useTransition } from "react";
+import { Loading03Icon } from "@hugeicons/core-free-icons";
 
 export type Reservation = {
   id: string;
@@ -144,31 +148,64 @@ export const columns: ColumnDef<Reservation>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const reservation = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <HugeiconsIcon icon={MoreIcon} size={18} className="text-[#2C2A29]" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="rounded-none border-[#2C2A29]/10">
-            <DropdownMenuLabel className="text-[10px] uppercase tracking-widest opacity-50">Aksi</DropdownMenuLabel>
-            <DropdownMenuItem 
-              className="text-[10px] uppercase tracking-widest cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(reservation.id)}
-            >
-              Salin ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-[10px] uppercase tracking-widest cursor-pointer text-green-600">Konfirmasi</DropdownMenuItem>
-            <DropdownMenuItem className="text-[10px] uppercase tracking-widest cursor-pointer text-red-600">Batalkan</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <ActionCell reservation={row.original} />,
   },
 ];
+
+const ActionCell = ({ reservation }: { reservation: Reservation }) => {
+  const [isPending, startTransition] = useTransition();
+
+  const handleUpdateStatus = (status: "confirmed" | "cancelled") => {
+    startTransition(async () => {
+      const result = await updateReservationStatus(reservation.id, status);
+      if (result.success) {
+        toast.success(`Status berhasil diubah menjadi ${status}`);
+      } else {
+        toast.error("Gagal mengubah status");
+      }
+    });
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          {isPending ? (
+            <HugeiconsIcon icon={Loading03Icon} size={18} className="text-[#8B5E56] animate-spin" />
+          ) : (
+            <HugeiconsIcon icon={MoreIcon} size={18} className="text-[#2C2A29]" />
+          )}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="rounded-none border-[#2C2A29]/10">
+        <DropdownMenuLabel className="text-[10px] uppercase tracking-widest opacity-50">Aksi</DropdownMenuLabel>
+        <DropdownMenuItem 
+          className="text-[10px] uppercase tracking-widest cursor-pointer"
+          onClick={() => navigator.clipboard.writeText(reservation.id)}
+        >
+          Salin ID
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        {reservation.status !== "confirmed" && (
+          <DropdownMenuItem 
+            className="text-[10px] uppercase tracking-widest cursor-pointer text-green-600 font-bold"
+            onClick={() => handleUpdateStatus("confirmed")}
+            disabled={isPending}
+          >
+            Konfirmasi
+          </DropdownMenuItem>
+        )}
+        {reservation.status !== "cancelled" && (
+          <DropdownMenuItem 
+            className="text-[10px] uppercase tracking-widest cursor-pointer text-red-600"
+            onClick={() => handleUpdateStatus("cancelled")}
+            disabled={isPending}
+          >
+            Batalkan
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};

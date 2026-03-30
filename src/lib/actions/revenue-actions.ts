@@ -10,6 +10,7 @@ export type TransactionInput = {
   amount: number;
   addons?: string[];
   customer_name?: string;
+  extra_people_count?: number;
 };
 
 export async function logTransaction(data: TransactionInput) {
@@ -24,6 +25,7 @@ export async function logTransaction(data: TransactionInput) {
     addons: data.addons || [], 
     payment_method: data.payment_method,
     total_price: data.amount,
+    extra_people_count: data.extra_people_count || 0,
     is_walk_in: true,
     status: "confirmed",
     created_at: new Date().toISOString(),
