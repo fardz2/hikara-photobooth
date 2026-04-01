@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { RevenueStats } from "@/components/features/revenue/revenue-stats";
+import { RecentTransactions } from "@/components/features/revenue/recent-transactions";
 import { RevenueStatsSkeleton } from "@/components/skeletons/revenue-stats-skeleton";
 import { DateRangeFilter } from "@/components/ui/date-range-filter";
 
@@ -7,7 +8,9 @@ interface Props {
   searchParams: Promise<{ range?: string; from?: string; to?: string }>;
 }
 
-export default function PendapatanPage({ searchParams }: Props) {
+export default async function PendapatanPage({ searchParams }: Props) {
+  const params = await searchParams;
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -25,7 +28,11 @@ export default function PendapatanPage({ searchParams }: Props) {
       </div>
 
       <Suspense fallback={<RevenueStatsSkeleton />}>
-        <RevenueStats searchParams={searchParams} />
+        <RevenueStats searchParams={params} />
+      </Suspense>
+
+      <Suspense fallback={<div className="h-96 animate-pulse bg-white/50 border border-dashed border-[#2C2A29]/10" />}>
+        <RecentTransactions searchParams={params} />
       </Suspense>
     </div>
   );

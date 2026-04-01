@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { updateReservationStatus } from "@/lib/actions/reservation-actions";
+import { updateReservationStatus, deleteReservation } from "@/lib/actions/reservation-actions";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { Loading03Icon } from "@hugeicons/core-free-icons";
@@ -196,6 +196,19 @@ const ActionCell = ({ reservation }: { reservation: Reservation }) => {
     });
   };
 
+  const handleDelete = () => {
+    if (!window.confirm("Apakah Anda yakin ingin menghapus data ini secara permanen?")) return;
+    
+    startTransition(async () => {
+      const result = await deleteReservation(reservation.id);
+      if (result.success) {
+        toast.success("Data berhasil dihapus");
+      } else {
+        toast.error("Gagal menghapus data");
+      }
+    });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -235,6 +248,14 @@ const ActionCell = ({ reservation }: { reservation: Reservation }) => {
             Batalkan
           </DropdownMenuItem>
         )}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem 
+          className="text-[10px] uppercase tracking-widest cursor-pointer text-red-600 font-bold bg-red-50 hover:bg-red-100"
+          onClick={handleDelete}
+          disabled={isPending}
+        >
+          Hapus Permanen
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

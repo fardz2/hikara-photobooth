@@ -200,4 +200,20 @@ Terima kasih telah melakukan pembayaran. Sampai jumpa di studio! ✨`;
   revalidatePath("/dashboard/pendapatan");
   return { success: true };
 }
+export async function deleteReservation(id: string) {
+  const supabase = await createClient();
+  
+  const { error } = await supabase
+    .from("reservations")
+    .delete()
+    .eq("id", id);
 
+  if (error) {
+    console.error(`[BE] Error deleting reservation ${id}:`, error);
+    return { success: false, message: error.message };
+  }
+
+  revalidatePath("/dashboard/reservations");
+  revalidatePath("/dashboard/pendapatan");
+  return { success: true };
+}
