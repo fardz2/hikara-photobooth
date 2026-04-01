@@ -5,15 +5,18 @@ import { columns, type Reservation } from "@/components/features/dashboard/colum
 import { FadeIn } from "@/components/ui/fade-in";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Analytics01Icon } from "@hugeicons/core-free-icons";
+import { connection } from "next/server";
 
 interface Props {
-  searchParams: { range?: string; from?: string; to?: string; page?: string; q?: string };
+  searchParams: Promise<{ range?: string; from?: string; to?: string; page?: string; q?: string }>;
 }
 
 export const RecentTransactions = async ({ searchParams }: Props) => {
-  const { from, to } = parseDateRangeParams(searchParams, "month");
-  const page = Number(searchParams.page) || 1;
-  const q = searchParams.q;
+  await connection();
+  const params = await searchParams;
+  const { from, to } = parseDateRangeParams(params, "month");
+  const page = Number(params.page) || 1;
+  const q = params.q;
 
   const { data, count, error } = await reservationService.getReservations(from, to, "confirmed", page, 10, q);
   const transactions = (data as any[] | null)?.map((item) => ({

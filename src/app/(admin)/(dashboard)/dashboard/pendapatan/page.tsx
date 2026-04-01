@@ -8,9 +8,7 @@ interface Props {
   searchParams: Promise<{ range?: string; from?: string; to?: string }>;
 }
 
-export default async function PendapatanPage({ searchParams }: Props) {
-  const params = await searchParams;
-
+export default function PendapatanPage({ searchParams }: Props) {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -28,11 +26,11 @@ export default async function PendapatanPage({ searchParams }: Props) {
       </div>
 
       <Suspense fallback={<RevenueStatsSkeleton />}>
-        <RevenueStats searchParams={params} />
+        <RevenueStats searchParams={searchParams} />
       </Suspense>
 
       <Suspense fallback={<div className="h-96 animate-pulse bg-white/50 border border-dashed border-[#2C2A29]/10" />}>
-        <RecentTransactions searchParams={params} />
+        <RecentTransactions searchParams={searchParams} />
       </Suspense>
     </div>
   );

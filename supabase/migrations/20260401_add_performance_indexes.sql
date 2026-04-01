@@ -17,3 +17,14 @@ ON reservations (status, date DESC, time ASC);
 -- 4. Add index for general date-time sorting (when status is "all")
 CREATE INDEX IF NOT EXISTS idx_reservations_date_time_sort
 ON reservations (date DESC, time ASC);
+
+-- 5. Partial Index for Dashboard Efficiency
+-- Optimized for: where status != 'cancelled' (Showing active data only)
+-- Higher efficiency as it skips cancelled records in the index tree.
+CREATE INDEX IF NOT EXISTS idx_reservations_active_partial
+ON reservations (date DESC, time ASC)
+WHERE status != 'cancelled';
+
+-- RECOMMENDATION FOR RLS (Run manually if needed):
+-- If using auth.uid() in policies, wrap it in a subquery for caching:
+-- (select auth.uid()) instead of auth.uid() 

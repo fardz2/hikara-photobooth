@@ -15,11 +15,13 @@ import {
 import { RevenueChart } from "./revenue-chart";
 
 interface Props {
-  searchParams: { range?: string; from?: string; to?: string };
+  searchParams: Promise<{ range?: string; from?: string; to?: string }>;
 }
 
 export const RevenueStats = async ({ searchParams }: Props) => {
-  const { from, to, label } = parseDateRangeParams(searchParams);
+  await connection();
+  const params = await searchParams;
+  const { from, to, label } = parseDateRangeParams(params);
   const stats = await revenueService.getRevenueStats(from, to);
 
   if (!stats)
