@@ -8,13 +8,13 @@ export type FonnteResponse = {
   status: boolean;
   message: string;
 };
-
 class FonnteService {
-  private token: string;
   private baseUrl = "https://api.fonnte.com/send";
 
-  constructor() {
-    this.token = (process.env.FONNTE_TOKEN || "").trim();
+  constructor() {}
+
+  private getToken(): string {
+    return (process.env.FONNTE_TOKEN || "").trim();
   }
 
   /**
@@ -24,7 +24,8 @@ class FonnteService {
    * @param message - The message content
    */
   async sendMessage(target: string, message: string): Promise<FonnteResponse> {
-    if (!this.token || this.token === "YOUR_FONNTE_TOKEN_HERE") {
+    const token = this.getToken();
+    if (!token || token === "YOUR_FONNTE_TOKEN_HERE") {
       console.warn("[FonnteService] TOKEN is not configured. Message not sent.");
       return { status: false, message: "Token not configured" };
     }
@@ -38,7 +39,7 @@ class FonnteService {
       const response = await fetch(this.baseUrl, {
         method: "POST",
         headers: {
-          Authorization: this.token,
+          Authorization: token,
         },
         body: formData,
       });

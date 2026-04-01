@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Skeleton > renders correctly with default styles 1`] = `
+<DocumentFragment>
+  <div
+    class="animate-pulse rounded-xl bg-muted w-[100px] h-[20px]"
+    data-slot="skeleton"
+  />
+</DocumentFragment>
+`;
+
+exports[`Skeleton > renders correctly with rounded full 1`] = `
+<DocumentFragment>
+  <div
+    class="animate-pulse bg-muted w-10 h-10 rounded-full"
+    data-slot="skeleton"
+  />
+</DocumentFragment>
+`;

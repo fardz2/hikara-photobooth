@@ -19,6 +19,8 @@ import {
 } from "@/lib/actions/reservation-actions";
 import { toast } from "sonner";
 import { generateDynamicQRIS } from "@/lib/utils/qris";
+import { generateTimeSlots } from "@/lib/utils/slots";
+import { ReservationSchema as FormSchema, type ReservationValues as FormValues } from "@/lib/validations/reservation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,41 +73,11 @@ const ADDONS = [
 const EXTRA_PERSON_PRICE = 5000;
 const EXTRA_PRINT_PRICE = 10000;
 
-const START_HOUR = 10;
-const END_HOUR = 23;
-
-// Helper to generate time slots
-function generateTimeSlots() {
-  const slots = [];
-  for (let h = START_HOUR; h < END_HOUR; h++) {
-    slots.push(`${h.toString().padStart(2, "0")}:00`);
-    slots.push(`${h.toString().padStart(2, "0")}:30`);
-  }
-  return slots;
-}
+// Time slot logic moved to @/lib/utils/slots
 
 const timeSlots = generateTimeSlots();
 
-// Zod Schema
-const FormSchema = z.object({
-  name: z.string().min(2, "Nama terlalu pendek"),
-  phone: z
-    .string()
-    .min(8, "Nomor HP minimal 8 digit")
-    .max(13, "Nomor HP maksimal 13 digit")
-    .regex(/^\d+$/, "Hanya boleh berisi angka")
-    .refine((val) => !val.startsWith("0"), "Jangan awali dengan 0 (contoh: 82148645084),"),
-  date: z.instanceof(Date, { message: "Pilih tanggal reservasi" }),
-  time: z.string().min(1, "Pilih waktu sesi"),
-  package: z.string().min(1, "Pilih paket"),
-  addons: z.array(z.string()).default([]),
-  extraPeopleCount: z.number().min(0).max(5).default(0),
-  extraPrintCount: z.number().min(0).max(10).default(0),
-  paymentMethod: z.enum(["tunai", "qris"]),
-  paymentProof: z.any().optional(),
-});
-
-type FormValues = z.output<typeof FormSchema>;
+// Schema moved to @/lib/validations/reservation
 
 export const ReservationForm = () => {
   // WITA (Asia/Makassar) Today Calculation
@@ -522,7 +494,7 @@ export const ReservationForm = () => {
                 </span>
               </div>
             </div>
-            <span className="text-sm font-bold text-[#8B5E56]">
+            <span className="text-sm font-bold text-[#8B5E56]" data-testid="total-price">
               Rp {PRICELIST[0].price.toLocaleString("id-ID")}
             </span>
           </div>
@@ -815,6 +787,7 @@ export const ReservationForm = () => {
 
       <Button
         type="submit"
+        data-testid="reservation-submit"
         disabled={isPending || isUploading}
         className="w-full bg-[#2C2A29] hover:bg-[#1a1817] text-white py-6 sm:py-8 h-auto text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] uppercase disabled:opacity-60 flex flex-col items-center justify-center gap-1 transition-all duration-500 shadow-lg group"
       >

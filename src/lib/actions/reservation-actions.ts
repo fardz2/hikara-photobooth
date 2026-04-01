@@ -6,6 +6,8 @@ import { id as idLocale } from "date-fns/locale";
 import { revalidatePath } from "next/cache";
 import { reservationService } from "@/lib/services/reservation-service";
 import { fonnteService } from "@/lib/services/fonnte-service";
+import { calculateTotalPrice } from "@/lib/utils/price";
+import { isValidWhatsApp } from "@/lib/utils/validation";
 
 type ReservationInput = {
   name: string;
@@ -28,7 +30,7 @@ export async function submitReservation(data: ReservationInput) {
   }
 
   // Enforce Indonesia Number (62)
-  if (!/^62\d+$/.test(data.phone)) {
+  if (!isValidWhatsApp(data.phone)) {
     return { success: false, message: "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...)." };
   }
 
@@ -38,21 +40,10 @@ export async function submitReservation(data: ReservationInput) {
   console.log(`[BE] Handling reservation for ${dateStr} at ${data.time}`);
 
   // Calculate Price Server Side
-  const BASE_PRICE = 35000;
-  const EXTRA_PERSON_PRICE = 5000;
-  const EXTRA_PRINT_PRICE = 10000;
-  const ADDON_PRICES: Record<string, number> = {
-    "custom_frame": 15000,
-  };
-
-  let totalPrice = BASE_PRICE;
-  totalPrice += (data.extraPeopleCount || 0) * EXTRA_PERSON_PRICE;
-  totalPrice += (data.extraPrintCount || 0) * EXTRA_PRINT_PRICE;
-  
-  data.addons.forEach(addonId => {
-    if (ADDON_PRICES[addonId]) {
-      totalPrice += ADDON_PRICES[addonId];
-    }
+  const totalPrice = calculateTotalPrice({
+    extraPeopleCount: data.extraPeopleCount,
+    extraPrintCount: data.extraPrintCount,
+    addons: data.addons
   });
 
   // 1. Use service for availability check

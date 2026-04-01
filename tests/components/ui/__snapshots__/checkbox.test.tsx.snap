@@ -1,0 +1,58 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Checkbox Snapshot > renders checked state correctly 1`] = `
+<div>
+  <button
+    aria-checked="true"
+    class="peer relative flex size-4 shrink-0 items-center justify-center rounded-[6px] border border-input transition-shadow outline-none group-has-disabled/field:opacity-50 after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:aria-checked:border-primary dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground dark:data-checked:bg-primary"
+    data-slot="checkbox"
+    data-state="checked"
+    id="test-checked"
+    role="checkbox"
+    type="button"
+    value="on"
+  >
+    <span
+      class="grid place-content-center text-current transition-none [&>svg]:size-3.5"
+      data-slot="checkbox-indicator"
+      data-state="checked"
+      style="pointer-events: none;"
+    >
+      <svg
+        class=""
+        color="currentColor"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M5 14L8.5 17.5L19 6.5"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+    </span>
+  </button>
+</div>
+`;
+
+exports[`Checkbox Snapshot > renders correctly 1`] = `
+<div>
+  <button
+    aria-checked="false"
+    class="peer relative flex size-4 shrink-0 items-center justify-center rounded-[6px] border border-input transition-shadow outline-none group-has-disabled/field:opacity-50 after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:aria-checked:border-primary dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground dark:data-checked:bg-primary"
+    data-slot="checkbox"
+    data-state="unchecked"
+    id="test"
+    role="checkbox"
+    type="button"
+    value="on"
+  />
+</div>
+`;

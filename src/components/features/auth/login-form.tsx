@@ -65,11 +65,12 @@ export const LoginForm = () => {
            <p className="text-[10px] tracking-[0.3em] text-[#8B5E56] uppercase mt-2">Kelola Produk & Reservasi</p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form data-testid="login-form" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">Email</label>
+            <label htmlFor="email" className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">Email</label>
             <Input 
               {...register("email")}
+              id="email"
               type="email" 
               placeholder="masukkan email anda"
               className="border-input focus-visible:ring-[3px] focus-visible:ring-ring/50"
@@ -80,10 +81,11 @@ export const LoginForm = () => {
           </div>
           
           <div className="space-y-2">
-            <label className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">Password</label>
+            <label htmlFor="password" className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">Password</label>
             <InputGroup className="border-input shadow-none">
               <InputGroupInput 
                 {...register("password")}
+                id="password"
                 type={showPassword ? "text" : "password"} 
                 placeholder="••••••••"
                 className="text-sm"
@@ -109,6 +111,7 @@ export const LoginForm = () => {
           </div>
 
           <button
+            type="submit"
             disabled={isPending}
             className="w-full bg-[#2C2A29] text-[#F6F4F0] py-3 text-[10px] font-medium tracking-[0.3em] uppercase transition-all hover:bg-[#3A3532] disabled:opacity-50 disabled:cursor-not-allowed mt-4 flex items-center justify-center gap-3"
           >
