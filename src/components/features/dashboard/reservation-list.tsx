@@ -5,15 +5,15 @@ import { columns } from "./columns";
 import { connection } from "next/server";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Folder01Icon, Tick02Icon, Time02Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { FadeIn } from "@/components/ui/fade-in";
 
 interface Props {
   searchParams: Promise<{ range?: string; from?: string; to?: string; status?: string }>;
 }
 
 export const ReservationList = async ({ searchParams }: Props) => {
-  await connection();
   const params = await searchParams;
-  const { from, to } = parseDateRangeParams(params);
+  const { from, to } = parseDateRangeParams(params, "all");
   const status = params.status;
 
   const { data: reservations, error } = await reservationService.getReservations(from, to, status);
@@ -96,9 +96,12 @@ export const ReservationList = async ({ searchParams }: Props) => {
         </div>
       </div>
 
-      <div className="bg-transparent">
+      <FadeIn 
+        direction="up"
+        className="bg-transparent"
+      >
         <DataTable columns={columns} data={reservations || []} />
-      </div>
+      </FadeIn>
     </div>
   );
 };

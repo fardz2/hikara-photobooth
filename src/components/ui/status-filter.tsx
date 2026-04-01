@@ -31,23 +31,27 @@ export function StatusFilter() {
       params.set("status", status);
       router.push(`${pathname}?${params.toString()}`);
     },
-    [router, pathname, searchParams]
+    [router, pathname, searchParams],
   );
 
   return (
     <Select value={current} onValueChange={setStatus}>
-      <SelectTrigger className="w-[160px] rounded-none border-[#2C2A29]/10 bg-white text-[10px] uppercase tracking-widest h-10 px-4 focus:ring-0 shadow-none hover:bg-[#FAFAFA] hover:border-[#2C2A29]/20 transition-colors font-bold text-[#2C2A29]">
-        <div className="flex items-center gap-2">
-          <HugeiconsIcon icon={FilterHorizontalIcon} size={14} className="opacity-50" />
+      <SelectTrigger className="w-[160px] rounded-none border-[#2C2A29]/10 bg-white text-[10px] uppercase tracking-widest h-10 px-4 focus:ring-0 shadow-none hover:bg-[#8B5E56]/5 hover:border-[#8B5E56]/30 hover:text-[#2C2A29] transition-all duration-300 font-bold text-[#2C2A29] group">
+        <div className="flex items-center gap-2 group-hover:translate-x-0.5 transition-transform duration-300">
+          <HugeiconsIcon
+            icon={FilterHorizontalIcon}
+            size={14}
+            className="opacity-50"
+          />
           <SelectValue placeholder="Status" />
         </div>
       </SelectTrigger>
       <SelectContent className="rounded-none border-[#2C2A29]/10 shadow-xl p-0">
         {STATUSES.map((s) => (
-          <SelectItem 
-            key={s.value} 
-            value={s.value} 
-            className="rounded-none text-[10px] uppercase tracking-widest cursor-pointer focus:bg-[#FAFAFA] text-[#2C2A29] font-medium py-3 px-4"
+          <SelectItem
+            key={s.value}
+            value={s.value}
+            className="rounded-none text-[10px] uppercase tracking-widest cursor-pointer focus:bg-[#8B5E56] focus:text-[#8B5E56] data-highlighted:text-[#8B5E56] text-[#2C2A29] font-medium py-3 px-4 transition-colors"
           >
             {s.label}
           </SelectItem>

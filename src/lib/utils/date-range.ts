@@ -49,11 +49,14 @@ export function getDateRangeFromPreset(preset: DateRangePreset): DateRange {
   }
 }
 
-export function parseDateRangeParams(searchParams: {
-  range?: string;
-  from?: string;
-  to?: string;
-}): DateRange {
+export function parseDateRangeParams(
+  searchParams: {
+    range?: string;
+    from?: string;
+    to?: string;
+  },
+  defaultRange: DateRangePreset = "month"
+): DateRange {
   // Custom date range takes priority
   if (searchParams.from && searchParams.to) {
     return {
@@ -63,6 +66,6 @@ export function parseDateRangeParams(searchParams: {
     };
   }
 
-  const preset = (searchParams.range ?? "month") as DateRangePreset;
+  const preset = (searchParams.range ?? defaultRange) as DateRangePreset;
   return getDateRangeFromPreset(preset);
 }

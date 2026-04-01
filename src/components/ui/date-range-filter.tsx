@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import { format, parseISO } from "date-fns";
 import { id } from "date-fns/locale";
 import type { DateRange } from "react-day-picker";
@@ -39,6 +39,8 @@ export function DateRangeFilter({ defaultRange = "month" }: Props) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
+  const [range, setRange] = useState<DateRange | undefined>();
+  const clickCount = useRef(0);
 
   const currentRange = (searchParams.get("range") ?? defaultRange) as Preset;
   const fromStr = searchParams.get("from");
@@ -59,24 +61,27 @@ export function DateRangeFilter({ defaultRange = "month" }: Props) {
       params.delete("to");
       router.push(`${pathname}?${params.toString()}`);
     },
-    [router, pathname, searchParams]
+    [router, pathname, searchParams],
   );
 
   const handleCalendarSelect = useCallback(
-    (range: DateRange | undefined) => {
-      if (!range) return;
-      const params = new URLSearchParams(searchParams.toString());
-      if (range.from) {
-        params.set("from", format(range.from, "yyyy-MM-dd"));
+    (newRange: DateRange | undefined) => {
+      setRange(newRange);
+      clickCount.current += 1;
+
+      const isComplete = newRange?.from && newRange?.to;
+
+      if (isComplete && clickCount.current >= 2) {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("from", format(newRange.from!, "yyyy-MM-dd"));
+        params.set("to", format(newRange.to!, "yyyy-MM-dd"));
         params.delete("range");
-      }
-      if (range.to) {
-        params.set("to", format(range.to, "yyyy-MM-dd"));
+
         setOpen(false);
+        router.push(`${pathname}?${params.toString()}`);
       }
-      router.push(`${pathname}?${params.toString()}`);
     },
-    [router, pathname, searchParams]
+    [router, pathname, searchParams],
   );
 
   const customLabel =
@@ -87,22 +92,30 @@ export function DateRangeFilter({ defaultRange = "month" }: Props) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {/* Preset Selector */}
-      <Select 
-        value={hasCustom ? "custom" : currentRange} 
+      <Select
+        value={hasCustom ? "custom" : currentRange}
         onValueChange={(val) => {
           if (val === "custom") return;
           setPreset(val as Preset);
         }}
       >
-        <SelectTrigger className="w-[160px] rounded-none border-[#2C2A29]/10 bg-white text-[10px] uppercase tracking-widest h-10 px-4 focus:ring-0 shadow-none hover:bg-[#FAFAFA] hover:border-[#2C2A29]/20 transition-colors font-bold text-[#2C2A29]">
-          <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={Calendar01Icon} size={14} className="opacity-50" />
+        <SelectTrigger className="w-[160px] rounded-none border-[#2C2A29]/10 bg-white text-[10px] uppercase tracking-widest h-10 px-4 focus:ring-0 shadow-none hover:bg-[#8B5E56]/5 hover:border-[#8B5E56]/30 hover:text-[#2C2A29] transition-all duration-300 font-bold text-[#2C2A29] group">
+          <div className="flex items-center gap-2 group-hover:translate-x-0.5 transition-transform duration-300">
+            <HugeiconsIcon
+              icon={Calendar01Icon}
+              size={14}
+              className="opacity-50"
+            />
             <SelectValue placeholder="Pilih Periode" />
           </div>
         </SelectTrigger>
         <SelectContent className="rounded-none border-[#2C2A29]/10 shadow-xl p-0">
           {PRESETS.map((p) => (
-            <SelectItem key={p.value} value={p.value} className="rounded-none text-[10px] uppercase tracking-widest cursor-pointer focus:bg-[#FAFAFA] text-[#2C2A29] font-medium py-3 px-4">
+            <SelectItem
+              key={p.value}
+              value={p.value}
+              className="rounded-none text-[10px] uppercase tracking-widest cursor-pointer focus:bg-[#8B5E56] focus:text-[#8B5E56] data-highlighted:text-[#8B5E56] text-[#2C2A29] font-medium py-3 px-4 transition-colors"
+            >
               {p.label}
             </SelectItem>
           ))}
@@ -115,21 +128,34 @@ export function DateRangeFilter({ defaultRange = "month" }: Props) {
       </Select>
 
       {/* Shadcn Calendar Popover — Custom Date Range */}
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover
+        open={open}
+        onOpenChange={(isOpen) => {
+          setOpen(isOpen);
+          if (isOpen) {
+            setRange(calendarValue);
+            clickCount.current = 0;
+          }
+        }}
+      >
         <PopoverTrigger asChild>
           <button
             className={`
               flex items-center gap-2 px-4 py-2 text-[10px] tracking-[0.25em] h-10 uppercase font-bold 
-              border transition-colors duration-200
+              border transition-all duration-300 group
               ${
                 hasCustom
-                  ? "border-[#2C2A29] bg-[#2C2A29] text-white"
-                  : "border-[#2C2A29]/10 bg-white text-[#5A5550]/60 hover:text-[#2C2A29] hover:bg-[#FAFAFA] hover:border-[#2C2A29]/20"
+                  ? "border-[#2C2A29] bg-[#2C2A29] text-white hover:bg-[#8B5E56] hover:border-[#8B5E56]"
+                  : "border-[#2C2A29]/10 bg-white text-[#5A5550]/60 hover:text-[#8B5E56] hover:bg-[#8B5E56]/5 hover:border-[#8B5E56]/30"
               }
             `}
           >
-            {hasCustom ? null : <HugeiconsIcon icon={Calendar01Icon} size={12} />}
-            {customLabel}
+            <div className="flex items-center gap-2 group-hover:translate-x-0.5 transition-transform duration-300">
+              {hasCustom ? null : (
+                <HugeiconsIcon icon={Calendar01Icon} size={12} />
+              )}
+              {customLabel}
+            </div>
           </button>
         </PopoverTrigger>
         <PopoverContent
@@ -138,7 +164,7 @@ export function DateRangeFilter({ defaultRange = "month" }: Props) {
         >
           <Calendar
             mode="range"
-            selected={calendarValue}
+            selected={range}
             onSelect={handleCalendarSelect}
             numberOfMonths={2}
             locale={id}

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { LenisProvider } from "@/components/providers/lenis-provider";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -86,4 +85,3 @@ export default function RootLayout({
     </html>
   );
 }
-

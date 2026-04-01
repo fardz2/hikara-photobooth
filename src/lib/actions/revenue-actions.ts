@@ -39,5 +39,6 @@ export async function logTransaction(data: TransactionInput) {
   }
 
   revalidatePath("/dashboard/pendapatan");
+  revalidatePath("/dashboard/reservations");
   return { success: true };
 }

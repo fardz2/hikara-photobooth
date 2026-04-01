@@ -7,11 +7,11 @@ export const ReservationListSkeleton = () => {
       {/* 4 KPI Cards Skeleton Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white p-6 border border-[#2C2A29]/10 flex flex-col justify-between h-[140px]">
-             <Skeleton className="h-3 w-24 rounded-none bg-[#2C2A29]/5" />
+          <div key={i} className="bg-white p-6 border border-[#2C2A29]/10 flex flex-col justify-between h-[140px] animate-pulse">
+             <Skeleton className="h-3 w-24 rounded-none bg-[#8B5E56]/5" />
              <div className="flex flex-col gap-2">
-               <Skeleton className="h-8 w-16 rounded-none bg-[#2C2A29]/10" />
-               <Skeleton className="h-2 w-12 rounded-none bg-[#2C2A29]/5" />
+               <Skeleton className="h-8 w-16 rounded-none bg-[#8B5E56]/10" />
+               <Skeleton className="h-2 w-12 rounded-none bg-[#8B5E56]/5" />
              </div>
           </div>
         ))}
