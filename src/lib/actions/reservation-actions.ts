@@ -50,7 +50,7 @@ export async function submitReservation(data: ReservationInput) {
   try {
     const isBooked = await reservationService.checkSlotAvailability(dateStr, data.time);
     if (isBooked) {
-      return { success: false, message: "Maaf, slot waktu ini sudah dipesan." };
+      return { success: false, message: "Maaf, slot ini sudah habis." };
     }
   } catch (err) {
     return { success: false, message: "Gagal mengecek ketersediaan." };
