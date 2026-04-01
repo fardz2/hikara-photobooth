@@ -57,8 +57,22 @@ export const RevenueStats = async ({ searchParams }: Props) => {
               {stats.transactionCount} Transaksi Selesai
             </p>
           </div>
-          <div className="absolute right-4 bottom-4 opacity-10 text-white">
-            <HugeiconsIcon icon={Analytics01Icon} size={48} />
+          
+          <div className="absolute right-4 top-4 opacity-10 text-white">
+            <HugeiconsIcon icon={Analytics01Icon} size={32} />
+          </div>
+          
+          {/* Subtle Additional info - Moved to regular flow-ish but kept at bottom */}
+          <div className="mt-6 pt-4 border-t border-[#F6F4F0]/10 flex items-center gap-4">
+            <div className="flex flex-col">
+              <span className="text-[7px] text-[#F6F4F0]/40 uppercase tracking-widest font-bold">Extra Print</span>
+              <span className="text-[10px] text-[#F6F4F0] font-bold">Rp {stats.breakdown.extraPrint.toLocaleString("id-ID")}</span>
+            </div>
+            <div className="w-px h-4 bg-[#F6F4F0]/10" />
+            <div className="flex flex-col">
+              <span className="text-[7px] text-[#F6F4F0]/40 uppercase tracking-widest font-bold">Extra Person</span>
+              <span className="text-[10px] text-[#F6F4F0] font-bold">Rp {stats.breakdown.extraPeople.toLocaleString("id-ID")}</span>
+            </div>
           </div>
         </div>
 

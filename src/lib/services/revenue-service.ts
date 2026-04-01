@@ -6,7 +6,7 @@ export const revenueService = {
 
     const { data, error } = await supabase
       .from("reservations")
-      .select("total_price, payment_method, date")
+      .select("total_price, payment_method, date, extra_print_count, extra_people_count")
       .gte("date", from)
       .lte("date", to)
       .eq("status", "confirmed");
@@ -22,9 +22,14 @@ export const revenueService = {
         } else {
           acc.tunai += row.total_price || 0;
         }
+        
+        // Calculate specific addon revenues
+        acc.extraPrint += (row.extra_print_count || 0) * 10000;
+        acc.extraPeople += (row.extra_people_count || 0) * 5000;
+        
         return acc;
       },
-      { tunai: 0, qris_manual: 0 }
+      { tunai: 0, qris_manual: 0, extraPrint: 0, extraPeople: 0 }
     );
 
     const countByDate: Record<string, number> = {};

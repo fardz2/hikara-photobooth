@@ -10,16 +10,17 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { CreditCardIcon, Money01Icon, Loading03Icon, Add01Icon } from "@hugeicons/core-free-icons";
 
 const ADDONS = [
-  { id: "extra_print", label: "Extra Print", price: 10000 },
   { id: "custom_frame", label: "Custom Frame", price: 15000 },
 ];
 
 const EXTRA_PERSON_PRICE = 5000;
+const EXTRA_PRINT_PRICE = 10000;
 
 export const LogTransactionForm = () => {
   const [isPending, startTransition] = useTransition();
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [extraPeopleCount, setExtraPeopleCount] = useState(0);
+  const [extraPrintCount, setExtraPrintCount] = useState(0);
   const [pkg, setPkg] = useState("Sesi Foto + 2 Strip");
   const [method, setMethod] = useState<"tunai" | "qris_manual">("tunai");
 
@@ -29,7 +30,8 @@ export const LogTransactionForm = () => {
     return acc + (addon?.price || 0);
   }, 0);
   const extraPeoplePrice = extraPeopleCount * EXTRA_PERSON_PRICE;
-  const totalPrice = basePrice + addonsPrice + extraPeoplePrice;
+  const extraPrintPrice = extraPrintCount * EXTRA_PRINT_PRICE;
+  const totalPrice = basePrice + addonsPrice + extraPeoplePrice + extraPrintPrice;
 
   const handleAddonToggle = (id: string, checked: boolean) => {
     if (checked) setSelectedAddons([...selectedAddons, id]);
@@ -44,12 +46,14 @@ export const LogTransactionForm = () => {
         amount: totalPrice,
         addons: selectedAddons,
         extra_people_count: extraPeopleCount,
+        extra_print_count: extraPrintCount,
       });
 
       if (result.success) {
         toast.success("Transaksi berhasil dicatat");
         setSelectedAddons([]);
         setExtraPeopleCount(0);
+        setExtraPrintCount(0);
       } else {
         toast.error("Gagal mencatat transaksi");
       }
@@ -78,30 +82,61 @@ export const LogTransactionForm = () => {
           <label className="text-[10px] tracking-[0.4em] uppercase font-bold text-[#5A5550]/60">Add-ons Pos</label>
           
           {/* Extra People Counter - Synced with Reservation Form */}
-          <div className="flex items-center justify-between p-3 bg-[#F6F4F0]/30 border border-[#8B5E56]/10">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">Tambahan Orang</span>
-              <span className="text-[8px] text-[#5A5550]/60 italic font-medium uppercase tracking-wider">Maksimal 5 Orang</span>
+          <div className="grid grid-cols-1 gap-3">
+            {/* Extra People Counter */}
+            <div className="flex items-center justify-between p-3 bg-[#F6F4F0]/30 border border-[#8B5E56]/10 flex-wrap gap-2">
+              <div className="flex flex-col min-w-[80px]">
+                <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">Tambahan Orang</span>
+                <span className="text-[8px] text-[#5A5550]/60 italic font-medium uppercase tracking-wider">Maks 5</span>
+              </div>
+              
+              <div className="flex items-center gap-3 bg-white/50 p-1 border border-[#2C2A29]/5 ml-auto">
+                <button 
+                  type="button"
+                  className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
+                  onClick={() => setExtraPeopleCount(Math.max(0, extraPeopleCount - 1))}
+                  disabled={extraPeopleCount <= 0}
+                >
+                  −
+                </button>
+                <span className="text-xs font-bold text-[#2C2A29] w-4 text-center">{extraPeopleCount}</span>
+                <button 
+                  type="button"
+                  className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
+                  onClick={() => setExtraPeopleCount(Math.min(5, extraPeopleCount + 1))}
+                  disabled={extraPeopleCount >= 5}
+                >
+                  +
+                </button>
+              </div>
             </div>
-            
-            <div className="flex items-center gap-3 bg-white/50 p-1 border border-[#2C2A29]/5">
-              <button 
-                type="button"
-                className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-[#2C2A29] transition-all text-[#2C2A29] font-bold text-sm"
-                onClick={() => setExtraPeopleCount(Math.max(0, extraPeopleCount - 1))}
-                disabled={extraPeopleCount <= 0}
-              >
-                −
-              </button>
-              <span className="text-xs font-bold text-[#2C2A29] w-4 text-center">{extraPeopleCount}</span>
-              <button 
-                type="button"
-                className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-[#2C2A29] transition-all text-[#2C2A29] font-bold text-sm"
-                onClick={() => setExtraPeopleCount(Math.min(5, extraPeopleCount + 1))}
-                disabled={extraPeopleCount >= 5}
-              >
-                +
-              </button>
+
+            {/* Extra Print Counter */}
+            <div className="flex items-center justify-between p-3 bg-[#F6F4F0]/30 border border-[#8B5E56]/10 flex-wrap gap-2">
+              <div className="flex flex-col min-w-[80px]">
+                <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">Extra Print</span>
+                <span className="text-[8px] text-[#5A5550]/60 italic font-medium uppercase tracking-wider">Maks 10</span>
+              </div>
+              
+              <div className="flex items-center gap-3 bg-white/50 p-1 border border-[#2C2A29]/5 ml-auto">
+                <button 
+                  type="button"
+                  className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
+                  onClick={() => setExtraPrintCount(Math.max(0, extraPrintCount - 1))}
+                  disabled={extraPrintCount <= 0}
+                >
+                  −
+                </button>
+                <span className="text-xs font-bold text-[#2C2A29] w-4 text-center">{extraPrintCount}</span>
+                <button 
+                  type="button"
+                  className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
+                  onClick={() => setExtraPrintCount(Math.min(10, extraPrintCount + 1))}
+                  disabled={extraPrintCount >= 10}
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
 
@@ -127,17 +162,17 @@ export const LogTransactionForm = () => {
 
         <div className="space-y-4 pt-4">
           <label className="text-[10px] tracking-[0.4em] uppercase font-bold text-[#5A5550]/60">Metode Bayar</label>
-          <div className="grid grid-cols-2 gap-4">
-            <button onClick={() => setMethod("tunai")} className="relative group focus:outline-none">
-              <div className={`flex flex-col items-center justify-center p-6 border transition-all ${method === "tunai" ? "border-[#8B5E56] bg-[#F6F4F0]" : "border-[#2C2A29]/10 opacity-40 hover:opacity-100"}`}>
-                <HugeiconsIcon icon={Money01Icon} strokeWidth={2} className={`size-8 mb-3 ${method === "tunai" ? "text-[#8B5E56]" : "text-[#5A5550]"}`} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button onClick={() => setMethod("tunai")} className="relative group focus:outline-none w-full">
+              <div className={`flex items-center gap-4 p-4 border transition-all ${method === "tunai" ? "border-[#8B5E56] bg-[#F6F4F0]" : "border-[#2C2A29]/10 opacity-40 hover:opacity-100"}`}>
+                <HugeiconsIcon icon={Money01Icon} strokeWidth={2} className={`size-6 ${method === "tunai" ? "text-[#8B5E56]" : "text-[#5A5550]"}`} />
                 <span className="text-[10px] tracking-widest uppercase font-bold text-[#2C2A29]">Tunai</span>
               </div>
             </button>
 
-            <button onClick={() => setMethod("qris_manual")} className="relative group focus:outline-none">
-              <div className={`flex flex-col items-center justify-center p-6 border transition-all ${method === "qris_manual" ? "border-[#8B5E56] bg-[#F6F4F0]" : "border-[#2C2A29]/10 opacity-40 hover:opacity-100"}`}>
-                <HugeiconsIcon icon={CreditCardIcon} strokeWidth={2} className={`size-8 mb-3 ${method === "qris_manual" ? "text-[#8B5E56]" : "text-[#5A5550]"}`} />
+            <button onClick={() => setMethod("qris_manual")} className="relative group focus:outline-none w-full">
+              <div className={`flex items-center gap-4 p-4 border transition-all ${method === "qris_manual" ? "border-[#8B5E56] bg-[#F6F4F0]" : "border-[#2C2A29]/10 opacity-40 hover:opacity-100"}`}>
+                <HugeiconsIcon icon={CreditCardIcon} strokeWidth={2} className={`size-6 ${method === "qris_manual" ? "text-[#8B5E56]" : "text-[#5A5550]"}`} />
                 <span className="text-[10px] tracking-widest uppercase font-bold text-[#2C2A29]">QRIS</span>
               </div>
             </button>

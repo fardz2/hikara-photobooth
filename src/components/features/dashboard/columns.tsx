@@ -19,6 +19,7 @@ import { updateReservationStatus } from "@/lib/actions/reservation-actions";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { Loading03Icon } from "@hugeicons/core-free-icons";
+import { ProofPreview } from "./proof-preview";
 
 export type Reservation = {
   id: string;
@@ -30,6 +31,7 @@ export type Reservation = {
   addons: string[] | null;
   status: "pending" | "confirmed" | "cancelled";
   extra_people_count?: number;
+  extra_print_count?: number;
   total_price?: number;
   payment_method?: "tunai" | "qris";
   payment_proof_url?: string | null;
@@ -126,14 +128,7 @@ export const columns: ColumnDef<Reservation>[] = [
             {method}
           </Badge>
           {method === 'qris' && proofUrl && (
-            <a 
-              href={proofUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-[8px] text-blue-600 font-bold hover:underline underline-offset-2 flex items-center gap-1"
-            >
-              Cek Bukti ↗
-            </a>
+            <ProofPreview url={proofUrl} />
           )}
         </div>
       );
@@ -144,17 +139,23 @@ export const columns: ColumnDef<Reservation>[] = [
     header: "Tambahan",
     cell: ({ row }) => {
       const addons = row.getValue("addons") as string[] | null;
+      const extraPrint = row.original.extra_print_count || 0;
       return (
         <div className="flex gap-1 flex-wrap max-w-[150px]">
+          {extraPrint > 0 && (
+            <span className="text-[8px] bg-[#8B5E56] text-white px-2 py-1 uppercase tracking-tighter shadow-sm font-bold">
+              {extraPrint} Extra Print
+            </span>
+          )}
           {addons && addons.length > 0 ? (
             addons.map((addon, i) => (
               <span key={i} className="text-[8px] bg-[#EFEBDE]/50 border border-[#2C2A29]/5 text-[#5A5550] px-2 py-1 uppercase tracking-tighter shadow-sm">
                 {addon}
               </span>
             ))
-          ) : (
+          ) : !extraPrint ? (
             <span className="text-[8px] opacity-20 uppercase">-</span>
-          )}
+          ) : null}
         </div>
       );
     },

@@ -35,15 +35,23 @@ export const ReservationFormSkeleton = () => {
         </div>
 
         {/* Add-ons */}
-        <div className="flex flex-col gap-3 pt-4 border-t border-[#2C2A29]/10">
-          <Skeleton className="h-3 w-32 bg-[#2C2A29]/5" />
-          <div className="flex items-center space-x-2">
-            <Skeleton className="h-4 w-4 bg-[#2C2A29]/5 rounded" />
-            <Skeleton className="h-4 w-48 bg-[#2C2A29]/5" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#2C2A29]/10">
+          {/* Extra People Skeleton */}
+          <div className="flex justify-between items-center flex-wrap gap-4">
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-3 w-28 bg-[#2C2A29]/5" />
+              <Skeleton className="h-2 w-20 bg-[#2C2A29]/5" />
+            </div>
+            <Skeleton className="h-10 w-24 rounded-lg bg-[#2C2A29]/5 border border-[#2C2A29]/5" />
           </div>
-          <div className="flex items-center space-x-2">
-            <Skeleton className="h-4 w-4 bg-[#2C2A29]/5 rounded" />
-            <Skeleton className="h-4 w-32 bg-[#2C2A29]/5" />
+
+          {/* Extra Print Skeleton */}
+          <div className="flex justify-between items-center flex-wrap gap-4">
+             <div className="flex flex-col gap-2">
+               <Skeleton className="h-3 w-28 bg-[#2C2A29]/5" />
+               <Skeleton className="h-2 w-20 bg-[#2C2A29]/5" />
+             </div>
+             <Skeleton className="h-10 w-24 rounded-lg bg-[#2C2A29]/5 border border-[#2C2A29]/5" />
           </div>
         </div>
       </div>

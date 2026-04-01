@@ -15,6 +15,7 @@ type ReservationInput = {
   package: string;
   addons: string[];
   extraPeopleCount?: number;
+  extraPrintCount?: number;
   paymentMethod: "tunai" | "qris";
   paymentProofUrl?: string;
 };
@@ -39,13 +40,14 @@ export async function submitReservation(data: ReservationInput) {
   // Calculate Price Server Side
   const BASE_PRICE = 35000;
   const EXTRA_PERSON_PRICE = 5000;
+  const EXTRA_PRINT_PRICE = 10000;
   const ADDON_PRICES: Record<string, number> = {
-    "extra_print": 10000,
     "custom_frame": 15000,
   };
 
   let totalPrice = BASE_PRICE;
   totalPrice += (data.extraPeopleCount || 0) * EXTRA_PERSON_PRICE;
+  totalPrice += (data.extraPrintCount || 0) * EXTRA_PRINT_PRICE;
   
   data.addons.forEach(addonId => {
     if (ADDON_PRICES[addonId]) {
@@ -74,6 +76,7 @@ export async function submitReservation(data: ReservationInput) {
       package: data.package,
       addons: data.addons,
       extra_people_count: data.extraPeopleCount || 0,
+      extra_print_count: data.extraPrintCount || 0,
       payment_method: data.paymentMethod,
       payment_proof_url: data.paymentProofUrl || null,
       total_price: totalPrice, 
@@ -101,7 +104,7 @@ Terima kasih telah melakukan reservasi di Hikara Photobox.
 *Detail Reservasi:*
 📅 Tanggal: ${format(new Date(dateStr), "EEEE, dd MMMM yyyy", { locale: idLocale })}
 ⏰ Waktu: ${data.time} WITA
-💳 Metode: *${data.paymentMethod === 'qris' ? 'QRIS' : 'Tunai di Tempat'}*
+${data.extraPeopleCount && data.extraPeopleCount > 0 ? `👤 Tambahan Orang: ${data.extraPeopleCount}\n` : ""}${data.extraPrintCount && data.extraPrintCount > 0 ? `🖼️ Tambahan Print: ${data.extraPrintCount}\n` : ""}💳 Metode: *${data.paymentMethod === 'qris' ? 'QRIS' : 'Tunai di Tempat'}*
 💵 Total: *Rp ${totalPrice.toLocaleString('id-ID')}*
 📝 Status: ${paymentStatus}
 

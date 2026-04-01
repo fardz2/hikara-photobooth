@@ -65,11 +65,11 @@ const PRICELIST = [
   },
 ];
 const ADDONS = [
-  { id: "extra_print", label: "Extra Print", price: 10000 },
   { id: "custom_frame", label: "Custom Frame Birthday, Dll", price: 15000 },
 ];
 
 const EXTRA_PERSON_PRICE = 5000;
+const EXTRA_PRINT_PRICE = 10000;
 
 const START_HOUR = 10;
 const END_HOUR = 23;
@@ -100,6 +100,7 @@ const FormSchema = z.object({
   package: z.string().min(1, "Pilih paket"),
   addons: z.array(z.string()).default([]),
   extraPeopleCount: z.number().min(0).max(5).default(0),
+  extraPrintCount: z.number().min(0).max(10).default(0),
   paymentMethod: z.enum(["tunai", "qris"]),
   paymentProof: z.any().optional(),
 });
@@ -126,6 +127,7 @@ export const ReservationForm = () => {
       package: "paket_utama",
       addons: [],
       extraPeopleCount: 0,
+      extraPrintCount: 0,
       paymentMethod: "tunai",
     },
   });
@@ -143,6 +145,7 @@ export const ReservationForm = () => {
   const selectedAddons = watch("addons");
   const pkg = watch("package");
   const extraPeopleCount = watch("extraPeopleCount");
+  const extraPrintCount = watch("extraPrintCount");
   const paymentMethod = watch("paymentMethod");
   const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -156,7 +159,8 @@ export const ReservationForm = () => {
     return acc + (addon?.price || 0);
   }, 0);
   const extraPeoplePrice = extraPeopleCount * EXTRA_PERSON_PRICE;
-  const totalPrice = basePrice + addonsPrice + extraPeoplePrice;
+  const extraPrintPrice = extraPrintCount * EXTRA_PRINT_PRICE;
+  const totalPrice = basePrice + addonsPrice + extraPeoplePrice + extraPrintPrice;
 
   const handleDateChange = useCallback(
     async (date: Date) => {
@@ -259,6 +263,7 @@ export const ReservationForm = () => {
         phone: `62${data.phone}`,
         addons: data.addons ?? [],
         extraPeopleCount: data.extraPeopleCount,
+        extraPrintCount: data.extraPrintCount,
         paymentMethod: data.paymentMethod,
         paymentProofUrl: paymentProofUrl,
       });
@@ -277,6 +282,7 @@ export const ReservationForm = () => {
           time: "",
           addons: [],
           extraPeopleCount: 0,
+          extraPrintCount: 0,
           paymentMethod: "tunai",
         });
 
@@ -522,62 +528,124 @@ export const ReservationForm = () => {
           </div>
         </div>
 
-        {/* Extra People Count */}
-        <div className="flex flex-col gap-3 pt-4 border-t border-[#2C2A29]/10">
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col">
-              <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">
-                Tambahan Orang
-              </label>
-              <span className="text-[10px] text-[#5A5550]/60 italic">
-                +{extraPeopleCount > 0 ? extraPeopleCount : 0} orang eksklusif
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3 bg-[#EFEBDE]/30 p-1.5 rounded-lg border border-[#2C2A29]/5">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
-                onClick={() =>
-                  setValue(
-                    "extraPeopleCount",
-                    Math.max(0, extraPeopleCount - 1),
-                  )
-                }
-                disabled={extraPeopleCount <= 0}
-              >
-                <span className="text-lg font-bold">−</span>
-              </Button>
-              <div className="w-8 text-center">
-                <span className="text-sm font-bold text-[#2C2A29]">
-                  {extraPeopleCount}
+        {/* Extra People & Extra Print Count */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#2C2A29]/10">
+          {/* Extra People */}
+          <div className="flex flex-col gap-3">
+            <div className="flex justify-between items-center flex-wrap gap-4">
+              <div className="flex flex-col">
+                <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">
+                  Tambahan Orang
+                </label>
+                <span className="text-[10px] text-[#5A5550]/60 italic">
+                  +{extraPeopleCount > 0 ? extraPeopleCount : 0} orang eksklusif
                 </span>
               </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
-                onClick={() =>
-                  setValue(
-                    "extraPeopleCount",
-                    Math.min(5, extraPeopleCount + 1),
-                  )
-                }
-                disabled={extraPeopleCount >= 5}
-              >
-                <span className="text-lg font-bold">+</span>
-              </Button>
+
+              <div className="flex items-center gap-3 bg-[#EFEBDE]/30 p-1.5 rounded-lg border border-[#2C2A29]/5 ml-auto">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
+                  onClick={() =>
+                    setValue(
+                      "extraPeopleCount",
+                      Math.max(0, extraPeopleCount - 1),
+                    )
+                  }
+                  disabled={extraPeopleCount <= 0}
+                >
+                  <span className="text-lg font-bold">−</span>
+                </Button>
+                <div className="w-8 text-center">
+                  <span className="text-sm font-bold text-[#2C2A29]">
+                    {extraPeopleCount}
+                  </span>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
+                  onClick={() =>
+                    setValue(
+                      "extraPeopleCount",
+                      Math.min(5, extraPeopleCount + 1),
+                    )
+                  }
+                  disabled={extraPeopleCount >= 5}
+                >
+                  <span className="text-lg font-bold">+</span>
+                </Button>
+              </div>
+            </div>
+            <div className="flex justify-between items-center text-[10px] tracking-wide text-[#5A5550]">
+              <span>Maksimal 5 orang tambahan</span>
+              <span className="font-bold text-[#8B5E56]">
+                Rp{" "}
+                {(extraPeopleCount * EXTRA_PERSON_PRICE).toLocaleString("id-ID")}
+              </span>
             </div>
           </div>
-          <div className="flex justify-between items-center text-[10px] tracking-wide text-[#5A5550]">
-            <span>Maksimal 5 orang tambahan</span>
-            <span className="font-bold text-[#8B5E56]">
-              Rp{" "}
-              {(extraPeopleCount * EXTRA_PERSON_PRICE).toLocaleString("id-ID")}
-            </span>
+
+          {/* Extra Print */}
+          <div className="flex flex-col gap-3 md:border-l md:border-[#2C2A29]/10 md:pl-6">
+            <div className="flex justify-between items-center flex-wrap gap-4">
+              <div className="flex flex-col">
+                <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">
+                  Extra Print
+                </label>
+                <span className="text-[10px] text-[#5A5550]/60 italic">
+                  +{extraPrintCount > 0 ? extraPrintCount : 0} lembar tambahan
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3 bg-[#EFEBDE]/30 p-1.5 rounded-lg border border-[#2C2A29]/5 ml-auto">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
+                  onClick={() =>
+                    setValue(
+                      "extraPrintCount",
+                      Math.max(0, extraPrintCount - 1),
+                    )
+                  }
+                  disabled={extraPrintCount <= 0}
+                >
+                  <span className="text-lg font-bold">−</span>
+                </Button>
+                <div className="w-8 text-center">
+                  <span className="text-sm font-bold text-[#2C2A29]">
+                    {extraPrintCount}
+                  </span>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
+                  onClick={() =>
+                    setValue(
+                      "extraPrintCount",
+                      Math.min(10, extraPrintCount + 1),
+                    )
+                  }
+                  disabled={extraPrintCount >= 10}
+                >
+                  <span className="text-lg font-bold">+</span>
+                </Button>
+              </div>
+            </div>
+            <div className="flex justify-between items-center text-[10px] tracking-wide text-[#5A5550]">
+              <span>Maksimal 10 lembar tambahan</span>
+              <span className="font-bold text-[#8B5E56]">
+                Rp{" "}
+                {(extraPrintCount * EXTRA_PRINT_PRICE).toLocaleString("id-ID")}
+              </span>
+            </div>
           </div>
         </div>
 
