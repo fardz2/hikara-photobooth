@@ -18,8 +18,19 @@ import {
 import { updateReservationStatus, deleteReservation } from "@/lib/actions/reservation-actions";
 import { toast } from "sonner";
 import { useTransition } from "react";
-import { Loading03Icon } from "@hugeicons/core-free-icons";
+import { Loading03Icon, Alert01Icon } from "@hugeicons/core-free-icons";
 import { ProofPreview } from "./proof-preview";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export type Reservation = {
   id: string;
@@ -197,8 +208,6 @@ const ActionCell = ({ reservation }: { reservation: Reservation }) => {
   };
 
   const handleDelete = () => {
-    if (!window.confirm("Apakah Anda yakin ingin menghapus data ini secara permanen?")) return;
-    
     startTransition(async () => {
       const result = await deleteReservation(reservation.id);
       if (result.success) {
@@ -249,13 +258,39 @@ const ActionCell = ({ reservation }: { reservation: Reservation }) => {
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem 
-          className="text-[10px] uppercase tracking-widest cursor-pointer text-red-600 font-bold bg-red-50 hover:bg-red-100"
-          onClick={handleDelete}
-          disabled={isPending}
-        >
-          Hapus Permanen
-        </DropdownMenuItem>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <DropdownMenuItem 
+              className="text-[10px] uppercase tracking-widest cursor-pointer text-red-600 font-bold bg-red-50 hover:bg-red-100"
+              onSelect={(e) => e.preventDefault()}
+              disabled={isPending}
+            >
+              Hapus Permanen
+            </DropdownMenuItem>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="rounded-none border-[#2C2A29]/10">
+            <AlertDialogHeader className="items-start text-left">
+              <div className="flex items-center gap-3 text-red-600 mb-2">
+                <HugeiconsIcon icon={Alert01Icon} size={24} />
+                <AlertDialogTitle className="font-heading text-xl uppercase tracking-tight">Hapus Data Permanen?</AlertDialogTitle>
+              </div>
+              <AlertDialogDescription className="text-xs text-[#5A5550] leading-relaxed">
+                Tindakan ini tidak dapat dibatalkan. Seluruh data reservasi atas nama <strong className="text-[#2C2A29]">{reservation.name}</strong> akan dihapus selamanya dari database Hikara.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="mt-6">
+              <AlertDialogCancel className="rounded-none text-[10px] uppercase tracking-widest border-[#2C2A29]/10 hover:bg-[#FAFAFA]">
+                Batal
+              </AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={handleDelete}
+                className="rounded-none bg-red-600 hover:bg-red-700 text-white text-[10px] uppercase tracking-widest font-bold"
+              >
+                Ya, Hapus Sekarang
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </DropdownMenuContent>
     </DropdownMenu>
   );
