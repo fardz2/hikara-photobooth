@@ -6,8 +6,8 @@ export const reservationService = {
     
     // Narrow selection: Avoid "*" to reduce payload and allow covering indexes
     const selectColumns = `
-      id, name, email, phone, package, date, time, status, 
-      total_price, payment_proof, payment_method, 
+      id, name, phone, package, date, time, status, 
+      total_price, payment_proof_url, payment_method, 
       extra_print_count, extra_people_count, addons, created_at
     `.replace(/\s+/g, "");
 
