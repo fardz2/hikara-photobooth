@@ -20,7 +20,7 @@ export async function DashboardOverviewData({ searchParams }: Props) {
     createClient().then((c) =>
       c
         .from("reservations")
-        .select("id, customer_name, status, total_price, date, time")
+        .select("id, name, status, total_price, date, time")
         .order("created_at", { ascending: false })
         .limit(6)
     ),
@@ -55,7 +55,7 @@ export async function DashboardOverviewData({ searchParams }: Props) {
             >
               <div className="flex flex-col gap-1">
                 <p className="text-xs font-bold text-[#2C2A29] capitalize">
-                  {res.customer_name || "Tanpa Nama"}
+                  {res.name || "Tanpa Nama"}
                 </p>
                 <p className="text-[9px] text-[#5A5550] uppercase tracking-widest">
                   {res.date ? format(new Date(res.date), "dd MMM", { locale: id }) : "-"} •{" "}

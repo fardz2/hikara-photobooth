@@ -17,9 +17,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { updateReservationStatus, deleteReservation } from "@/lib/actions/reservation-actions";
 import { toast } from "sonner";
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { Loading03Icon, Alert01Icon } from "@hugeicons/core-free-icons";
 import { ProofPreview } from "./proof-preview";
+import { EditReservationDialog } from "./edit-reservation-dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -195,6 +196,7 @@ export const columns: ColumnDef<Reservation>[] = [
 
 const ActionCell = ({ reservation }: { reservation: Reservation }) => {
   const [isPending, startTransition] = useTransition();
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const handleUpdateStatus = (status: "confirmed" | "cancelled") => {
     startTransition(async () => {
@@ -219,8 +221,10 @@ const ActionCell = ({ reservation }: { reservation: Reservation }) => {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <>
+      <EditReservationDialog open={isEditOpen} onOpenChange={setIsEditOpen} reservation={reservation} />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
           <span className="sr-only">Open menu</span>
           {isPending ? (
@@ -237,6 +241,13 @@ const ActionCell = ({ reservation }: { reservation: Reservation }) => {
           onClick={() => navigator.clipboard.writeText(reservation.id)}
         >
           Salin ID
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          className="text-[10px] uppercase tracking-widest cursor-pointer text-[#2C2A29] font-bold"
+          onClick={() => setIsEditOpen(true)}
+          disabled={isPending}
+        >
+          Edit Data
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         {reservation.status !== "confirmed" && (
@@ -293,5 +304,6 @@ const ActionCell = ({ reservation }: { reservation: Reservation }) => {
         </AlertDialog>
       </DropdownMenuContent>
     </DropdownMenu>
+    </>
   );
 };

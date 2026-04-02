@@ -24,6 +24,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft02Icon, ArrowRight02Icon } from "@hugeicons/core-free-icons";
 
 
 
@@ -154,28 +156,35 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage <= 1 || (onPageChange ? false : !table.getCanPreviousPage())}
-          className="rounded-none border-[#2C2A29]/10 text-[10px] uppercase tracking-widest h-10 px-6 font-medium"
-        >
-          Sebelumnya
-        </Button>
-        <span className="text-[10px] font-bold uppercase tracking-widest text-[#5A5550]">
-          Halaman {currentPage} {pageCount ? `dari ${pageCount}` : ""}
-        </span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage >= (pageCount || 1) || (onPageChange ? false : !table.getCanNextPage())}
-          className="rounded-none border-[#2C2A29]/10 text-[10px] uppercase tracking-widest h-10 px-6 font-medium"
-        >
-          Selanjutnya
-        </Button>
+      <div className="flex items-center justify-between pt-6 pb-2 border-t border-transparent">
+        <div className="hidden sm:block text-[10px] font-medium tracking-widest text-[#5A5550] uppercase">
+          Menampilkan Halaman <span className="text-[#2C2A29] font-bold">{currentPage}</span> dari <span className="text-[#2C2A29] font-bold">{pageCount || 1}</span>
+        </div>
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage <= 1 || (onPageChange ? false : !table.getCanPreviousPage())}
+            className="rounded-none border-[#2C2A29]/10 text-[10px] uppercase tracking-widest h-11 px-5 font-bold hover:bg-[#2C2A29] hover:text-white transition-all duration-300 disabled:opacity-30 flex items-center gap-2 group"
+          >
+            <HugeiconsIcon icon={ArrowLeft02Icon} size={14} className="group-hover:-translate-x-1 transition-transform" />
+            Sebelumnya
+          </Button>
+          <div className="sm:hidden text-[10px] font-bold tracking-widest text-[#2C2A29]">
+            {currentPage} / {pageCount || 1}
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage >= (pageCount || 1) || (onPageChange ? false : !table.getCanNextPage())}
+            className="rounded-none border-[#2C2A29]/10 text-[10px] uppercase tracking-widest h-11 px-5 font-bold hover:bg-[#2C2A29] hover:text-white transition-all duration-300 disabled:opacity-30 flex items-center gap-2 group"
+          >
+            Selanjutnya
+            <HugeiconsIcon icon={ArrowRight02Icon} size={14} className="group-hover:translate-x-1 transition-transform" />
+          </Button>
+        </div>
       </div>
     </div>
   );

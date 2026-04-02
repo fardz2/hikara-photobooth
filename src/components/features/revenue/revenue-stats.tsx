@@ -34,7 +34,7 @@ export const RevenueStats = async ({ searchParams }: Props) => {
   const percentTunai =
     stats.total > 0 ? Math.round((stats.breakdown.tunai / stats.total) * 100) : 0;
   const percentQris =
-    stats.total > 0 ? Math.round((stats.breakdown.qris_manual / stats.total) * 100) : 0;
+    stats.total > 0 ? Math.round((stats.breakdown.qris / stats.total) * 100) : 0;
 
   const avgTransaction = stats.transactionCount > 0 
     ? Math.round(stats.total / stats.transactionCount) 
@@ -101,7 +101,7 @@ export const RevenueStats = async ({ searchParams }: Props) => {
               QRIS & Transfer
             </p>
             <h3 className="text-2xl font-heading text-[#2C2A29] tracking-tight mt-2">
-              Rp {stats.breakdown.qris_manual.toLocaleString("id-ID")}
+              Rp {stats.breakdown.qris.toLocaleString("id-ID")}
             </h3>
             <div className="w-full mt-3 flex items-center gap-2">
                <div className="h-0.5 w-full bg-[#2C2A29]/5">

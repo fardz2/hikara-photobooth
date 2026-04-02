@@ -10,7 +10,7 @@ export interface RevenueStats {
   total: number;
   breakdown: {
     tunai: number;
-    qris_manual: number;
+    qris: number;
     extraPrint: number;
     extraPeople: number;
   };
@@ -27,8 +27,8 @@ export function formatRevenueStats(data: RawRevenueRow[]): RevenueStats {
   const breakdown = data.reduce(
     (acc, row) => {
       const price = row.total_price || 0;
-      if (row.payment_method === "qris_manual") {
-        acc.qris_manual += price;
+      if (row.payment_method === "qris_manual" || row.payment_method === "qris") {
+        acc.qris += price;
       } else {
         acc.tunai += price;
       }
@@ -39,7 +39,7 @@ export function formatRevenueStats(data: RawRevenueRow[]): RevenueStats {
       
       return acc;
     },
-    { tunai: 0, qris_manual: 0, extraPrint: 0, extraPeople: 0 }
+    { tunai: 0, qris: 0, extraPrint: 0, extraPeople: 0 }
   );
 
   const countByDate: Record<string, number> = {};

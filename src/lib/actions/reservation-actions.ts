@@ -158,7 +158,7 @@ export async function updateReservationStatus(id: string, status: "confirmed" | 
   // 1. Fetch reservation details first to get phone and name
   const { data: reservation, error: fetchError } = await supabase
     .from("reservations")
-    .select("*")
+    .select("name, phone, date, time, payment_method, total_price")
     .eq("id", id)
     .single();
 
@@ -216,4 +216,94 @@ export async function deleteReservation(id: string) {
   revalidatePath("/dashboard/reservations");
   revalidatePath("/dashboard/pendapatan");
   return { success: true };
+}
+
+export async function editReservation(id: string, data: Partial<ReservationInput>) {
+  const supabase = await createClient();
+  
+  if (!id) return { success: false, message: "ID tidak valid" };
+
+  // 1. Validasi opsional phone
+  if (data.phone && !isValidWhatsApp(data.phone)) {
+    return { success: false, message: "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...)." };
+  }
+
+  // 2. Jika tanggal/waktu diubah, cek ketersediaan
+  const { data: currentReservation, error: fetchError } = await supabase
+    .from("reservations")
+    .select("date, time")
+    .eq("id", id)
+    .single();
+
+  if (fetchError || !currentReservation) {
+    return { success: false, message: "Reservasi tidak ditemukan." };
+  }
+
+  let dateStr = currentReservation.date;
+  let timeStr = currentReservation.time;
+
+  if (data.date) {
+    dateStr = format(new Date(data.date), "yyyy-MM-dd");
+  }
+  if (data.time) {
+    timeStr = data.time;
+  }
+
+  if (dateStr !== currentReservation.date || timeStr !== currentReservation.time) {
+    try {
+      const isBooked = await reservationService.checkSlotAvailability(dateStr, timeStr);
+      if (isBooked) {
+        return { success: false, message: "Maaf, slot waktu tersebut sudah terisi." };
+      }
+    } catch (err) {
+      return { success: false, message: "Gagal mengecek ketersediaan slot." };
+    }
+  }
+
+  // 3. Kalkulasi total_price jika paket/addons/extra diubah
+  let totalPrice: number | undefined = undefined;
+  if (
+    data.package !== undefined || 
+    data.addons !== undefined || 
+    data.extraPeopleCount !== undefined || 
+    data.extraPrintCount !== undefined
+  ) {
+    const { data: fullReservation } = await supabase.from("reservations").select("extra_people_count, extra_print_count, addons").eq("id", id).single();
+    if (fullReservation) {
+      totalPrice = calculateTotalPrice({
+        extraPeopleCount: data.extraPeopleCount !== undefined ? data.extraPeopleCount : fullReservation.extra_people_count,
+        extraPrintCount: data.extraPrintCount !== undefined ? data.extraPrintCount : fullReservation.extra_print_count,
+        addons: data.addons !== undefined ? data.addons : fullReservation.addons || []
+      });
+    }
+  }
+
+  // 4. Update data
+  const updatePayload: any = {};
+  if (data.name !== undefined) updatePayload.name = data.name;
+  if (data.phone !== undefined) updatePayload.phone = data.phone;
+  if (data.date !== undefined) updatePayload.date = dateStr;
+  if (data.time !== undefined) updatePayload.time = timeStr;
+  if (data.package !== undefined) updatePayload.package = data.package;
+  if (data.addons !== undefined) updatePayload.addons = data.addons;
+  if (data.extraPeopleCount !== undefined) updatePayload.extra_people_count = data.extraPeopleCount;
+  if (data.extraPrintCount !== undefined) updatePayload.extra_print_count = data.extraPrintCount;
+  if (data.paymentMethod !== undefined) updatePayload.payment_method = data.paymentMethod;
+  if (totalPrice !== undefined) updatePayload.total_price = totalPrice;
+
+  const { error: updateError } = await supabase
+    .from("reservations")
+    .update(updatePayload)
+    .eq("id", id);
+
+  if (updateError) {
+    console.error(`[BE] Error updating reservation ${id}:`, updateError);
+    return { success: false, message: updateError.message };
+  }
+
+  console.log(`[BE] Reservation ${id} updated silently by admin.`);
+
+  revalidatePath("/dashboard/reservations");
+  revalidatePath("/dashboard/pendapatan");
+  return { success: true, message: "Reservasi berhasil diubah" };
 }

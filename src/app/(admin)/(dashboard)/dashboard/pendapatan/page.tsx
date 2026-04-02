@@ -13,10 +13,10 @@ export default function PendapatanPage({ searchParams }: Props) {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="font-heading text-3xl md:text-4xl text-[#2C2A29] uppercase tracking-tight">
+          <h1 className="font-heading text-3xl md:text-4xl text-[#2C2A29] tracking-tight">
             Pemantauan Pendapatan
           </h1>
-          <p className="text-xs text-[#5A5550] tracking-widest uppercase mt-2 opacity-60">
+          <p className="text-sm text-[#5A5550] uppercase tracking-widest mt-2 opacity-80">
             Laporan Keuangan Real-time Hikara
           </p>
         </div>

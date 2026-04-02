@@ -18,7 +18,11 @@ export const ReservationList = async ({ searchParams }: Props) => {
   const page = Number(params.page) || 1;
   const q = params.q;
 
-  const { data, count, error } = await reservationService.getReservations(from, to, status, page, 10, q);
+  const [{ data, count, error }, globalStats] = await Promise.all([
+    reservationService.getReservations(from, to, status, page, 10, q),
+    reservationService.getReservationStats(from, to, q)
+  ]);
+  
   const reservations = (data as any[] | null)?.map((item) => ({
     ...item,
     status: item.status as "pending" | "confirmed" | "cancelled",
@@ -32,10 +36,14 @@ export const ReservationList = async ({ searchParams }: Props) => {
     );
   }
 
-  const total = count || 0;
-  const pending = reservations?.filter((r) => r.status === "pending").length || 0;
-  const confirmed = reservations?.filter((r) => r.status === "confirmed").length || 0;
-  const cancelled = reservations?.filter((r) => r.status === "cancelled").length || 0;
+  const total = globalStats.total;
+  const pending = globalStats.pending;
+  const confirmed = globalStats.confirmed;
+  const cancelled = globalStats.cancelled;
+
+  // We still use the exact count from getReservations if status is filtered
+  // to ensure pagination works correctly based on the active filter.
+  const pageCountCount = count || 0;
 
   return (
     <div className="space-y-6">
@@ -109,7 +117,7 @@ export const ReservationList = async ({ searchParams }: Props) => {
         <DataTable 
           columns={columns} 
           data={reservations || []} 
-          pageCount={Math.ceil(total / 10)}
+          pageCount={Math.ceil(pageCountCount / 10)}
           currentPage={page}
         />
       </FadeIn>

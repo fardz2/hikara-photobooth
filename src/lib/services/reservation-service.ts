@@ -28,6 +28,38 @@ export const reservationService = {
     return query.range(fromRange, toRange);
   },
 
+  async getReservationStats(from?: string, to?: string, search?: string) {
+    const supabase = await createClient();
+
+    const buildQuery = (status?: string) => {
+      let query = supabase.from("reservations").select("*", { count: "exact", head: true });
+      if (from) query = query.gte("date", from);
+      if (to) query = query.lte("date", to);
+      if (search) query = query.ilike("name", `%${search}%`);
+      if (status) query = query.eq("status", status);
+      return query;
+    };
+
+    const [
+      { count: totalCount },
+      { count: pendingCount },
+      { count: confirmedCount },
+      { count: cancelledCount }
+    ] = await Promise.all([
+      buildQuery(),
+      buildQuery("pending"),
+      buildQuery("confirmed"),
+      buildQuery("cancelled")
+    ]);
+
+    return {
+      total: totalCount || 0,
+      pending: pendingCount || 0,
+      confirmed: confirmedCount || 0,
+      cancelled: cancelledCount || 0,
+    };
+  },
+
   /** @deprecated use getReservations() */
   async getAllReservations() {
     return this.getReservations();

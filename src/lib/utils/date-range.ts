@@ -7,6 +7,7 @@ import {
   startOfMonth,
   endOfMonth,
   subDays,
+  addDays,
 } from "date-fns";
 import { id } from "date-fns/locale";
 
@@ -43,7 +44,7 @@ export function getDateRangeFromPreset(preset: DateRangePreset): DateRange {
     default:
       return {
         from: format(subDays(now, 365 * 5), "yyyy-MM-dd"),
-        to: format(endOfDay(now), "yyyy-MM-dd"),
+        to: format(addDays(now, 365 * 5), "yyyy-MM-dd"),
         label: "Semua",
       };
   }
