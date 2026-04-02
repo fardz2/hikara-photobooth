@@ -4,10 +4,9 @@ export const ReservationSchema = z.object({
   name: z.string().min(2, "Nama terlalu pendek"),
   phone: z
     .string()
-    .min(8, "Nomor HP minimal 8 digit")
-    .max(13, "Nomor HP maksimal 13 digit")
-    .regex(/^\d+$/, "Hanya boleh berisi angka")
-    .refine((val) => !val.startsWith("0"), "Jangan awali dengan 0 (contoh: 82148645084)"),
+    .min(10, "Nomor WhatsApp minimal 10 digit (contoh: 62812...)")
+    .max(15, "Nomor WhatsApp maksimal 15 digit")
+    .regex(/^62\d+$/, "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...)"),
   date: z.instanceof(Date, { message: "Pilih tanggal reservasi" }),
   time: z.string()
     .min(1, "Pilih waktu sesi")

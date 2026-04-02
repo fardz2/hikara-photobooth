@@ -64,7 +64,7 @@ describe('Reservation Actions', () => {
     mockFunctions.insert.mockResolvedValue({ error: null })
     mockFunctions.eq.mockReturnThis() // Allow .single() after .eq()
     mockFunctions.single.mockResolvedValue({ 
-      data: { id: '1', name: 'John', phone: '62812', total_price: 35000, date: '2024-03-01', time: '10:00', payment_method: 'qris' }, 
+      data: { id: '1', name: 'John', phone: '62812', total_price: 35000, date: '2024-03-01', time: '14:00', payment_method: 'qris' }, 
       error: null 
     })
     
@@ -76,7 +76,7 @@ describe('Reservation Actions', () => {
       name: 'John Doe',
       phone: '628123456789',
       date: new Date('2024-03-01'),
-      time: '10:00',
+      time: '14:00',
       package: 'basic',
       addons: [],
       paymentMethod: 'tunai'
@@ -85,7 +85,7 @@ describe('Reservation Actions', () => {
     it('returns error if required fields are missing', async () => {
       const result = await submitReservation({ ...validData, name: '' })
       expect(result.success).toBe(false)
-      expect(result.message).toContain('wajib diisi')
+      expect(result.message).toMatch(/pendek|wajib/i)
     })
 
     it('returns error if slot is already booked', async () => {
@@ -127,10 +127,10 @@ describe('Reservation Actions', () => {
   describe('Edge Cases', () => {
     it('rejects reservation with invalid phone number', async () => {
       const result = await submitReservation({ 
-        name: 'John', phone: 'abc', date: new Date(), time: '10:00', package: 'basic', addons: [], paymentMethod: 'tunai' 
+        name: 'John', phone: 'abc', date: new Date(), time: '14:00', package: 'basic', addons: [], paymentMethod: 'tunai' 
       })
       expect(result.success).toBe(false)
-      expect(result.message).toContain('WhatsApp tidak valid')
+      expect(result.message).toMatch(/minimal|valid/i)
     })
 
     it('returns error if database insertion fails', async () => {
@@ -138,7 +138,7 @@ describe('Reservation Actions', () => {
       vi.mocked(reservationService.checkSlotAvailability).mockResolvedValue(false)
       
       const result = await submitReservation({ 
-        name: 'John', phone: '628123456789', date: new Date(), time: '10:00', package: 'basic', addons: [], paymentMethod: 'tunai' 
+        name: 'John', phone: '628123456789', date: new Date(), time: '14:00', package: 'basic', addons: [], paymentMethod: 'tunai' 
       })
       expect(result.success).toBe(false)
       expect(result.message).toContain('Gagal menyimpan')

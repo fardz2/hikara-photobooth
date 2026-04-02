@@ -4,8 +4,8 @@ import { generateTimeSlots, START_HOUR, END_HOUR } from '@/lib/utils/slots'
 describe('generateTimeSlots', () => {
   it('generates the correct number of slots', () => {
     const slots = generateTimeSlots()
-    // (23 - 10) * 2 = 26 slots
-    expect(slots).toHaveLength(26)
+    // (23 - 14) * 2 + 1 = 19 slots
+    expect(slots).toHaveLength(19)
   })
 
   it('starts at the correct hour', () => {
@@ -16,6 +16,6 @@ describe('generateTimeSlots', () => {
 
   it('ends at the correct hour', () => {
     const slots = generateTimeSlots()
-    expect(slots[slots.length - 1]).toBe(`${END_HOUR - 1}:30`)
+    expect(slots[slots.length - 1]).toBe(`${END_HOUR}:00`)
   })
 })

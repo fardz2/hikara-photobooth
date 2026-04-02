@@ -4,7 +4,7 @@ import { ReservationSchema } from '@/lib/validations/reservation'
 describe('ReservationSchema', () => {
   const validData = {
     name: 'Test Member',
-    phone: '8123456789',
+    phone: '628123456789',
     date: new Date(),
     time: '14:00',
     package: 'paket_utama',
@@ -19,14 +19,14 @@ describe('ReservationSchema', () => {
     expect(result.success).toBe(true)
   })
 
-  it('rejects phone numbers starting with 0', () => {
+  it('rejects phone numbers without 62 prefix', () => {
     const data = { ...validData, phone: '08123456789' }
     const result = ReservationSchema.safeParse(data)
     
     expect(result.success).toBe(false)
     if (!result.success) {
       const messages = result.error.issues.map(e => e.message)
-      expect(messages).toContain('Jangan awali dengan 0 (contoh: 82148645084)')
+      expect(messages[0]).toContain('62')
     }
   })
 

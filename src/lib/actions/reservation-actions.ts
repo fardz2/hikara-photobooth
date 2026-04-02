@@ -8,6 +8,7 @@ import { reservationService } from "@/lib/services/reservation-service";
 import { fonnteService } from "@/lib/services/fonnte-service";
 import { calculateTotalPrice } from "@/lib/utils/price";
 import { isValidWhatsApp } from "@/lib/utils/validation";
+import { ReservationSchema as FormSchema } from "@/lib/validations/reservation";
 
 type ReservationInput = {
   name: string;
@@ -25,11 +26,20 @@ type ReservationInput = {
 export async function submitReservation(data: ReservationInput) {
   const supabase = await createClient();
   
-  if (!data.name || !data.phone || !data.date || !data.time) {
-    return { success: false, message: "Semua data wajib diisi." };
+  // 1. Validate with Zod for better security/consistency
+  const validation = FormSchema.safeParse({
+    ...data,
+    // data.date is already a Date object from the form
+  });
+
+  if (!validation.success) {
+    const errorMsg = validation.error.issues[0]?.message || "Data tidak valid";
+    return { success: false, message: errorMsg };
   }
 
-  // Enforce Indonesia Number (62)
+  const validatedData = validation.data;
+
+  // Enforce Indonesia Number (62) - Keep existing logic for phone prefixing
   if (!isValidWhatsApp(data.phone)) {
     return { success: false, message: "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...)." };
   }
