@@ -27,7 +27,7 @@ describe('RevenueStats Server Component', () => {
     total: 100000,
     breakdown: {
       tunai: 60000,
-      qris_manual: 40000,
+      qris: 40000,
       extraPrint: 10000,
       extraPeople: 5000,
     },

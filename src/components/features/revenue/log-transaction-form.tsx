@@ -10,7 +10,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { CreditCardIcon, Money01Icon, Loading03Icon, Add01Icon } from "@hugeicons/core-free-icons";
+import { CreditCardIcon, Money01Icon, Loading03Icon, Add01Icon, Clock01Icon } from "@hugeicons/core-free-icons";
+
+// Slot jam operasional: 14:00 - 23:00 WIB
 
 const ADDONS = [
   { id: "custom_frame", label: "Custom Frame", price: 15000 },
@@ -26,6 +28,7 @@ export const LogTransactionForm = () => {
     resolver: zodResolver(TransactionSchema),
     defaultValues: {
       customerName: "",
+      sessionTime: "",
       package: "Sesi Foto + 2 Strip",
       addons: [],
       extraPeopleCount: 0,
@@ -43,7 +46,11 @@ export const LogTransactionForm = () => {
     formState: { errors },
   } = form;
 
+
+
+
   const pkg = watch("package");
+  const sessionTime = watch("sessionTime");
   const selectedAddons = watch("addons");
   const extraPeopleCount = watch("extraPeopleCount");
   const extraPrintCount = watch("extraPrintCount");
@@ -74,6 +81,7 @@ export const LogTransactionForm = () => {
         payment_method: data.paymentMethod,
         amount: totalPrice,
         addons: data.addons,
+        session_time: data.sessionTime,
         extra_people_count: data.extraPeopleCount,
         extra_print_count: data.extraPrintCount,
         customer_name: data.customerName,
@@ -96,10 +104,12 @@ export const LogTransactionForm = () => {
       <div className="space-y-6">
         {/* Customer Name Input */}
         <div className="space-y-3">
-          <label className="text-[10px] tracking-[0.4em] uppercase font-bold text-[#5A5550]/60 flex items-center gap-2">
+          <label htmlFor="customerName" className="text-[10px] tracking-[0.4em] uppercase font-bold text-[#5A5550]/60 flex items-center gap-2">
             Nama Pelanggan
           </label>
           <input
+            id="customerName"
+            data-testid="customer-name-input"
             type="text"
             placeholder="Contoh: Budi Santoso"
             {...register("customerName")}
@@ -108,6 +118,35 @@ export const LogTransactionForm = () => {
           {errors.customerName && (
             <p className="text-red-500 text-[10px] uppercase font-bold tracking-widest mt-1">
               {errors.customerName.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          <label htmlFor="session-time" className="text-[10px] tracking-[0.4em] uppercase font-bold text-[#5A5550]/60 flex items-center gap-2 cursor-pointer">
+            <HugeiconsIcon icon={Clock01Icon} size={14} className="text-[#8B5E56]" />
+            Jam Sesi
+            <span className="text-[8px] italic tracking-widest font-normal text-[#5A5550]/40">· 14.00 – 23.00 WIB</span>
+          </label>
+
+          <div className="relative group">
+            <input
+              id="session-time"
+              data-testid="session-time-input"
+              type="time"
+              {...register("sessionTime")}
+              className={`w-full h-12 bg-transparent text-sm font-bold tracking-widest border px-4 transition-all focus:outline-none focus:ring-1 focus:ring-[#8B5E56]/20 ${
+                errors.sessionTime 
+                  ? "border-red-500 text-red-500" 
+                  : "border-[#2C2A29]/10 text-[#5A5550] focus:border-[#8B5E56]"
+              }`}
+              style={{ colorScheme: 'light' }}
+            />
+          </div>
+
+          {errors.sessionTime && (
+            <p className="text-red-500 text-[10px] uppercase font-bold tracking-widest mt-1">
+              {errors.sessionTime.message}
             </p>
           )}
         </div>
@@ -218,9 +257,9 @@ export const LogTransactionForm = () => {
               </div>
             </button>
 
-            <button type="button" onClick={() => setValue("paymentMethod", "qris_manual")} className="relative group focus:outline-none w-full">
-              <div className={`flex items-center gap-4 p-4 border transition-all ${paymentMethod === "qris_manual" ? "border-[#8B5E56] bg-[#F6F4F0]" : "border-[#2C2A29]/10 opacity-40 hover:opacity-100"}`}>
-                <HugeiconsIcon icon={CreditCardIcon} strokeWidth={2} className={`size-6 ${paymentMethod === "qris_manual" ? "text-[#8B5E56]" : "text-[#5A5550]"}`} />
+            <button type="button" onClick={() => setValue("paymentMethod", "qris")} className="relative group focus:outline-none w-full">
+              <div className={`flex items-center gap-4 p-4 border transition-all ${paymentMethod === "qris" ? "border-[#8B5E56] bg-[#F6F4F0]" : "border-[#2C2A29]/10 opacity-40 hover:opacity-100"}`}>
+                <HugeiconsIcon icon={CreditCardIcon} strokeWidth={2} className={`size-6 ${paymentMethod === "qris" ? "text-[#8B5E56]" : "text-[#5A5550]"}`} />
                 <span className="text-[10px] tracking-widest uppercase font-bold text-[#2C2A29]">QRIS</span>
               </div>
             </button>

@@ -12,7 +12,7 @@ describe('formatRevenueStats', () => {
     },
     {
       total_price: 45000,
-      payment_method: 'qris_manual',
+      payment_method: 'qris',
       date: '2024-03-01',
       extra_print_count: 0,
       extra_people_count: 2
@@ -35,7 +35,7 @@ describe('formatRevenueStats', () => {
   it('calculates payment method breakdown correctly', () => {
     const stats = formatRevenueStats(mockData)
     expect(stats.breakdown.tunai).toBe(85000) // 50000 + 35000
-    expect(stats.breakdown.qris_manual).toBe(45000)
+    expect(stats.breakdown.qris).toBe(45000)
   })
 
   it('calculates addon revenues correctly', () => {

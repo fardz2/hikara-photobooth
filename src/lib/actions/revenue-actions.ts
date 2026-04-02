@@ -6,10 +6,11 @@ import { revalidatePath } from "next/cache";
 
 export type TransactionInput = {
   package: string;
-  payment_method: "tunai" | "qris_manual";
+  payment_method: "tunai" | "qris";
   amount: number;
   addons?: string[];
   customer_name?: string;
+  session_time?: string;
   extra_people_count?: number;
   extra_print_count?: number;
 };
@@ -21,7 +22,7 @@ export async function logTransaction(data: TransactionInput) {
     name: data.customer_name || "Walk-in Customer",
     phone: "620000000000",
     date: format(new Date(), "yyyy-MM-dd"),
-    time: format(new Date(), "HH:mm"),
+    time: data.session_time ?? format(new Date(), "HH:mm"),
     package: data.package,
     addons: data.addons || [], 
     payment_method: data.payment_method,

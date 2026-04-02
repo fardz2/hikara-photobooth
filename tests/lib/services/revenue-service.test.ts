@@ -25,7 +25,7 @@ describe('Revenue Service', () => {
     const mockData = [
       { 
         total_price: 35000, 
-        payment_method: 'qris_manual', 
+        payment_method: 'qris',
         date: '2024-03-01',
         extra_print_count: 0,
         extra_people_count: 0
@@ -46,7 +46,7 @@ describe('Revenue Service', () => {
 
     expect(result).not.toBeNull()
     expect(result?.total).toBe(70000)
-    expect(result?.breakdown.qris_manual).toBe(35000)
+    expect(result?.breakdown.qris).toBe(35000)
     expect(result?.breakdown.tunai).toBe(35000)
   })
 

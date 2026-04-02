@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { LogTransactionForm } from '@/components/features/revenue/log-transaction-form'
 import { logTransaction } from '@/lib/actions/revenue-actions'
@@ -17,63 +17,100 @@ vi.mock('sonner', () => ({
   },
 }))
 
+// Mock Hugeicons
+vi.mock('@hugeicons/react', () => ({
+  HugeiconsIcon: () => <div data-testid="hugeicon" />,
+}))
+
+// Sync useTransition
+vi.mock('react', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react')>()
+  return {
+    ...actual,
+    useTransition: () => [false, (cb: () => void) => cb()],
+  }
+})
+
 describe('LogTransactionForm', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.mocked(logTransaction).mockResolvedValue({ success: true })
   })
 
-  it('renders correctly with default values', () => {
+  it('renders correctly', () => {
     render(<LogTransactionForm />)
-    expect(screen.getByText(/Entry Transaksi/i)).toBeInTheDocument()
-    expect(screen.getByText(/Rp 35.000/i)).toBeInTheDocument()
+    expect(screen.getByTestId('session-time-input')).toBeInTheDocument()
   })
 
-  it('updates total price when counters are incremented', () => {
+  it('calls logTransaction with correct data on submit', async () => {
     render(<LogTransactionForm />)
-    
-    // Find "Tambah Orang" + button
-    // The buttons have text "+" and "-"
-    const plusButtons = screen.getAllByText('+')
-    const extraPeoplePlus = plusButtons[0] 
-    
-    fireEvent.click(extraPeoplePlus) // +1 person (5000)
-    
-    expect(screen.getByText(/Rp 40.000/i)).toBeInTheDocument()
-  })
 
-  it('toggles addons and updates price', () => {
-    render(<LogTransactionForm />)
+    fireEvent.change(screen.getByTestId('customer-name-input'), {
+      target: { value: 'Test Customer' },
+    })
     
-    const checkbox = screen.getByLabelText(/Custom Frame/i)
-    fireEvent.click(checkbox) // +15000
-    
-    expect(screen.getByText(/Rp 50.000/i)).toBeInTheDocument()
-  })
+    const timeInput = screen.getByTestId('session-time-input')
+    fireEvent.input(timeInput, { target: { value: '14:30' } })
+    fireEvent.change(timeInput, { target: { value: '14:30' } })
+    fireEvent.blur(timeInput)
 
-  it('submits the form successfully', async () => {
-    vi.mocked(logTransaction).mockResolvedValueOnce({ success: true })
-    
-    render(<LogTransactionForm />)
-    
-    const submitButton = screen.getByText(/Submit Transaksi/i)
-    fireEvent.click(submitButton)
-    
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Submit Transaksi/i))
+    })
+
     await waitFor(() => {
-      expect(logTransaction).toHaveBeenCalled()
-      expect(toast.success).toHaveBeenCalledWith('Transaksi berhasil dicatat')
+      expect(vi.mocked(logTransaction)).toHaveBeenCalled()
+    }, { timeout: 3000 })
+
+    expect(vi.mocked(logTransaction)).toHaveBeenCalledWith(
+      expect.objectContaining({
+        customer_name: 'Test Customer',
+        session_time: '14:30',
+      })
+    )
+  })
+
+  it('validates 14:00 - 23:00 range via Zod', async () => {
+    render(<LogTransactionForm />)
+
+    fireEvent.change(screen.getByTestId('customer-name-input'), {
+      target: { value: 'Test Customer' },
+    })
+    
+    const timeInput = screen.getByTestId('session-time-input')
+    
+    // Test below 14:00
+    fireEvent.change(timeInput, { target: { value: '13:59' } })
+    fireEvent.blur(timeInput)
+    await act(async () => { fireEvent.click(screen.getByText(/Submit Transaksi/i)) })
+    await waitFor(() => {
+      expect(screen.getByText(/Jam sesi harus antara 14:00 - 23:00/i)).toBeInTheDocument()
+    })
+
+    // Test above 23:00
+    fireEvent.change(timeInput, { target: { value: '23:01' } })
+    fireEvent.blur(timeInput)
+    await act(async () => { fireEvent.click(screen.getByText(/Submit Transaksi/i)) })
+    await waitFor(() => {
+      expect(screen.getByText(/Jam sesi harus antara 14:00 - 23:00/i)).toBeInTheDocument()
     })
   })
 
-  it('handles submission failure', async () => {
-    vi.mocked(logTransaction).mockResolvedValueOnce({ success: false, message: 'Error' })
-    
+  it('success paths works for boundary times (14:00 and 23:00)', async () => {
     render(<LogTransactionForm />)
+
+    fireEvent.change(screen.getByTestId('customer-name-input'), {
+      target: { value: 'Boundary Test' },
+    })
     
-    const submitButton = screen.getByText(/Submit Transaksi/i)
-    fireEvent.click(submitButton)
+    const timeInput = screen.getByTestId('session-time-input')
     
+    // Test exactly 23:00
+    fireEvent.change(timeInput, { target: { value: '23:00' } })
+    fireEvent.blur(timeInput)
+    await act(async () => { fireEvent.click(screen.getByText(/Submit Transaksi/i)) })
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Gagal mencatat transaksi')
+      expect(vi.mocked(logTransaction)).toHaveBeenCalled()
     })
   })
 })

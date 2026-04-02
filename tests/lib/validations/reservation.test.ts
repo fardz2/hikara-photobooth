@@ -47,4 +47,16 @@ describe('ReservationSchema', () => {
     const result = ReservationSchema.safeParse(data)
     expect(result.success).toBe(false)
   })
+
+  it('accepts reservation time between 14:00 and 23:00', () => {
+    expect(ReservationSchema.safeParse({ ...validData, time: '14:00' }).success).toBe(true)
+    expect(ReservationSchema.safeParse({ ...validData, time: '23:00' }).success).toBe(true)
+    expect(ReservationSchema.safeParse({ ...validData, time: '18:30' }).success).toBe(true)
+  })
+
+  it('rejects reservation time before 14:00 or after 23:00', () => {
+    expect(ReservationSchema.safeParse({ ...validData, time: '13:59' }).success).toBe(false)
+    expect(ReservationSchema.safeParse({ ...validData, time: '23:01' }).success).toBe(false)
+    expect(ReservationSchema.safeParse({ ...validData, time: '09:00' }).success).toBe(false)
+  })
 })

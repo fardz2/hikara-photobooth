@@ -9,7 +9,17 @@ export const ReservationSchema = z.object({
     .regex(/^\d+$/, "Hanya boleh berisi angka")
     .refine((val) => !val.startsWith("0"), "Jangan awali dengan 0 (contoh: 82148645084)"),
   date: z.instanceof(Date, { message: "Pilih tanggal reservasi" }),
-  time: z.string().min(1, "Pilih waktu sesi"),
+  time: z.string()
+    .min(1, "Pilih waktu sesi")
+    .refine((val) => {
+      const parts = val.split(":");
+      const hour = parseInt(parts[0], 10);
+      const minute = parseInt(parts[1], 10);
+      if (hour < 14) return false;
+      if (hour > 23) return false;
+      if (hour === 23 && minute > 0) return false;
+      return true;
+    }, "Jam sesi harus antara 14:00 - 23:00"),
   package: z.string().min(1, "Pilih paket"),
   addons: z.array(z.string()).default([]),
   extraPeopleCount: z.number().min(0).max(5).default(0),

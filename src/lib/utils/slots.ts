@@ -1,4 +1,4 @@
-export const START_HOUR = 10;
+export const START_HOUR = 14;
 export const END_HOUR = 23;
 
 /**
@@ -11,5 +11,6 @@ export function generateTimeSlots(): string[] {
     slots.push(`${h.toString().padStart(2, "0")}:00`);
     slots.push(`${h.toString().padStart(2, "0")}:30`);
   }
+  slots.push(`${END_HOUR.toString().padStart(2, "0")}:00`);
   return slots;
 }

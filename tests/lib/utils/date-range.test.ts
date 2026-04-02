@@ -23,4 +23,15 @@ describe('Date Range Utility', () => {
     const range = parseDateRangeParams({})
     expect(range.label).toBe('Bulan Ini')
   })
+
+  it('covers future dates with "all" preset', () => {
+    const range = getDateRangeFromPreset('all')
+    const now = new Date()
+    const fiveYearsFromNow = new Date()
+    fiveYearsFromNow.setFullYear(now.getFullYear() + 4) // check 4 years to be safe
+    
+    const toDate = new Date(range.to)
+    expect(toDate.getTime()).toBeGreaterThan(fiveYearsFromNow.getTime())
+    expect(range.label).toBe('Semua')
+  })
 })

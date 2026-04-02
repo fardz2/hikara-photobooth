@@ -27,7 +27,7 @@ export function formatRevenueStats(data: RawRevenueRow[]): RevenueStats {
   const breakdown = data.reduce(
     (acc, row) => {
       const price = row.total_price || 0;
-      if (row.payment_method === "qris_manual" || row.payment_method === "qris") {
+      if (row.payment_method === "qris") {
         acc.qris += price;
       } else {
         acc.tunai += price;

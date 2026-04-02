@@ -92,7 +92,7 @@ describe('Reservation Actions', () => {
       vi.mocked(reservationService.checkSlotAvailability).mockResolvedValue(true)
       const result = await submitReservation(validData)
       expect(result.success).toBe(false)
-      expect(result.message).toContain('sudah dipesan')
+      expect(result.message).toContain('sudah habis')
     })
 
     it('creates reservation and sends notifications on success', async () => {
