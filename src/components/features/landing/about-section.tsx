@@ -55,7 +55,7 @@ export const AboutSection = () => {
            </div>
            
            <div className="absolute inset-0 z-0">
-             <Image src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop" alt="Process" fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" />
+             <Image src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop" alt="HIKARA Studio Foto Kotabaru - Proses Foto Studio Premium" fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" />
              <div className="absolute inset-0 bg-linear-to-t from-[#F6F4F0] via-[#F6F4F0]/80 to-transparent"></div>
            </div>
            <span className="font-serif text-8xl md:text-9xl text-[#8B5E56] opacity-30 relative z-10 mix-blend-multiply">H</span>

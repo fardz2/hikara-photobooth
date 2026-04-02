@@ -14,7 +14,7 @@ export const Footer = async () => {
             src="/logo.png"
             width={160}
             height={48}
-            alt="HIKARA"
+            alt="HIKARA Photobox Kotabaru - Studio Foto Premium & Estetik"
             className="h-16 md:h-20 w-auto mix-blend-multiply opacity-80"
           />
         </div>
@@ -25,6 +25,7 @@ export const Footer = async () => {
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-[#8B5E56] hover:-translate-y-1 transition-all duration-300 pointer-events-auto"
+            aria-label="Kunjungi Instagram HIKARA Photobox"
           >
             Instagram
           </a>
@@ -33,6 +34,7 @@ export const Footer = async () => {
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-[#8B5E56] hover:-translate-y-1 transition-all duration-300 pointer-events-auto"
+            aria-label="Hubungi WhatsApp HIKARA Photobox"
           >
             WhatsApp
           </a>
@@ -41,6 +43,7 @@ export const Footer = async () => {
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-[#8B5E56] hover:-translate-y-1 transition-all duration-300 pointer-events-auto"
+            aria-label="Kunjungi TikTok HIKARA Photobox"
           >
             TikTok
           </a>
@@ -63,14 +66,14 @@ export const Footer = async () => {
         <div className="w-full max-w-sm h-px bg-[#2C2A29]/10 my-4"></div>
 
         <div>
-          <p className="text-[10px] md:text-xs text-[#5A5550] font-heading tracking-widest uppercase mb-4">
+          <p className="text-[10px] md:text-xs text-[#2C2A29] font-heading tracking-widest uppercase mb-4">
             Kotabaru, Kalimantan Selatan
           </p>
-          <p className="text-[9px] md:text-[10px] text-[#5A5550]/60 tracking-[0.2em] uppercase max-w-xs leading-loose mx-auto">
+          <p className="text-[9px] md:text-[10px] text-[#2C2A29]/80 tracking-[0.2em] uppercase max-w-xs leading-loose mx-auto">
             &copy; {currentYear} Hikara Photobox. <br />
             Minimalist Photo Experience. All Rights Reserved.
           </p>
-          <p className="text-[8px] text-[#5A5550]/40 uppercase tracking-widest mt-4">
+          <p className="text-[8px] text-[#2C2A29]/50 uppercase tracking-widest mt-4">
             Terakhir diperbarui: 30 Maret 2026
           </p>
         </div>

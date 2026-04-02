@@ -20,7 +20,19 @@ export const FadeUp = ({ children, delay = 0, className = "" }: { children: Reac
   );
 };
 
-export const RevealImage = ({ src, alt, className = "", delay = 0 }: { src: string, alt: string, className?: string, delay?: number }) => {
+export const RevealImage = ({ 
+  src, 
+  alt, 
+  className = "", 
+  delay = 0,
+  sizes = "100vw"
+}: { 
+  src: string, 
+  alt: string, 
+  className?: string, 
+  delay?: number,
+  sizes?: string
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95, y: 40 }}
@@ -40,6 +52,7 @@ export const RevealImage = ({ src, alt, className = "", delay = 0 }: { src: stri
           src={src}
           alt={alt}
           fill
+          sizes={sizes}
           className="object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 ease-out"
         />
       </motion.div>
@@ -127,7 +140,19 @@ export const TextReveal = ({ text, delay = 0, className = "" }: { text: string, 
   );
 };
 
-export const ImageMaskReveal = ({ src, alt, className = "", delay = 0 }: { src: string, alt: string, className?: string, delay?: number }) => {
+export const ImageMaskReveal = ({ 
+  src, 
+  alt, 
+  className = "", 
+  delay = 0,
+  sizes = "100vw"
+}: { 
+  src: string, 
+  alt: string, 
+  className?: string, 
+  delay?: number,
+  sizes?: string
+}) => {
   return (
     <div className={`relative overflow-hidden group ${className}`}>
       <motion.div
@@ -148,6 +173,7 @@ export const ImageMaskReveal = ({ src, alt, className = "", delay = 0 }: { src: 
           src={src}
           alt={alt}
           fill
+          sizes={sizes}
           className="object-cover transition-all duration-1000 ease-out"
         />
       </motion.div>

@@ -48,38 +48,53 @@ export async function DashboardOverviewData({ searchParams }: Props) {
           Aktivitas Terbaru
         </h3>
         <div className="flex-1 space-y-6">
-          {recentReservations.data?.map((res, i) => (
-            <div
-              key={res.id || i}
-              className="flex justify-between items-start group border-b border-[#2C2A29]/5 pb-4 last:border-0 last:pb-0"
-            >
-              <div className="flex flex-col gap-1">
-                <p className="text-xs font-bold text-[#2C2A29] capitalize">
-                  {res.name || "Tanpa Nama"}
-                </p>
-                <p className="text-[9px] text-[#5A5550] uppercase tracking-widest">
-                  {res.date ? format(new Date(res.date), "dd MMM", { locale: id }) : "-"} •{" "}
-                  {res.time || "-"}
-                </p>
+          {recentReservations.data?.map((res, i) => {
+            const firstLetter = res.name ? res.name.charAt(0).toUpperCase() : "?";
+            return (
+              <div
+                key={res.id || i}
+                className="flex items-center gap-4 group border-b border-[#2C2A29]/5 pb-4 last:border-0 last:pb-0 hover:bg-[#F6F4F0]/30 transition-colors p-2 -mx-2"
+              >
+                {/* Initials Avatar */}
+                <div className="w-10 h-10 shrink-0 bg-[#2C2A29] flex items-center justify-center">
+                  <span className="text-white text-xs font-bold font-heading">{firstLetter}</span>
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start mb-0.5">
+                    <p className="text-xs font-bold text-[#2C2A29] truncate pr-2">
+                      {res.name || "Tanpa Nama"}
+                    </p>
+                    <p className="text-xs font-bold text-[#2C2A29] shrink-0">
+                      Rp {res.total_price?.toLocaleString("id-ID") || 0}
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <p className="text-[9px] text-[#5A5550]/80 uppercase tracking-widest truncate">
+                      {res.date ? format(new Date(res.date), "dd MMM", { locale: id }) : "-"} •{" "}
+                      {res.time || "-"}
+                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`w-1 h-1 rounded-full ${
+                        res.status === "confirmed" ? "bg-emerald-500" : res.status === "cancelled" ? "bg-red-500" : "bg-amber-500"
+                      }`} />
+                      <span
+                        className={`text-[8px] uppercase tracking-[0.15em] font-bold ${
+                          res.status === "confirmed"
+                            ? "text-emerald-700"
+                            : res.status === "cancelled"
+                            ? "text-red-700"
+                            : "text-amber-700"
+                        }`}
+                      >
+                        {res.status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col items-end gap-1.5">
-                <p className="text-xs font-bold text-[#2C2A29]">
-                  Rp {res.total_price?.toLocaleString("id-ID") || 0}
-                </p>
-                <span
-                  className={`text-[8px] uppercase tracking-widest px-2 py-0.5 border ${
-                    res.status === "confirmed"
-                      ? "border-emerald-500/30 text-emerald-600 bg-emerald-50/50"
-                      : res.status === "cancelled"
-                      ? "border-red-500/30 text-red-600 bg-red-50/50"
-                      : "border-amber-500/30 text-amber-600 bg-amber-50/50"
-                  }`}
-                >
-                  {res.status}
-                </span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
           {!recentReservations.data?.length && (
             <p className="text-xs text-[#5A5550]/60 italic uppercase tracking-widest text-center mt-12">
               Belum ada aktivitas.

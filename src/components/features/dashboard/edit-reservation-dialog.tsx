@@ -139,9 +139,9 @@ export function EditReservationDialog({ reservation, open, onOpenChange }: Props
                   <SelectValue placeholder="Waktu" />
                 </SelectTrigger>
                 <SelectContent className="rounded-none border-[#2C2A29]/10">
-                  {/* Dummy time slots from 09:00 to 21:00 roughly */}
-                  {Array.from({ length: 13 }, (_, i) => {
-                    const hour = (i + 9).toString().padStart(2, '0');
+                  {/* Time slots from 14:00 to 23:00 */}
+                  {Array.from({ length: 10 }, (_, i) => {
+                    const hour = (i + 14).toString().padStart(2, '0');
                     return (
                       <SelectItem key={`${hour}:00`} value={`${hour}:00`} className="text-[10px] tracking-widest rounded-none">{hour}:00</SelectItem>
                     );

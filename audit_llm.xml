@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<audit version="0.0.38">
+<site url="http://localhost:3000" crawled="3" date="2026-04-02T07:22:45.359Z"/>
+<score overall="46" grade="F">
+ <cat name="Accessibility" score="79"/>
+ <cat name="Security" score="69"/>
+ <cat name="Performance" score="69"/>
+ <cat name="Crawlability" score="86"/>
+ <cat name="E-E-A-T" score="62"/>
+ <cat name="Content" score="86"/>
+ <cat name="Social Media" score="87"/>
+ <cat name="Core SEO" score="93"/>
+ <cat name="Images" score="96"/>
+ <cat name="Links" score="99"/>
+ <cat name="Internationalization" score="100"/>
+ <cat name="Legal Compliance" score="100"/>
+ <cat name="Mobile" score="100"/>
+ <cat name="Structured Data" score="100"/>
+ <cat name="URL Structure" score="100"/>
+</score>
+<summary passed="276" warnings="51" failed="13"/>
+<issues>
+ <category name="Crawlability" errors="1" warnings="2">
+  <rule id="crawl/sitemap-domain" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/crawl/sitemap-domain">
+   6 URL(s) point to different domain(s)
+   Items (5/6):
+    - https://hikara-photobox.vercel.app [host: hikara-photobox.vercel.app]
+    - https://hikara-photobox.vercel.app/reservasi [host: hikara-photobox.vercel.app]
+    - https://hikara-photobox.vercel.app/privacy-policy [host: hikara-photobox.vercel.app]
+    - https://hikara-photobox.vercel.app [host: hikara-photobox.vercel.app]
+    - https://hikara-photobox.vercel.app/reservasi [host: hikara-photobox.vercel.app]
+  </rule>
+  <rule id="crawl/sitemap-coverage" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/crawl/sitemap-coverage">
+   3 indexable page(s) not in sitemap (100%); 3 sitemap URL(s) were not crawled
+   Items (5/6):
+    - /
+    - /privacy-policy
+    - /reservasi
+    - https://hikara-photobox.vercel.app
+    - https://hikara-photobox.vercel.app/reservasi
+  </rule>
+ </category>
+ <category name="Core SEO" errors="0" warnings="3">
+  <rule id="core/meta-title" severity="error" status="warn" docs="https://docs.squirrelscan.com/rules/core/meta-title">
+   Title too short
+   Pages (1): /reservasi
+   Items (1):
+    - /reservasi (Reservasi | Hikara Photobox (27 chars))
+  </rule>
+  <rule id="core/meta-description" severity="error" status="warn" docs="https://docs.squirrelscan.com/rules/core/meta-description">
+   Description too short
+   Pages (2): /privacy-policy, /reservasi
+   Items (2):
+    - /privacy-policy (Privacy policy for Hikara Photobox customers. (45 chars))
+    - /reservasi (Pesan jadwal photoshoot Anda di Hikara Photobooth  (59 chars))
+  </rule>
+ </category>
+ <category name="Security" errors="3" warnings="1">
+  <rule id="security/https" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/security/https">
+   Page not served over HTTPS
+   Pages (3): /, /privacy-policy, /reservasi
+  </rule>
+  <rule id="security/csp" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/security/csp">
+   No Content-Security-Policy header
+  </rule>
+ </category>
+ <category name="Links" errors="0" warnings="1">
+  <rule id="links/dead-end-pages" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/links/dead-end-pages">
+   Page has no outgoing internal links (dead-end)
+   Pages (1): /privacy-policy
+  </rule>
+ </category>
+ <category name="Content" errors="0" warnings="3">
+  <rule id="content/keyword-stuffing" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/content/keyword-stuffing">
+   2 word(s) may be overused
+   Pages (1): /
+   Items (2):
+    - inch (&quot;inch&quot; (5.4%)) [count: 19, density: 5.444126074498568]
+    - photoboxmemoriesstudio (&quot;photoboxmemoriesstudio&quot; (3.4%)) [count: 12, density: 3.4383954154727796]
+  </rule>
+  <rule id="content/word-count" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/content/word-count">
+   Thin content: N words (min N)
+   Pages (2): /privacy-policy, /reservasi
+   Items (2):
+    - /privacy-policy (Thin content: 69 words (min 300))
+    - /reservasi (Thin content: 89 words (min 300))
+  </rule>
+ </category>
+ <category name="Images" errors="0" warnings="2">
+  <rule id="images/offscreen-lazy" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/images/offscreen-lazy">
+   1 below-fold image(s) without lazy loading
+   Pages (1): /
+   Items (1):
+    - image
+  </rule>
+  <rule id="images/dimensions" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/images/dimensions">
+   66 image(s) missing width/height (causes CLS)
+   Pages (1): /
+   Items (5/66):
+    - /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1544005313-94ddf0286df2%3Fq%3D80%26w%3D800%26auto%3Dformat%26fit%3Dcrop&amp;w=3840&amp;q=75 | &lt;img src=&quot;http://localhost:3000/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1544005313-94ddf0286df2%3Fq%3D80%26w%3D800%26auto%3Dformat%26fit%3Dcrop&amp;w=3840&amp;q=75&quot; alt=&quot;Process&quot;&gt;
+    - /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1544005313-94ddf0286df2%3Fq%3D80%26w%3D800%26auto%3Dformat%26fit%3Dcrop&amp;w=3840&amp;q=75 | &lt;img src=&quot;http://localhost:3000/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1544005313-94ddf0286df2%3Fq%3D80%26w%3D800%26auto%3Dformat%26fit%3Dcrop&amp;w=3840&amp;q=75&quot; alt=&quot;HIKARA Studio Foto Kotabaru - Instalasi Galeri Estetik 1&quot;&gt;
+    - /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1518599904199-0ca897819ddb%3Fq%3D80%26w%3D800%26auto%3Dformat%26fit%3Dcrop&amp;w=3840&amp;q=75 | &lt;img src=&quot;http://localhost:3000/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1518599904199-0ca897819ddb%3Fq%3D80%26w%3D800%26auto%3Dformat%26fit%3Dcrop&amp;w=3840&amp;q=75&quot; alt=&quot;HIKARA Studio Foto Kotabaru - Instalasi Galeri Estetik 2&quot;&gt;
+    - /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1494790108377-be9c29b29330%3Fq%3D80%26w%3D800%26auto%3Dformat%26fit%3Dcrop&amp;w=3840&amp;q=75 | &lt;img src=&quot;http://localhost:3000/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1494790108377-be9c29b29330%3Fq%3D80%26w%3D800%26auto%3Dformat%26fit%3Dcrop&amp;w=3840&amp;q=75&quot; alt=&quot;HIKARA Studio Foto Kotabaru - Instalasi Galeri Estetik 3&quot;&gt;
+    - /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1529156069898-49953e39b3ac%3Fq%3D80%26w%3D800%26auto%3Dformat%26fit%3Dcrop&amp;w=3840&amp;q=75 | &lt;img src=&quot;http://localhost:3000/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1529156069898-49953e39b3ac%3Fq%3D80%26w%3D800%26auto%3Dformat%26fit%3Dcrop&amp;w=3840&amp;q=75&quot; alt=&quot;HIKARA Studio Foto Kotabaru - Instalasi Galeri Estetik 4&quot;&gt;
+  </rule>
+ </category>
+ <category name="Performance" errors="1" warnings="29">
+  <rule id="perf/js-file-size" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/perf/js-file-size">
+   1 JS file(s) exceed 1.0 MB; 2 JS file(s) exceed 250.0 KB
+   Items (3):
+    - /_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js [sizeBytes: 1057980, size: 1.0 MB, status: 200, contentType: application/javascript; charset=UTF-8] (from: /, /privacy-policy, /reservasi)
+    - /_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_0553esy.js [sizeBytes: 746574, size: 729.1 KB, status: 200, contentType: application/javascript; charset=UTF-8] (from: /, /privacy-policy, /reservasi)
+    - /_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js [sizeBytes: 744845, size: 727.4 KB, status: 200, contentType: application/javascript; charset=UTF-8] (from: /, /privacy-policy, /reservasi)
+  </rule>
+  <rule id="perf/lcp-hints" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/lcp-hints">
+   3 potential LCP image(s) without preload
+   Pages (1): /
+   Items (3):
+    - /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1544005313-94ddf0286df2%3Fq%3D80%26w%3D400%26auto%3Dformat%26fit%3Dcrop&amp;w=828&amp;q=75
+    - /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1518599904199-0ca897819ddb%3Fq%3D80%26w%3D400%26auto%3Dformat%26fit%3Dcrop&amp;w=828&amp;q=75
+    - /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1494790108377-be9c29b29330%3Fq%3D80%26w%3D400%26auto%3Dformat%26fit%3Dcrop&amp;w=828&amp;q=75
+  </rule>
+  <rule id="perf/ttfb" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/ttfb">
+   Slow server response (Nms)
+   Pages (2): /privacy-policy, /reservasi
+   Items (2):
+    - /privacy-policy (Slow server response (867ms))
+    - /reservasi (Slow server response (859ms))
+  </rule>
+  <rule id="perf/total-byte-weight" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/total-byte-weight">
+   Total tracked resources: 3746KB (heavy page)
+  </rule>
+  <rule id="perf/critical-request-chains" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/critical-request-chains">
+   2 critical request chain(s) found
+   Pages (3): /, /privacy-policy, /reservasi
+   Items (2):
+    - CSS: /_next/static/chunks/%5Broot-of-the-server%5D__09v9t3m._.css
+    - JS: /_next/static/chunks/node_modules_next_dist_build_polyfills_polyfill-nomodule.js
+  </rule>
+  <rule id="perf/duplicate-js" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/duplicate-js">
+   2 library(s) loaded multiple times
+   Pages (3): /, /privacy-policy, /reservasi
+   Items (5):
+    - node (13x)
+    - src (5x)
+    - node (12x)
+    - src (3x)
+    - node (21x)
+  </rule>
+  <rule id="perf/lazy-above-fold" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/lazy-above-fold">
+   1 above-fold image(s) with lazy loading
+   Pages (3): /, /privacy-policy, /reservasi
+   Items (1):
+    - /_next/image?url=%2Flogo.png&amp;w=384&amp;q=75
+  </rule>
+  <rule id="perf/unminified-js" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/unminified-js">
+   8 JavaScript file(s) appear unminified
+   Pages (3): /, /privacy-policy, /reservasi
+   Items (5):
+    - node_modules_next_dist_compiled_next-devtools_index_0553esy.js (729.1KB, ~532.7KB savings) [reason: high newlines (0.52%), 98 comments]
+    - node_modules_next_dist_compiled_react-dom_058-ah~._.js (1033.2KB, ~263.3KB savings) [reason: high newlines (1.58%), 81 comments, long function names, formatted code, excessive whitespace]
+    - node_modules_next_dist_compiled_react-server-dom-turbopack_0p3wegg._.js (170.5KB, ~54.0KB savings) [reason: high newlines (1.65%), 17 comments, long function names, formatted code, excessive whitespace]
+    - node_modules_next_dist_compiled_0.4_mz-._.js (152.7KB, ~64.9KB savings) [reason: high newlines (2.10%), 192 comments, long function names, formatted code, excessive whitespace]
+    - node_modules_next_dist_client_0fhqo1d._.js (727.4KB, ~355.2KB savings) [reason: high newlines (2.05%), 3213 comments, long variable names, long function names, formatted code, excessive whitespace]
+  </rule>
+  <rule id="perf/cache-headers" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/perf/cache-headers">
+   no-cache without ETag or Last-Modified
+   Pages (3): /, /privacy-policy, /reservasi
+  </rule>
+  <rule id="perf/http2" severity="info" status="warn" docs="https://docs.squirrelscan.com/rules/perf/http2">
+   HTTP/2 requires HTTPS
+   Pages (3): /, /privacy-policy, /reservasi
+   Items (3):
+    - / (HTTP/2 requires HTTPS)
+    - /privacy-policy (HTTP/2 requires HTTPS)
+    - /reservasi (HTTP/2 requires HTTPS)
+  </rule>
+  <rule id="perf/source-maps" severity="info" status="warn" docs="https://docs.squirrelscan.com/rules/perf/source-maps">
+   11 potential source map(s) detected; 1 inline source map(s) found
+   Pages (3): /, /privacy-policy, /reservasi
+   Items (5/11):
+    - /_next/static/chunks/index.js.map (from /_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_0553esy.js)
+    - /_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_0553esy.js.map (from /_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_0553esy.js)
+    - /_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js.map (from /_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js)
+    - /_next/static/chunks/%22 (from /_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_0p3wegg._.js)
+    - /_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_0p3wegg._.js.map (from /_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_0p3wegg._.js)
+  </rule>
+ </category>
+ <category name="Social Media" errors="0" warnings="3">
+  <rule id="social/og-image-size" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/social/og-image-size">
+   og:image may be too small
+   Pages (3): /, /privacy-policy, /reservasi
+  </rule>
+ </category>
+ <category name="Accessibility" errors="8" warnings="3">
+  <rule id="a11y/duplicate-id-aria" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/a11y/duplicate-id-aria">
+   2 problematic ID(s) in ARIA attributes
+   Pages (1): /reservasi
+   Items (2):
+    - &quot;radix-_R_4kuatpeul5rlb_&quot; (not found)
+    - &quot;radix-_R_54uatpeul5rlb_&quot; (not found)
+  </rule>
+  <rule id="a11y/select-name" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/a11y/select-name">
+   1 select element(s) without accessible names
+   Pages (1): /reservasi
+   Items (1):
+    - select
+  </rule>
+  <rule id="a11y/aria-hidden-focus" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/a11y/aria-hidden-focus">
+   2 focusable element(s) inside aria-hidden
+   Pages (1): /reservasi
+   Items (2):
+    - select (self is focusable)
+    - input (self is focusable)
+  </rule>
+  <rule id="a11y/aria-input-field-name" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/a11y/aria-input-field-name">
+   2 input field(s) without accessible names
+   Pages (1): /reservasi
+   Items (2):
+    - input[type=&quot;checkbox&quot;]
+    - select
+  </rule>
+  <rule id="a11y/aria-toggle-field-name" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/a11y/aria-toggle-field-name">
+   1 toggle field(s) without accessible names
+   Pages (1): /reservasi
+   Items (1):
+    - checkbox
+  </rule>
+  <rule id="a11y/label-content-name-mismatch" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/a11y/label-content-name-mismatch">
+   1 element(s) where visible text doesn&apos;t match accessible name
+   Pages (1): /reservasi
+   Items (1):
+    - button: visible=&quot;pilih tanggal lebih &quot; vs aria-label=&quot;pilih waktu sesi&quot;
+  </rule>
+  <rule id="a11y/aria-labels" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/a11y/aria-labels">
+   1 button(s) without accessible names
+   Pages (1): /reservasi
+   Items (1):
+    - custom_frame
+  </rule>
+  <rule id="a11y/form-labels" severity="error" status="fail" docs="https://docs.squirrelscan.com/rules/a11y/form-labels">
+   2 form input(s) without labels
+   Pages (1): /reservasi
+   Items (2):
+    - select
+    - checkbox
+  </rule>
+  <rule id="a11y/color-contrast" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/a11y/color-contrast">
+   N potential color contrast issue(s)
+   Pages (3): /, /privacy-policy, /reservasi
+   Items (5/11):
+    - img with class &quot;object-cover grayscale opacity...&quot; may have low contrast
+    - span with class &quot;font-serif text-8xl md:text-9x...&quot; may have low contrast
+    - White text (verify background): 2 instance(s)
+    - Very light text color: 2 instance(s)
+    - input with class &quot;h-9 w-full min-w-0 rounded-4xl...&quot; may have low contrast
+  </rule>
+ </category>
+ <category name="E-E-A-T" errors="0" warnings="4">
+  <rule id="eeat/about-page" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/eeat/about-page">
+   No About page found
+  </rule>
+  <rule id="eeat/author-byline" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/eeat/author-byline">
+   No content pages have author attribution
+  </rule>
+  <rule id="eeat/contact-page" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/eeat/contact-page">
+   No Contact page found
+  </rule>
+  <rule id="eeat/content-dates" severity="warning" status="warn" docs="https://docs.squirrelscan.com/rules/eeat/content-dates">
+   No content pages have datePublished
+  </rule>
+ </category>
+</issues>
+</audit>

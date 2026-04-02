@@ -36,7 +36,15 @@ export const HeroSection = () => {
       >
          <div className="aspect-3/4 bg-[#EFEBDE] overflow-hidden">
            <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
-             <Image src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" width={400} height={533} priority className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Photobox Kotabaru - Sesi Foto Estetik Wanita" />
+             <Image 
+               src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" 
+               width={400} 
+               height={533} 
+               priority 
+               sizes="(max-width: 1024px) 0vw, 20vw"
+               className="w-full h-full object-cover filter grayscale opacity-80" 
+               alt="HIKARA Photobox Kotabaru - Sesi Foto Estetik Wanita" 
+             />
            </motion.div>
          </div>
       </motion.div>
@@ -50,7 +58,15 @@ export const HeroSection = () => {
       >
          <div className="aspect-square bg-[#EFEBDE] overflow-hidden">
            <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
-             <Image src="https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop" width={400} height={400} priority className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Studio Foto Premium - Pasangan Minimalis" />
+             <Image 
+               src="https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop" 
+               width={400} 
+               height={400} 
+               priority 
+               sizes="(max-width: 1024px) 0vw, 15vw"
+               className="w-full h-full object-cover filter grayscale opacity-80" 
+               alt="HIKARA Studio Foto Premium - Pasangan Minimalis" 
+             />
            </motion.div>
          </div>
       </motion.div>
@@ -64,7 +80,15 @@ export const HeroSection = () => {
       >
          <div className="aspect-4/3 bg-[#EFEBDE] overflow-hidden">
            <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
-             <Image src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" width={400} height={300} priority className="w-full h-full object-cover filter grayscale opacity-80" alt="HIKARA Photobox Kotabaru - Foto Hitam Putih Estetik" />
+             <Image 
+               src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" 
+               width={400} 
+               height={300} 
+               priority 
+               sizes="(max-width: 1024px) 0vw, 25vw"
+               className="w-full h-full object-cover filter grayscale opacity-80" 
+               alt="HIKARA Photobox Kotabaru - Foto Hitam Putih Estetik" 
+             />
            </motion.div>
          </div>
       </motion.div>

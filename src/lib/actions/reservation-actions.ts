@@ -233,9 +233,19 @@ export async function editReservation(id: string, data: Partial<ReservationInput
   
   if (!id) return { success: false, message: "ID tidak valid" };
 
-  // 1. Validasi opsional phone
+  // 1. Validasi dengan Zod (Schema partial karena admin bisa edit sebagian)
   if (data.phone && !isValidWhatsApp(data.phone)) {
     return { success: false, message: "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...)." };
+  }
+  
+  // Custom validation for partial data
+  if (data.time) {
+    const parts = data.time.split(":");
+    const hour = parseInt(parts[0], 10);
+    const minute = parseInt(parts[1], 10);
+    if (hour < 14 || hour > 23 || (hour === 23 && minute > 0)) {
+      return { success: false, message: "Jam sesi harus antara 14:00 - 23:00" };
+    }
   }
 
   // 2. Jika tanggal/waktu diubah, cek ketersediaan

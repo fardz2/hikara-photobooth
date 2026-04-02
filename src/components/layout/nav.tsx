@@ -31,7 +31,7 @@ export const Nav = () => {
     >
       <div className="flex items-center gap-4">
         <Link href="/">
-          <Image src="/logo.png" width={160} height={48} alt="HIKARA" className="h-10 md:h-12 w-auto mix-blend-multiply opacity-90 cursor-pointer" />
+          <Image src="/logo.png" width={160} height={48} alt="HIKARA Photobox Kotabaru Logo" className="h-10 md:h-12 w-auto mix-blend-multiply opacity-90 cursor-pointer" />
         </Link>
       </div>
       <div className="flex gap-4 md:gap-6 text-[10px] md:text-xs tracking-[0.2em] uppercase font-medium text-[#2C2A29]">

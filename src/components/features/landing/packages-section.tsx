@@ -39,7 +39,7 @@ export const PackagesSection = () => {
               Senin - Minggu
             </p>
             <p className="font-light tracking-[0.2em] text-[#2C2A29]/60 text-xs mt-2">
-              10:00 - 23:00
+              14:00 - 23:00
             </p>
           </FadeUp>
         </div>

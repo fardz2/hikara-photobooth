@@ -383,10 +383,10 @@ export const ReservationForm = () => {
               }
               disabled={isFetchingSlots}
               value={selectedTime}
+              name="time"
             >
               <SelectTrigger
                 id="time-trigger"
-                aria-label="Pilih Waktu Sesi"
                 className="w-full border-input focus-visible:ring-[3px] focus-visible:ring-ring/50"
               >
                 <SelectValue
@@ -519,6 +519,7 @@ export const ReservationForm = () => {
                   type="button"
                   variant="ghost"
                   size="icon"
+                  aria-label="Kurangi jumlah orang"
                   className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
                   onClick={() =>
                     setValue(
@@ -528,7 +529,7 @@ export const ReservationForm = () => {
                   }
                   disabled={extraPeopleCount <= 0}
                 >
-                  <span className="text-lg font-bold">−</span>
+                  <span className="text-lg font-bold" aria-hidden="true">−</span>
                 </Button>
                 <div className="w-8 text-center">
                   <span className="text-sm font-bold text-[#2C2A29]">
@@ -539,6 +540,7 @@ export const ReservationForm = () => {
                   type="button"
                   variant="ghost"
                   size="icon"
+                  aria-label="Tambah jumlah orang"
                   className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
                   onClick={() =>
                     setValue(
@@ -548,7 +550,7 @@ export const ReservationForm = () => {
                   }
                   disabled={extraPeopleCount >= 5}
                 >
-                  <span className="text-lg font-bold">+</span>
+                  <span className="text-lg font-bold" aria-hidden="true">+</span>
                 </Button>
               </div>
             </div>
@@ -578,6 +580,7 @@ export const ReservationForm = () => {
                   type="button"
                   variant="ghost"
                   size="icon"
+                  aria-label="Kurangi jumlah cetakan"
                   className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
                   onClick={() =>
                     setValue(
@@ -587,7 +590,7 @@ export const ReservationForm = () => {
                   }
                   disabled={extraPrintCount <= 0}
                 >
-                  <span className="text-lg font-bold">−</span>
+                  <span className="text-lg font-bold" aria-hidden="true">−</span>
                 </Button>
                 <div className="w-8 text-center">
                   <span className="text-sm font-bold text-[#2C2A29]">
@@ -598,6 +601,7 @@ export const ReservationForm = () => {
                   type="button"
                   variant="ghost"
                   size="icon"
+                  aria-label="Tambah jumlah cetakan"
                   className="size-8 rounded-md bg-white shadow-sm hover:bg-white active:scale-95 transition-all text-[#8B5E56]"
                   onClick={() =>
                     setValue(
@@ -607,7 +611,7 @@ export const ReservationForm = () => {
                   }
                   disabled={extraPrintCount >= 10}
                 >
-                  <span className="text-lg font-bold">+</span>
+                  <span className="text-lg font-bold" aria-hidden="true">+</span>
                 </Button>
               </div>
             </div>
@@ -659,6 +663,8 @@ export const ReservationForm = () => {
             <button
               type="button"
               onClick={() => setValue("paymentMethod", "tunai")}
+              aria-pressed={paymentMethod === "tunai"}
+              aria-label="Bayar Tunai atau di Tempat"
               className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-300 ${
                 paymentMethod === "tunai"
                   ? "border-[#8B5E56] bg-[#8B5E56]/5 shadow-md scale-[1.02]"
@@ -667,6 +673,7 @@ export const ReservationForm = () => {
             >
               <div
                 className={`size-10 rounded-full flex items-center justify-center ${paymentMethod === "tunai" ? "bg-[#8B5E56] text-white" : "bg-[#2C2A29]/10 text-[#2C2A29]"}`}
+                aria-hidden="true"
               >
                 <HugeiconsIcon
                   icon={Money01Icon}
@@ -682,6 +689,8 @@ export const ReservationForm = () => {
             <button
               type="button"
               onClick={() => setValue("paymentMethod", "qris")}
+              aria-pressed={paymentMethod === "qris"}
+              aria-label="Bayar via QRIS"
               className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-300 ${
                 paymentMethod === "qris"
                   ? "border-[#8B5E56] bg-[#8B5E56]/5 shadow-md scale-[1.02]"
@@ -690,6 +699,7 @@ export const ReservationForm = () => {
             >
               <div
                 className={`size-10 rounded-full flex items-center justify-center ${paymentMethod === "qris" ? "bg-[#8B5E56] text-white" : "bg-[#2C2A29]/10 text-[#2C2A29]"}`}
+                aria-hidden="true"
               >
                 <HugeiconsIcon
                   icon={CreditCardIcon}

@@ -9,28 +9,29 @@ import { ReservationFormSkeleton } from "@/components/skeletons/reservation-form
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "Reservasi | Hikara Photobox",
-  description: "Pesan jadwal photoshoot Anda di Hikara Photobooth sekarang.",
+  title: "Reservasi Photobox Premium - Hikara Photobox Kotabaru",
+  description:
+    "Jadwalkan sesi foto studio premium Anda di Hikara Photobox Kotabaru. Tersedia berbagai pilihan frame eksklusif dan cetakan berkualitas tinggi.",
 };
 
 export default function ReservasiPage() {
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [
+    itemListElement: [
       {
         "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://hikara-photobox.vercel.app"
+        position: 1,
+        name: "Home",
+        item: "https://hikara-photobox.vercel.app",
       },
       {
         "@type": "ListItem",
-        "position": 2,
-        "name": "Reservasi",
-        "item": "https://hikara-photobox.vercel.app/reservasi"
-      }
-    ]
+        position: 2,
+        name: "Reservasi",
+        item: "https://hikara-photobox.vercel.app/reservasi",
+      },
+    ],
   };
 
   return (
@@ -50,10 +51,8 @@ export default function ReservasiPage() {
         </p>
         <div className="w-16 h-px bg-[#8B5E56] my-4"></div>
         <div className="flex flex-col gap-2 text-xs tracking-widest text-[#5A5550] uppercase">
-          <span className="font-medium text-[#2C2A29]">
-            INFO OPERASIONAL
-          </span>
-          <span>10:00 - 23:00 WITA</span>
+          <span className="font-medium text-[#2C2A29]">INFO OPERASIONAL</span>
+          <span>14:00 - 23:00 WITA</span>
           <span>Monday - Sunday</span>
         </div>
       </div>

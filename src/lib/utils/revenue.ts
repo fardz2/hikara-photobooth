@@ -1,3 +1,5 @@
+import { EXTRA_PERSON_PRICE, EXTRA_PRINT_PRICE } from "./price";
+
 export interface RawRevenueRow {
   total_price: number | null;
   payment_method: string | null;
@@ -33,9 +35,9 @@ export function formatRevenueStats(data: RawRevenueRow[]): RevenueStats {
         acc.tunai += price;
       }
       
-      // Calculate specific addon revenues (using fixed prices from business logic)
-      acc.extraPrint += (row.extra_print_count || 0) * 10000;
-      acc.extraPeople += (row.extra_people_count || 0) * 5000;
+      // Calculate specific addon revenues (using central price constants)
+      acc.extraPrint += (row.extra_print_count || 0) * EXTRA_PRINT_PRICE;
+      acc.extraPeople += (row.extra_people_count || 0) * EXTRA_PERSON_PRICE;
       
       return acc;
     },

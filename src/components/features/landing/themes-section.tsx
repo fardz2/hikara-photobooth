@@ -99,7 +99,13 @@ const TemplateCard = ({ item }: { item: any }) => {
         <div className={`${item.bgColor} w-32 md:w-44 p-2 md:p-3 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] flex flex-col gap-2 border border-[#2C2A29]/10 relative z-10`}>
           {item.images.map((img: string, i: number) => (
             <div key={i} className="aspect-4/3 bg-[#EFEBDE]/80 w-full overflow-hidden flex items-center justify-center relative">
-              <Image src={img} alt="Strip" fill className="object-cover" />
+              <Image 
+                src={img} 
+                alt={`HIKARA Layout Frame - ${item.name} Style ${i + 1}`} 
+                fill 
+                sizes="(max-width: 768px) 150px, 200px"
+                className="object-cover" 
+              />
             </div>
           ))}
           <div className="pt-2 flex justify-center items-center">
@@ -111,7 +117,13 @@ const TemplateCard = ({ item }: { item: any }) => {
       {item.type === "postcard" && (
         <div className={`${item.bgColor} w-64 md:w-96 p-2 md:p-4 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] flex flex-col border border-[#2C2A29]/10 relative z-10`}>
           <div className="aspect-3/2 bg-[#EFEBDE]/80 w-full overflow-hidden relative">
-            <Image src={item.images[0]} alt="Postcard" fill className="object-cover" />
+            <Image 
+              src={item.images[0]} 
+              alt={`HIKARA Layout Frame - ${item.name} Wide Selection`} 
+              fill 
+              sizes="(max-width: 768px) 300px, 450px"
+              className="object-cover" 
+            />
           </div>
           <div className="pt-4 pb-1 flex justify-between items-center px-1">
             <span className="text-[7px] tracking-widest text-[#5A5550] uppercase">Premium Print</span>
@@ -124,7 +136,13 @@ const TemplateCard = ({ item }: { item: any }) => {
         <div className={`${item.bgColor} w-64 md:w-96 p-2 md:p-4 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] grid grid-cols-2 gap-1 border border-[#2C2A29]/10 relative z-10`}>
           {item.images.map((img: string, i: number) => (
             <div key={i} className="aspect-square bg-[#EFEBDE]/80 overflow-hidden relative">
-              <Image src={img} alt="Grid" fill className="object-cover" />
+              <Image 
+                src={img} 
+                alt={`HIKARA Layout Frame - ${item.name} Grid View ${i + 1}`} 
+                fill 
+                sizes="(max-width: 768px) 150px, 200px"
+                className="object-cover" 
+              />
             </div>
           ))}
           <div className="col-span-2 pt-3 flex justify-center items-center">
@@ -136,7 +154,13 @@ const TemplateCard = ({ item }: { item: any }) => {
       {item.type === "mini" && (
         <div className={`${item.bgColor} w-44 md:w-60 p-3 md:p-5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] flex flex-col border border-[#2C2A29]/5 relative z-10`}>
           <div className="aspect-square bg-white w-full overflow-hidden relative rounded-full border-4 border-white shadow-inner">
-            <Image src={item.images[0]} alt="Mini" fill className="object-cover" />
+            <Image 
+              src={item.images[0]} 
+              alt={`HIKARA Layout Frame - ${item.name} Pocket Round Style`} 
+              fill 
+              sizes="(max-width: 768px) 200px, 300px"
+              className="object-cover" 
+            />
           </div>
           <div className={`pt-6 pb-2 text-center font-heading text-[11px] tracking-widest ${item.textColor}`}>
             HIKARA STUDIO
@@ -257,7 +281,8 @@ export const ThemesSection = () => {
                 <ImageMaskReveal 
                   delay={0.1}
                   src={theme.img} 
-                  alt={theme.name} 
+                  alt={`HIKARA Tema Foto Studio - ${theme.name}`} 
+                  sizes="(max-width: 768px) 100vw, 500px"
                   className="aspect-square md:aspect-4/5 bg-[#EFEBDE] w-full shadow-lg rounded-t-full"
                 />
               </div>

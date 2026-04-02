@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { format } from "date-fns";
 import { revalidatePath } from "next/cache";
+import { TransactionSchema } from "@/lib/validations/revenue";
 
 export type TransactionInput = {
   package: string;
@@ -18,6 +19,23 @@ export type TransactionInput = {
 export async function logTransaction(data: TransactionInput) {
   const supabase = await createClient();
   
+  // 1. Validate with Zod
+  const validation = TransactionSchema.safeParse({
+    customerName: data.customer_name || "Walk-in Customer",
+    sessionTime: data.session_time ?? format(new Date(), "HH:mm"),
+    package: data.package,
+    addons: data.addons || [],
+    paymentMethod: data.payment_method,
+    extraPeopleCount: data.extra_people_count || 0,
+    extraPrintCount: data.extra_print_count || 0,
+  });
+
+  if (!validation.success) {
+    const errorMsg = validation.error.issues[0]?.message || "Data transaksi tidak valid";
+    return { success: false, message: errorMsg };
+  }
+
+  const validatedData = validation.data;
   const { error } = await supabase.from("reservations").insert({
     name: data.customer_name || "Walk-in Customer",
     phone: "620000000000",
