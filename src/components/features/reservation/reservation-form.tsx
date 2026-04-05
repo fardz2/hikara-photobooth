@@ -231,7 +231,8 @@ export const ReservationForm = () => {
 
       // 2. Submit Reservation
       const result = await submitReservation({
-        ...data, // phone is already normalized by Zod transform
+        ...data,
+        date: format(data.date, "yyyy-MM-dd"),
         addons: data.addons ?? [],
         extraPeopleCount: data.extraPeopleCount,
         extraPrintCount: data.extraPrintCount,
@@ -248,7 +249,7 @@ export const ReservationForm = () => {
         form.reset({
           name: "",
           phone: "",
-          date: currentDate,
+          date: currentDate as Date,
           package: currentPackage,
           time: "",
           addons: [],
@@ -258,7 +259,7 @@ export const ReservationForm = () => {
         });
 
         if (currentDate) {
-          handleDateChange(currentDate);
+          handleDateChange(currentDate as Date);
         }
       } else {
         toast.error(result.message);
@@ -354,7 +355,7 @@ export const ReservationForm = () => {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={selectedDate}
+                  selected={selectedDate as Date}
                   onSelect={(date) => date && handleDateChange(date)}
                   disabled={(date) => isBefore(startOfDay(date), today)}
                   locale={id}

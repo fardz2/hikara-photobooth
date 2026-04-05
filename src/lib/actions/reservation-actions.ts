@@ -13,7 +13,7 @@ import { ReservationSchema as FormSchema } from "@/lib/validations/reservation";
 type ReservationInput = {
   name: string;
   phone: string;
-  date: Date;
+  date: Date | string;
   time: string;
   package: string;
   addons: string[];
@@ -44,8 +44,7 @@ export async function submitReservation(data: ReservationInput) {
     return { success: false, message: "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...)." };
   }
 
-  const dateObj = new Date(data.date);
-  const dateStr = format(dateObj, "yyyy-MM-dd");
+  const dateStr = typeof data.date === "string" ? data.date : format(data.date, "yyyy-MM-dd");
 
   console.log(`[BE] Handling reservation for ${dateStr} at ${data.time}`);
 
@@ -97,13 +96,17 @@ export async function submitReservation(data: ReservationInput) {
     ? "Dibayar via QRIS (Menunggu Konfirmasi)" 
     : "Bayar di Studio (Tunai/QRIS)";
 
+  // Parse dateStr (yyyy-MM-dd) carefully for formatted display
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const displayDate = new Date(y, m - 1, d);
+
   const customerMsg = `*HIKARA PHOTOBOX - RESERVASI BERHASIL* 📸
 
 Halo *${data.name}*, 
 Terima kasih telah melakukan reservasi di Hikara Photobox.
 
 *Detail Reservasi:*
-📅 Tanggal: ${format(new Date(dateStr), "EEEE, dd MMMM yyyy", { locale: idLocale })}
+📅 Tanggal: ${format(displayDate, "EEEE, dd MMMM yyyy", { locale: idLocale })}
 ⏰ Waktu: ${data.time} WITA
 ${data.extraPeopleCount && data.extraPeopleCount > 0 ? `👤 Tambahan Orang: ${data.extraPeopleCount}\n` : ""}${data.extraPrintCount && data.extraPrintCount > 0 ? `🖼️ Tambahan Print: ${data.extraPrintCount}\n` : ""}💳 Metode: *${data.paymentMethod === 'qris' ? 'QRIS' : 'Tunai di Tempat'}*
 💵 Total: *Rp ${totalPrice.toLocaleString('id-ID')}*
@@ -121,7 +124,7 @@ Sampai jumpa di studio! ✨`;
   
 👤 Nama: ${data.name}
 📱 WA: ${data.phone}
-📅 Tanggal: ${format(new Date(dateStr), "dd MMM yyyy", { locale: idLocale })}
+📅 Tanggal: ${format(displayDate, "dd MMM yyyy", { locale: idLocale })}
 ⏰ Waktu: ${data.time}
 💰 Total: *Rp ${totalPrice.toLocaleString('id-ID')}*
 📎 Bukti: ${data.paymentProofUrl || "Tidak ada bukti terlampir"}
@@ -131,7 +134,7 @@ Segera cek dashboard untuk verifikasi bukti & konfirmasi!`
   
 👤 Nama: ${data.name}
 📱 WA: ${data.phone}
-📅 Tanggal: ${format(new Date(dateStr), "dd MMM yyyy", { locale: idLocale })}
+📅 Tanggal: ${format(displayDate, "dd MMM yyyy", { locale: idLocale })}
 ⏰ Waktu: ${data.time}
 💰 Total: Rp ${totalPrice.toLocaleString('id-ID')}
 

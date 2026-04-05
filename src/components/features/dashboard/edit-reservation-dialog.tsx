@@ -65,7 +65,7 @@ export function EditReservationDialog({ reservation, open, onOpenChange }: Props
       const payload = {
         name,
         phone: normalizePhoneNumber(phone),
-        date: new Date(date),
+        date,
         time,
         extraPeopleCount,
         extraPrintCount,

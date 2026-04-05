@@ -11,7 +11,10 @@ export const ReservationSchema = z.object({
     .refine((val: string) => /^62[2-9]\d{7,12}$/.test(val), {
       message: "Nomor WhatsApp tidak valid (Gunakan format Indonesia)",
     }),
-  date: z.instanceof(Date, { message: "Pilih tanggal reservasi" }),
+  date: z.union([
+    z.instanceof(Date, { message: "Pilih tanggal reservasi" }),
+    z.string().min(1, "Pilih tanggal reservasi")
+  ]),
   time: z.string()
     .min(1, "Pilih waktu sesi")
     .refine((val) => {
