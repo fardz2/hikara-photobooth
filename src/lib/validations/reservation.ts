@@ -1,16 +1,34 @@
-import { z } from 'zod';
+import * as z from "zod";
+import { normalizePhoneNumber } from "../utils/validation";
 
 export const ReservationSchema = z.object({
-    name: z.string().nonempty("Name is required"),
-    phone: z.string().regex(/^8\\d+$/, "Phone must start with 8 and contain only digits"),
-    date: z.string().nonempty("Date is required"),
-    time: z.string().nonempty("Time is required"),
-    package: z.string().nonempty("Package is required"),
-    addons: z.array(z.string()),
-    extraPeopleCount: z.number().min(0).optional(),
-    extraPrintCount: z.number().min(0).optional(),
-    paymentMethod: z.string().nonempty("Payment method is required"),
-    paymentProof: z.string().url("Payment proof must be a valid URL")
+  name: z.string().min(2, "Nama terlalu pendek"),
+  phone: z
+    .string()
+    .min(10, "Nomor WhatsApp minimal 10 digit (contoh: 812...)")
+    .max(16, "Nomor WhatsApp maksimal 15 digit")
+    .transform((val: string) => normalizePhoneNumber(val))
+    .refine((val: string) => /^62[2-9]\d{7,12}$/.test(val), {
+      message: "Nomor WhatsApp tidak valid (Gunakan format Indonesia)",
+    }),
+  date: z.instanceof(Date, { message: "Pilih tanggal reservasi" }),
+  time: z.string()
+    .min(1, "Pilih waktu sesi")
+    .refine((val) => {
+      const parts = val.split(":");
+      const hour = parseInt(parts[0], 10);
+      const minute = parseInt(parts[1], 10);
+      if (hour < 14) return false;
+      if (hour > 23) return false;
+      if (hour === 23 && minute > 0) return false;
+      return true;
+    }, "Jam sesi harus antara 14:00 - 23:00"),
+  package: z.string().min(1, "Pilih paket"),
+  addons: z.array(z.string()).default([]),
+  extraPeopleCount: z.number().min(0).max(5).default(0),
+  extraPrintCount: z.number().min(0).max(10).default(0),
+  paymentMethod: z.enum(["tunai", "qris"]),
+  paymentProof: z.any().optional(),
 });
 
-export const ReservationValues = ReservationSchema.safeParse;
+export type ReservationValues = z.output<typeof ReservationSchema>;

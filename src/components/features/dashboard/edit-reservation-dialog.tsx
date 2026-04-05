@@ -24,7 +24,7 @@ import { editReservation } from "@/lib/actions/reservation-actions";
 import { toast } from "sonner";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Loading03Icon, Edit01Icon } from "@hugeicons/core-free-icons";
-import { DateRangePreset } from "@/lib/utils/date-range";
+import { normalizePhoneNumber } from "@/lib/utils/validation";
 
 interface Props {
   reservation: Reservation | null;
@@ -64,7 +64,7 @@ export function EditReservationDialog({ reservation, open, onOpenChange }: Props
     startTransition(async () => {
       const payload = {
         name,
-        phone,
+        phone: normalizePhoneNumber(phone),
         date: new Date(date),
         time,
         extraPeopleCount,

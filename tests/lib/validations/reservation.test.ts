@@ -19,14 +19,13 @@ describe('ReservationSchema', () => {
     expect(result.success).toBe(true)
   })
 
-  it('rejects phone numbers without 62 prefix', () => {
+  it('accepts and normalizes phone numbers starting with 08', () => {
     const data = { ...validData, phone: '08123456789' }
     const result = ReservationSchema.safeParse(data)
     
-    expect(result.success).toBe(false)
-    if (!result.success) {
-      const messages = result.error.issues.map(e => e.message)
-      expect(messages[0]).toContain('62')
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data.phone).toBe('628123456789')
     }
   })
 

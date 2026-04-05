@@ -231,8 +231,7 @@ export const ReservationForm = () => {
 
       // 2. Submit Reservation
       const result = await submitReservation({
-        ...data,
-        phone: `62${data.phone}`,
+        ...data, // phone is already normalized by Zod transform
         addons: data.addons ?? [],
         extraPeopleCount: data.extraPeopleCount,
         extraPrintCount: data.extraPrintCount,
