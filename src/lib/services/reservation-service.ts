@@ -71,7 +71,7 @@ export const reservationService = {
       .from("reservations")
       .select("time")
       .eq("date", date)
-      .neq("status", "cancelled");
+      .in("status", ["pending", "confirmed"]);
 
     if (error) throw error;
     return data.map((row) => row.time as string);
@@ -84,7 +84,7 @@ export const reservationService = {
       .select("id")
       .eq("date", date)
       .eq("time", time)
-      .neq("status", "cancelled");
+      .in("status", ["pending", "confirmed"]);
 
     if (error) throw error;
     return data && data.length > 0;
