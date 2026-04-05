@@ -1,4 +1,4 @@
-import { EXTRA_PERSON_PRICE, EXTRA_PRINT_PRICE } from "./price";
+import { EXTRA_PERSON_PRICE, EXTRA_PRINT_PRICE } from "../constants/reservation";
 
 export interface RawRevenueRow {
   total_price: number | null;

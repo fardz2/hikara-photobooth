@@ -171,7 +171,7 @@ export async function updateReservationStatus(id: string, status: "confirmed" | 
   // 1. Fetch reservation details first to get phone and name
   const { data: reservation, error: fetchError } = await supabase
     .from("reservations")
-    .select("name, phone, date, time, payment_method, total_price")
+    .select("name, phone, date, time, payment_method, total_price, status")
     .eq("id", id)
     .single();
 
@@ -180,7 +180,25 @@ export async function updateReservationStatus(id: string, status: "confirmed" | 
     return { success: false, message: "Reservasi tidak ditemukan." };
   }
 
-  // 2. Update the status
+  // 2. Add availability check if re-enabling a cancelled/rejected reservation
+  const isMovingToActive = ["pending", "confirmed"].includes(status);
+  const isCurrentlyActive = ["pending", "confirmed"].includes(reservation.status as string);
+
+  if (isMovingToActive && !isCurrentlyActive) {
+    const isBooked = await reservationService.checkSlotAvailability(
+      reservation.date,
+      reservation.time,
+      id
+    );
+    if (isBooked) {
+      return { 
+        success: false, 
+        message: `Maaf, slot waktu ${reservation.time} pada tanggal ${reservation.date} sudah terisi oleh reservasi lain.` 
+      };
+    }
+  }
+
+  // 3. Update the status
   const { error: updateError } = await supabase
     .from("reservations")
     .update({ status })
@@ -278,6 +296,7 @@ export async function editReservation(id: string, data: Partial<ReservationInput
 
   if (isPricingChanged) {
     updatedTotalPrice = calculateTotalPrice({
+      packageId: data.package !== undefined ? data.package : current.package,
       extraPeopleCount: data.extraPeopleCount !== undefined ? data.extraPeopleCount : current.extra_people_count,
       extraPrintCount: data.extraPrintCount !== undefined ? data.extraPrintCount : current.extra_print_count,
       addons: data.addons !== undefined ? data.addons : current.addons || []

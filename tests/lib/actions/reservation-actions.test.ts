@@ -64,7 +64,7 @@ describe('Reservation Actions', () => {
     mockFunctions.insert.mockResolvedValue({ error: null })
     mockFunctions.eq.mockReturnThis() // Allow .single() after .eq()
     mockFunctions.single.mockResolvedValue({ 
-      data: { id: '1', name: 'John', phone: '62812', total_price: 35000, date: '2024-03-01', time: '14:00', payment_method: 'qris' }, 
+      data: { id: '1', name: 'John', phone: '62812', total_price: 35000, date: '2024-03-01', time: '14:00', payment_method: 'qris', status: 'pending' }, 
       error: null 
     })
     
@@ -114,6 +114,20 @@ describe('Reservation Actions', () => {
       expect(result.success).toBe(true)
       expect(mockFunctions.update).toHaveBeenCalledWith({ status: 'confirmed' })
       expect(fonnteService.sendMessage).toHaveBeenCalledWith('62812', expect.stringContaining('Pesan untuk Anda'))
+    })
+
+    it('fails when slot is taken during re-enable', async () => {
+      // Mock being currently cancelled
+      mockFunctions.single.mockResolvedValueOnce({ 
+        data: { id: '1', date: '2024-03-01', time: '14:00', status: 'cancelled' }, 
+        error: null 
+      })
+      // Mock slot now being booked by someone else
+      vi.mocked(reservationService.checkSlotAvailability).mockResolvedValue(true)
+      
+      const result = await updateReservationStatus('1', 'confirmed')
+      expect(result.success).toBe(false)
+      expect(result.message).toContain('sudah terisi')
     })
 
     it('returns error if reservation not found during status update', async () => {
