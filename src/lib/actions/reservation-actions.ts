@@ -236,97 +236,77 @@ export async function editReservation(id: string, data: Partial<ReservationInput
   
   if (!id) return { success: false, message: "ID tidak valid" };
 
-  // 1. Validasi dengan Zod (Schema partial karena admin bisa edit sebagian)
-  if (data.phone && !isValidWhatsApp(data.phone)) {
-    return { success: false, message: "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...)." };
-  }
-  
-  // Custom validation for partial data
-  if (data.time) {
-    const parts = data.time.split(":");
-    const hour = parseInt(parts[0], 10);
-    const minute = parseInt(parts[1], 10);
-    if (hour < 14 || hour > 23 || (hour === 23 && minute > 0)) {
-      return { success: false, message: "Jam sesi harus antara 14:00 - 23:00" };
-    }
+  // 1. Validasi dengan Zod (Schema partial agar fleksibel)
+  const validation = FormSchema.partial().safeParse(data);
+  if (!validation.success) {
+    return { success: false, message: validation.error.issues[0].message };
   }
 
-  // 2. Jika tanggal/waktu diubah, cek ketersediaan
-  const { data: currentReservation, error: fetchError } = await supabase
+  // 2. Ambil data saat ini untuk pembandingan dan perhitungan harga
+  const { data: current, error: fetchError } = await supabase
     .from("reservations")
-    .select("date, time")
+    .select("date, time, package, addons, extra_people_count, extra_print_count, total_price")
     .eq("id", id)
     .single();
 
-  if (fetchError || !currentReservation) {
+  if (fetchError || !current) {
     return { success: false, message: "Reservasi tidak ditemukan." };
   }
 
-  let dateStr = currentReservation.date;
-  let timeStr = currentReservation.time;
+  // 3. Jika tanggal/waktu diubah, cek ketersediaan (kecuali diri sendiri)
+  const targetDate = data.date ? (typeof data.date === "string" ? data.date : format(data.date, "yyyy-MM-dd")) : current.date;
+  const targetTime = data.time || current.time;
 
-  if (data.date) {
-    dateStr = format(new Date(data.date), "yyyy-MM-dd");
-  }
-  if (data.time) {
-    timeStr = data.time;
-  }
-
-  if (dateStr !== currentReservation.date || timeStr !== currentReservation.time) {
+  if (targetDate !== current.date || targetTime !== current.time) {
     try {
-      const isBooked = await reservationService.checkSlotAvailability(dateStr, timeStr);
+      const isBooked = await reservationService.checkSlotAvailability(targetDate, targetTime, id);
       if (isBooked) {
         return { success: false, message: "Maaf, slot waktu tersebut sudah terisi." };
       }
     } catch (err) {
-      return { success: false, message: "Gagal mengecek ketersediaan slot." };
+      return { success: false, message: "Terjadi kesalahan saat mengecek ketersediaan slot." };
     }
   }
 
-  // 3. Kalkulasi total_price jika paket/addons/extra diubah
-  let totalPrice: number | undefined = undefined;
-  if (
+  // 4. Hitung ulang total price jika ada perubahan harga
+  let updatedTotalPrice = current.total_price;
+  const isPricingChanged = 
     data.package !== undefined || 
     data.addons !== undefined || 
     data.extraPeopleCount !== undefined || 
-    data.extraPrintCount !== undefined
-  ) {
-    const { data: fullReservation } = await supabase.from("reservations").select("extra_people_count, extra_print_count, addons").eq("id", id).single();
-    if (fullReservation) {
-      totalPrice = calculateTotalPrice({
-        extraPeopleCount: data.extraPeopleCount !== undefined ? data.extraPeopleCount : fullReservation.extra_people_count,
-        extraPrintCount: data.extraPrintCount !== undefined ? data.extraPrintCount : fullReservation.extra_print_count,
-        addons: data.addons !== undefined ? data.addons : fullReservation.addons || []
-      });
-    }
+    data.extraPrintCount !== undefined;
+
+  if (isPricingChanged) {
+    updatedTotalPrice = calculateTotalPrice({
+      extraPeopleCount: data.extraPeopleCount !== undefined ? data.extraPeopleCount : current.extra_people_count,
+      extraPrintCount: data.extraPrintCount !== undefined ? data.extraPrintCount : current.extra_print_count,
+      addons: data.addons !== undefined ? data.addons : current.addons || []
+    });
   }
 
-  // 4. Update data
-  const updatePayload: any = {};
-  if (data.name !== undefined) updatePayload.name = data.name;
-  if (data.phone !== undefined) updatePayload.phone = data.phone;
-  if (data.date !== undefined) updatePayload.date = dateStr;
-  if (data.time !== undefined) updatePayload.time = timeStr;
-  if (data.package !== undefined) updatePayload.package = data.package;
-  if (data.addons !== undefined) updatePayload.addons = data.addons;
-  if (data.extraPeopleCount !== undefined) updatePayload.extra_people_count = data.extraPeopleCount;
-  if (data.extraPrintCount !== undefined) updatePayload.extra_print_count = data.extraPrintCount;
-  if (data.paymentMethod !== undefined) updatePayload.payment_method = data.paymentMethod;
-  if (totalPrice !== undefined) updatePayload.total_price = totalPrice;
-
+  // 5. Update data
   const { error: updateError } = await supabase
     .from("reservations")
-    .update(updatePayload)
+    .update({
+      name: data.name,
+      phone: data.phone,
+      date: targetDate,
+      time: targetTime,
+      package: data.package,
+      addons: data.addons,
+      extra_people_count: data.extraPeopleCount,
+      extra_print_count: data.extraPrintCount,
+      payment_method: data.paymentMethod,
+      total_price: updatedTotalPrice,
+    })
     .eq("id", id);
 
   if (updateError) {
     console.error(`[BE] Error updating reservation ${id}:`, updateError);
-    return { success: false, message: updateError.message };
+    return { success: false, message: "Gagal memperbarui reservasi." };
   }
 
-  console.log(`[BE] Reservation ${id} updated silently by admin.`);
-
   revalidatePath("/dashboard/reservations");
-  revalidatePath("/dashboard/pendapatan");
-  return { success: true, message: "Reservasi berhasil diubah" };
+  revalidatePath("/pendapatan");
+  return { success: true, message: "Reservasi berhasil diperbarui." };
 }

@@ -126,7 +126,6 @@ export const LogTransactionForm = () => {
           <label htmlFor="session-time" className="text-[10px] tracking-[0.4em] uppercase font-bold text-[#5A5550]/60 flex items-center gap-2 cursor-pointer">
             <HugeiconsIcon icon={Clock01Icon} size={14} className="text-[#8B5E56]" />
             Jam Sesi
-            <span className="text-[8px] italic tracking-widest font-normal text-[#5A5550]/40">· 14.00 – 23.00 WIB</span>
           </label>
 
           <div className="relative group">

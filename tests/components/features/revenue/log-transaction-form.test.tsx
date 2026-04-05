@@ -65,7 +65,7 @@ describe('LogTransactionForm', () => {
     }, { timeout: 4000 })
   })
 
-  it('validates 14:00 - 23:00 range via Zod', async () => {
+  it('allows any time to be submitted', async () => {
     const user = userEvent.setup()
     render(<LogTransactionForm />)
 
@@ -73,60 +73,14 @@ describe('LogTransactionForm', () => {
     const timeInput = screen.getByTestId('session-time-input')
     const submitBtn = screen.getByRole('button', { name: /Submit Transaksi/i })
 
-    await user.type(nameInput, 'Validator User')
-    
-    // Test below 14:00
-    await user.type(timeInput, '13:59')
+    // Test with a time formerly outside the range (e.g., 08:00)
+    await user.type(nameInput, 'Anytime User')
+    fireEvent.change(timeInput, { target: { value: '08:00' } })
     await user.click(submitBtn)
     
     await waitFor(() => {
-      expect(screen.getByText((content) => content.includes('14:00 - 23:00'))).toBeInTheDocument()
-    }, { timeout: 4000 })
-
-    // Test above 23:00
-    await user.clear(timeInput)
-    await user.type(timeInput, '23:01')
-    await user.click(submitBtn)
-    
-    await waitFor(() => {
-      expect(screen.getAllByText((content) => content.includes('14:00 - 23:00')).length).toBeGreaterThan(0)
-    }, { timeout: 4000 })
-  })
-
-  it('works for exactly 14:00', async () => {
-    const user = userEvent.setup()
-    render(<LogTransactionForm />)
-
-    await user.type(screen.getByTestId('customer-name-input'), 'Start User')
-    const timeInput = screen.getByTestId('session-time-input')
-    
-    fireEvent.change(timeInput, { target: { value: '14:00' } })
-    fireEvent.blur(timeInput)
-    
-    await user.click(screen.getByRole('button', { name: /Submit Transaksi/i }))
-    
-    await waitFor(() => {
       expect(logTransaction).toHaveBeenCalledWith(
-        expect.objectContaining({ session_time: '14:00' })
-      )
-    }, { timeout: 4000 })
-  })
-
-  it('works for exactly 23:00', async () => {
-    const user = userEvent.setup()
-    render(<LogTransactionForm />)
-
-    await user.type(screen.getByTestId('customer-name-input'), 'End User')
-    const timeInput = screen.getByTestId('session-time-input')
-    
-    fireEvent.change(timeInput, { target: { value: '23:00' } })
-    fireEvent.blur(timeInput)
-    
-    await user.click(screen.getByRole('button', { name: /Submit Transaksi/i }))
-    
-    await waitFor(() => {
-      expect(logTransaction).toHaveBeenCalledWith(
-        expect.objectContaining({ session_time: '23:00' })
+        expect.objectContaining({ session_time: '08:00' })
       )
     }, { timeout: 4000 })
   })

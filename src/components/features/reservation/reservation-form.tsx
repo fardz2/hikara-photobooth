@@ -59,19 +59,12 @@ import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
 
 // Constants
-const PRICELIST = [
-  {
-    id: "paket_utama",
-    label: "Foto per Sesi + 2 Photostrip (Maks 4 Orang)",
-    price: 35000,
-  },
-];
-const ADDONS = [
-  { id: "custom_frame", label: "Custom Frame Birthday, Dll", price: 15000 },
-];
-
-const EXTRA_PERSON_PRICE = 5000;
-const EXTRA_PRINT_PRICE = 10000;
+import { 
+  PRICELIST, 
+  ADDONS, 
+  EXTRA_PERSON_PRICE, 
+  EXTRA_PRINT_PRICE 
+} from "@/lib/constants/reservation";
 
 // Time slot logic moved to @/lib/utils/slots
 

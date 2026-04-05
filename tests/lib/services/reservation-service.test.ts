@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { reservationService } from '@/lib/services/reservation-service'
 import { createClient } from '@/lib/supabase/server'
 
-// Mocking to ensure stable utility-based testing
+// Mock createClient
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
 }))
@@ -13,9 +13,8 @@ describe('Reservation Service', () => {
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
     neq: vi.fn().mockReturnThis(),
+    in: vi.fn().mockReturnThis(),
     order: vi.fn().mockReturnThis(),
-    gte: vi.fn().mockReturnThis(),
-    lte: vi.fn().mockReturnThis(),
   }
 
   beforeEach(() => {
@@ -26,34 +25,44 @@ describe('Reservation Service', () => {
   describe('getBookedSlots', () => {
     it('returns array of time strings on success', async () => {
       const mockData = [{ time: '10:00' }, { time: '11:00' }]
-      mockSupabase.neq.mockResolvedValueOnce({ data: mockData, error: null })
+      // In getBookedSlots, .in() is the last call in the chain
+      mockSupabase.in.mockResolvedValueOnce({ data: mockData, error: null })
 
       const result = await reservationService.getBookedSlots('2024-03-01')
       expect(result).toEqual(['10:00', '11:00'])
       expect(mockSupabase.eq).toHaveBeenCalledWith('date', '2024-03-01')
+      expect(mockSupabase.in).toHaveBeenCalledWith('status', ['pending', 'confirmed'])
     })
 
     it('throws error on database failure', async () => {
-      mockSupabase.neq.mockResolvedValueOnce({ data: null, error: { message: 'Database failure' } })
+      mockSupabase.in.mockResolvedValueOnce({ data: null, error: new Error('Database failure') })
       await expect(reservationService.getBookedSlots('2024-03-01')).rejects.toThrow('Database failure')
     })
   })
 
   describe('checkSlotAvailability', () => {
     it('returns true if slot is already occupied', async () => {
-      mockSupabase.neq.mockResolvedValueOnce({ data: [{ id: '123' }], error: null })
+      // No excludeId, so .in() is the last call
+      mockSupabase.in.mockResolvedValueOnce({ data: [{ id: '123' }], error: null })
       const isBooked = await reservationService.checkSlotAvailability('2024-03-01', '10:00')
       expect(isBooked).toBe(true)
     })
 
     it('returns false if slot is free', async () => {
-      mockSupabase.neq.mockResolvedValueOnce({ data: [], error: null })
+      mockSupabase.in.mockResolvedValueOnce({ data: [], error: null })
       const isBooked = await reservationService.checkSlotAvailability('2024-03-01', '10:00')
       expect(isBooked).toBe(false)
     })
 
+    it('respects excludeId when provided', async () => {
+      // excludeId provided, so .neq() is the last call
+      mockSupabase.neq.mockResolvedValueOnce({ data: [], error: null })
+      await reservationService.checkSlotAvailability('2024-03-01', '10:00', 'current-id')
+      expect(mockSupabase.neq).toHaveBeenCalledWith('id', 'current-id')
+    })
+
     it('throws error if availability check fails', async () => {
-      mockSupabase.neq.mockResolvedValueOnce({ data: null, error: { message: 'Network error' } })
+      mockSupabase.in.mockResolvedValueOnce({ data: null, error: new Error('Network error') })
       await expect(reservationService.checkSlotAvailability('2024-03-01', '10:00')).rejects.toThrow('Network error')
     })
   })

@@ -77,14 +77,20 @@ export const reservationService = {
     return data.map((row) => row.time as string);
   },
 
-  async checkSlotAvailability(date: string, time: string) {
+  async checkSlotAvailability(date: string, time: string, excludeId?: string) {
     const supabase = await createClient();
-    const { data, error } = await supabase
+    let query = supabase
       .from("reservations")
       .select("id")
       .eq("date", date)
       .eq("time", time)
       .in("status", ["pending", "confirmed"]);
+
+    if (excludeId) {
+      query = query.neq("id", excludeId);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     return data && data.length > 0;
