@@ -50,6 +50,7 @@ export async function submitReservation(data: ReservationInput) {
 
   // Calculate Price Server Side
   const totalPrice = calculateTotalPrice({
+    packageId: data.package,
     extraPeopleCount: data.extraPeopleCount,
     extraPrintCount: data.extraPrintCount,
     addons: data.addons
@@ -153,6 +154,7 @@ Konfirmasi kehadiran di dashboard admin.`;
   }
 
   revalidatePath("/reservasi");
+  revalidatePath("/dashboard/reservations");
   return { success: true, message: "Reservasi berhasil dikirim! Kami akan menghubungi Anda via WhatsApp." };
 }
 
@@ -303,21 +305,24 @@ export async function editReservation(id: string, data: Partial<ReservationInput
     });
   }
 
-  // 5. Update data
+  // 5. Update data (only defined fields to be safe)
+  const updatePayload: any = {
+    date: targetDate,
+    time: targetTime,
+    total_price: updatedTotalPrice,
+  };
+
+  if (data.name !== undefined) updatePayload.name = data.name;
+  if (data.phone !== undefined) updatePayload.phone = data.phone;
+  if (data.package !== undefined) updatePayload.package = data.package;
+  if (data.addons !== undefined) updatePayload.addons = data.addons;
+  if (data.extraPeopleCount !== undefined) updatePayload.extra_people_count = data.extraPeopleCount;
+  if (data.extraPrintCount !== undefined) updatePayload.extra_print_count = data.extraPrintCount;
+  if (data.paymentMethod !== undefined) updatePayload.payment_method = data.paymentMethod;
+
   const { error: updateError } = await supabase
     .from("reservations")
-    .update({
-      name: data.name,
-      phone: data.phone,
-      date: targetDate,
-      time: targetTime,
-      package: data.package,
-      addons: data.addons,
-      extra_people_count: data.extraPeopleCount,
-      extra_print_count: data.extraPrintCount,
-      payment_method: data.paymentMethod,
-      total_price: updatedTotalPrice,
-    })
+    .update(updatePayload)
     .eq("id", id);
 
   if (updateError) {
@@ -326,6 +331,6 @@ export async function editReservation(id: string, data: Partial<ReservationInput
   }
 
   revalidatePath("/dashboard/reservations");
-  revalidatePath("/pendapatan");
+  revalidatePath("/dashboard/pendapatan");
   return { success: true, message: "Reservasi berhasil diperbarui." };
 }
