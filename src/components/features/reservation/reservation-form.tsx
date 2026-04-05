@@ -20,6 +20,7 @@ import {
 import { toast } from "sonner";
 import { generateDynamicQRIS } from "@/lib/utils/qris";
 import { generateTimeSlots } from "@/lib/utils/slots";
+import { normalizePhoneNumber } from "@/lib/utils/validation";
 import { ReservationSchema as FormSchema, type ReservationValues as FormValues } from "@/lib/validations/reservation";
 
 import { Button } from "@/components/ui/button";
@@ -225,6 +226,7 @@ export const ReservationForm = () => {
       // 2. Submit Reservation
       const result = await submitReservation({
         ...data,
+        phone: normalizePhoneNumber(data.phone),
         date: format(data.date, "yyyy-MM-dd"),
         addons: data.addons ?? [],
         extraPeopleCount: data.extraPeopleCount,

@@ -145,12 +145,15 @@ Konfirmasi kehadiran di dashboard admin.`;
   if (!adminPhone) {
     console.error("[BE] ADMIN_PHONE environment variable is NOT set!");
   } else {
-    Promise.all([
-      fonnteService.sendMessage(data.phone, customerMsg),
-      fonnteService.sendMessage(adminPhone, adminMsg)
-    ]).catch(err => {
-      console.error("[BE] Error sending WhatsApp notifications:", err);
-    });
+    try {
+      await Promise.all([
+        fonnteService.sendMessage(data.phone, customerMsg),
+        fonnteService.sendMessage(adminPhone, adminMsg)
+      ]);
+    } catch (err) {
+      console.error("[WA] Error sending notifications:", err);
+      // We don't return error because the reservation is already saved in DB
+    }
   }
 
   revalidatePath("/reservasi");
