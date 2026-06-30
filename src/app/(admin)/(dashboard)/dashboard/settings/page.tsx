@@ -1,29 +1,29 @@
-import { Suspense } from "react";
-import { getAllSiteContent, getPricing } from "@/lib/services/site-content-service";
-import { SettingsClient } from "@/components/features/dashboard/settings/settings-client";
-import { SettingsSkeleton } from "@/components/skeletons/settings-skeleton";
+import { Suspense } from "react"
+import { getAllSiteContent, getPricing } from "@/lib/services/site-content-service"
+import { SettingsClient } from "@/components/features/dashboard/settings/settings-client"
+import { SettingsSkeleton } from "@/components/skeletons/settings-skeleton"
+import { CONTENT_SECTIONS } from "@/components/features/dashboard/settings/section-config"
+
+const sectionKeys = CONTENT_SECTIONS.map((s) => s.id)
 
 async function SettingsContent() {
-  const sections = ["hero", "marquee", "about", "gallery", "themes", "testimonials", "location", "cta"];
-
   const [sectionData, pricing] = await Promise.all([
-    getAllSiteContent(sections),
+    getAllSiteContent(sectionKeys),
     getPricing(),
-  ]);
-
-  return <SettingsClient sectionData={sectionData} pricing={pricing as any} />;
+  ])
+  return <SettingsClient sectionData={sectionData} pricing={pricing} />
 }
 
 export default function SettingsPage() {
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-heading uppercase tracking-widest text-[#2C2A29]">Settings</h1>
-        <p className="text-sm text-[#5A5550] mt-1">Manage site content, pricing, and account</p>
+    <div className="p-4 md:p-10 max-w-7xl mx-auto">
+      <div className="mb-6">
+        <h1 className="text-2xl font-heading uppercase tracking-[0.2em] text-[#2C2A29]">Site Settings</h1>
+        <p className="text-sm text-[#5A5550] mt-1">Manage your site content, pricing, and password</p>
       </div>
       <Suspense fallback={<SettingsSkeleton />}>
         <SettingsContent />
       </Suspense>
     </div>
-  );
+  )
 }
