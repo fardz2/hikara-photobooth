@@ -38,14 +38,14 @@ describe('LogTransactionForm', () => {
   })
 
   it('renders correctly', () => {
-    render(<LogTransactionForm />)
+    render(<LogTransactionForm pricing={{}} />)
     expect(screen.getByTestId('session-time-input')).toBeInTheDocument()
     expect(screen.getByText(/Nama Pelanggan/i)).toBeInTheDocument()
   })
 
   it('calls logTransaction with correct data on submit', async () => {
     const user = userEvent.setup()
-    render(<LogTransactionForm />)
+    render(<LogTransactionForm pricing={{}} />)
 
     const nameInput = screen.getByTestId('customer-name-input')
     const timeInput = screen.getByTestId('session-time-input')
@@ -67,7 +67,7 @@ describe('LogTransactionForm', () => {
 
   it('allows any time to be submitted', async () => {
     const user = userEvent.setup()
-    render(<LogTransactionForm />)
+    render(<LogTransactionForm pricing={{}} />)
 
     const nameInput = screen.getByTestId('customer-name-input')
     const timeInput = screen.getByTestId('session-time-input')
