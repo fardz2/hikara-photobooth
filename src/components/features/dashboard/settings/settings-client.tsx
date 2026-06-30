@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useRef, useTransition } from "react";
 import { toast } from "sonner";
 import { changePassword } from "@/lib/actions/auth-actions";
 import { updateSectionContent, updatePricing } from "@/lib/actions/site-content-actions";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
+import { uploadSiteImage } from "@/lib/actions/upload-actions";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Loading03Icon, Image01Icon, Add01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 
 // ─── Types ───
 
@@ -331,34 +334,71 @@ function TextField({
 // ─── Image URL with Preview ───
 
 function ImageField({
-  section,
-  keyName,
-  url,
-}: {
-  section: string;
-  keyName: string;
-  url: string;
-}) {
-  const [previewUrl, setPreviewUrl] = useState(url);
-  const [imgLoaded, setImgLoaded] = useState(false);
-  const [imgError, setImgError] = useState(false);
+    section,
+    keyName,
+    url,
+  }: {
+    section: string;
+    keyName: string;
+    url: string;
+  }) {
+    const [previewUrl, setPreviewUrl] = useState(url);
+    const [imgLoaded, setImgLoaded] = useState(false);
+    const [imgError, setImgError] = useState(false);
+    const [uploading, startUpload] = useTransition();
+    const fileRef = useRef<HTMLInputElement>(null);
 
-  return (
-    <div>
-      <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">
-        {keyName.replace(/_/g, " ")}
-      </label>
-      <input
-        name={`${section}_${keyName}`}
-        defaultValue={url}
-        onChange={(e) => {
-          setPreviewUrl(e.target.value);
-          setImgLoaded(false);
-          setImgError(false);
-        }}
-        className="mt-1 w-full border border-[#E8E2D9] rounded px-3 py-2 text-sm bg-white"
-        placeholder="https://..."
-      />
+    const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      startUpload(async () => {
+        const fd = new FormData();
+        fd.append("file", file);
+        const result = await uploadSiteImage(fd);
+        if ("error" in result) {
+          toast.error(result.error);
+        } else {
+          setPreviewUrl(result.url!);
+          toast.success("Uploaded");
+        }
+        if (fileRef.current) fileRef.current.value = "";
+      });
+    };
+
+    return (
+      <div>
+        <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">
+          {keyName.replace(/_/g, " ")}
+        </label>
+        <div className="mt-1 flex items-center gap-2">
+          <input
+            name={`${section}_${keyName}`}
+            defaultValue={url}
+            onChange={(e) => {
+              setPreviewUrl(e.target.value);
+              setImgLoaded(false);
+              setImgError(false);
+            }}
+            className="flex-1 border border-[#E8E2D9] rounded-none px-3 py-2 text-sm bg-white"
+            placeholder="https://..."
+          />
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleUpload}
+            className="hidden"
+          />
+          <button
+            type="button"
+            disabled={uploading}
+            onClick={() => fileRef.current?.click()}
+            className="shrink-0 bg-[#632626] text-white px-3 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#4a1c1c] transition-colors disabled:opacity-50 flex items-center gap-1"
+          >
+            {uploading ? <HugeiconsIcon icon={Loading03Icon} className="animate-spin" size={12} /> : <HugeiconsIcon icon={Image01Icon} size={12} />}
+            Upload
+          </button>
+        </div>
       {previewUrl && /^https?:\/\//.test(previewUrl) && (
         <div className="mt-2 relative w-32 h-20 rounded overflow-hidden border border-[#E8E2D9] bg-[#EBE6DF]">
           {!imgLoaded && !imgError && (
@@ -395,12 +435,16 @@ function ImageArrayField({
   section,
   keyName,
   urls,
+  maxImages = 3,
 }: {
   section: string;
   keyName: string;
   urls: string[];
+  maxImages?: number;
 }) {
   const [items, setItems] = useState<string[]>(urls.length > 0 ? urls : [""]);
+  const [uploading, startUpload] = useTransition();
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const addItem = () => setItems([...items, ""]);
   const removeItem = (idx: number) => {
@@ -413,10 +457,41 @@ function ImageArrayField({
     setItems(next);
   };
 
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const filled = items.filter((u) => u.trim()).length;
+    if (filled >= maxImages) {
+      toast.error(`Max ${maxImages} gambar`);
+      return;
+    }
+    startUpload(async () => {
+      const fd = new FormData();
+      fd.append("file", file);
+      const result = await uploadSiteImage(fd);
+      if ("error" in result) {
+        toast.error(result.error);
+      } else {
+        // Replace first empty slot or append
+        const emptyIdx = items.findIndex((u) => !u.trim());
+        if (emptyIdx >= 0) {
+          const next = [...items];
+          next[emptyIdx] = result.url!;
+          setItems(next);
+        } else {
+          setItems([...items, result.url!]);
+        }
+        toast.success("Uploaded");
+      }
+      if (fileRef.current) fileRef.current.value = "";
+    });
+  };
+
   return (
     <div>
       <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-2">
         {keyName.replace(/_/g, " ")}
+        <span className="text-[#8B5E56] ml-1">({items.filter((u) => u.trim()).length}/{maxImages})</span>
       </label>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {items.map((item, idx) => (
@@ -461,6 +536,24 @@ function ImageArrayField({
       >
         + Add URL
       </button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        onChange={handleUpload}
+        className="hidden"
+      />
+      {items.filter((u) => u.trim()).length < maxImages && (
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => fileRef.current?.click()}
+          className="mt-2 ml-3 inline-flex items-center gap-1 bg-[#632626] text-white px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold hover:bg-[#4a1c1c] transition-colors disabled:opacity-50"
+        >
+          {uploading ? <HugeiconsIcon icon={Loading03Icon} className="animate-spin" size={10} /> : <HugeiconsIcon icon={Image01Icon} size={10} />}
+          Upload Image
+        </button>
+      )}
     </div>
   );
 }
@@ -619,7 +712,7 @@ function ThemeItemsField({
               </label>
               <textarea
                 name={`${section}_${keyName}_${idx}_images`}
-                value={Array.isArray(item.images) ? item.images.join("\n") : (item.images as string) ?? ""}
+                value={Array.isArray(item.images) ? item.images.join("\n") : String(item.images ?? "")}
                 onChange={(e) =>
                   updateItem(
                     idx,
