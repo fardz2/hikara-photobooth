@@ -48,7 +48,7 @@ export async function submitReservation(data: ReservationInput) {
   console.log(`[BE] Handling reservation for ${dateStr} at ${validatedData.time}`);
 
   // Calculate Price Server Side
-  const totalPrice = calculateTotalPrice({
+  const totalPrice = await calculateTotalPrice({
     packageId: validatedData.package,
     extraPeopleCount: validatedData.extraPeopleCount,
     extraPrintCount: validatedData.extraPrintCount,
@@ -303,7 +303,7 @@ export async function editReservation(id: string, data: Partial<ReservationInput
     validatedData.extraPrintCount !== undefined;
 
   if (isPricingChanged) {
-    updatedTotalPrice = calculateTotalPrice({
+    updatedTotalPrice = await calculateTotalPrice({
       packageId: validatedData.package !== undefined ? validatedData.package : current.package,
       extraPeopleCount: validatedData.extraPeopleCount !== undefined ? validatedData.extraPeopleCount : current.extra_people_count,
       extraPrintCount: validatedData.extraPrintCount !== undefined ? validatedData.extraPrintCount : current.extra_print_count,

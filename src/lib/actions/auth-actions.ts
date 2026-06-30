@@ -34,3 +34,37 @@ export async function logout() {
   revalidatePath("/", "layout");
   redirect("/login");
 }
+
+export async function changePassword(formData: FormData) {
+  const supabase = await createClient();
+
+  const currentPassword = formData.get("currentPassword") as string;
+  const newPassword = formData.get("newPassword") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+
+  if (newPassword !== confirmPassword) {
+    return { error: "Password baru tidak sama" };
+  }
+
+  if (newPassword.length < 6) {
+    return { error: "Password baru minimal 6 karakter" };
+  }
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.email) return { error: "Tidak terautentikasi" };
+
+  // Verify current password
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: currentPassword,
+  });
+  if (signInError) return { error: "Password lama salah" };
+
+  // Update to new password
+  const { error: updateError } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+  if (updateError) return { error: updateError.message };
+
+  return { success: true };
+}

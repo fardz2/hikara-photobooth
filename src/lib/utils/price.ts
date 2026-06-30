@@ -1,32 +1,43 @@
-import { PRICELIST, ADDONS, EXTRA_PERSON_PRICE, EXTRA_PRINT_PRICE } from "../constants/reservation";
+import { getPricing, type PricingDict } from "../data/pricing";
 
-interface PriceInput {
+export interface PriceInput {
   packageId?: string;
   extraPeopleCount?: number;
   extraPrintCount?: number;
   addons?: string[];
 }
 
-/**
- * Calculates the total price for a reservation based on base price, 
- * extra people, extra prints, and selected addons.
- */
-export function calculateTotalPrice(input: PriceInput): number {
-  // Find package price or default to the first one (paket_utama)
-  const selectedPackage = PRICELIST.find(p => p.id === input.packageId) || PRICELIST[0];
-  let totalPrice = selectedPackage.price;
-  
-  totalPrice += (input.extraPeopleCount || 0) * EXTRA_PERSON_PRICE;
-  totalPrice += (input.extraPrintCount || 0) * EXTRA_PRINT_PRICE;
-  
+export async function calculateTotalPrice(input: PriceInput): Promise<number> {
+  const pricing = await getPricing();
+  const pkg = pricing[input.packageId || "paket_utama"] || pricing.paket_utama;
+  let total = pkg?.price || 0;
+
+  total += (input.extraPeopleCount || 0) * (pricing.extra_person?.price || 5000);
+  total += (input.extraPrintCount || 0) * (pricing.extra_print?.price || 10000);
+
   if (input.addons) {
-    input.addons.forEach(addonId => {
-      const addon = ADDONS.find(a => a.id === addonId);
-      if (addon) {
-        totalPrice += addon.price;
-      }
-    });
+    const addonPrices: Record<string, number> = {};
+    if (pricing.custom_frame) addonPrices["custom_frame"] = pricing.custom_frame.price;
+    for (const addonId of input.addons) {
+      total += addonPrices[addonId] || 0;
+    }
   }
 
-  return totalPrice;
+  return total;
+}
+
+/** Synchronous version for contexts where pricing is already fetched */
+export function calculateTotalPriceSync(input: PriceInput, pricing: PricingDict): number {
+  const pkg = pricing[input.packageId || "paket_utama"] || pricing.paket_utama;
+  let total = pkg?.price || 0;
+  total += (input.extraPeopleCount || 0) * (pricing.extra_person?.price || 5000);
+  total += (input.extraPrintCount || 0) * (pricing.extra_print?.price || 10000);
+  if (input.addons) {
+    const addonPrices: Record<string, number> = {};
+    if (pricing.custom_frame) addonPrices["custom_frame"] = pricing.custom_frame.price;
+    for (const addonId of input.addons) {
+      total += addonPrices[addonId] || 0;
+    }
+  }
+  return total;
 }

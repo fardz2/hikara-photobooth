@@ -1,4 +1,4 @@
-import { EXTRA_PERSON_PRICE, EXTRA_PRINT_PRICE } from "../constants/reservation";
+import type { PricingDict } from "../data/pricing";
 
 export interface RawRevenueRow {
   total_price: number | null;
@@ -22,9 +22,13 @@ export interface RevenueStats {
 
 /**
  * Pure function to format and aggregate revenue data from raw database rows.
+ * Pricing is passed in as a parameter (pre-fetched from DB).
  */
-export function formatRevenueStats(data: RawRevenueRow[]): RevenueStats {
+export function formatRevenueStats(data: RawRevenueRow[], pricing: PricingDict): RevenueStats {
   const total = data.reduce((acc, row) => acc + (row.total_price || 0), 0);
+
+  const extraPersonPrice = pricing.extra_person?.price || 5000;
+  const extraPrintPrice = pricing.extra_print?.price || 10000;
 
   const breakdown = data.reduce(
     (acc, row) => {
@@ -34,11 +38,8 @@ export function formatRevenueStats(data: RawRevenueRow[]): RevenueStats {
       } else {
         acc.tunai += price;
       }
-      
-      // Calculate specific addon revenues (using central price constants)
-      acc.extraPrint += (row.extra_print_count || 0) * EXTRA_PRINT_PRICE;
-      acc.extraPeople += (row.extra_people_count || 0) * EXTRA_PERSON_PRICE;
-      
+      acc.extraPrint += (row.extra_print_count || 0) * extraPrintPrice;
+      acc.extraPeople += (row.extra_people_count || 0) * extraPersonPrice;
       return acc;
     },
     { tunai: 0, qris: 0, extraPrint: 0, extraPeople: 0 }
