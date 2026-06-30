@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: "Informasi mengenai bagaimana Hikara Photobox mengumpulkan, menggunakan, dan melindungi data pribadi Anda untuk layanan reservasi photoshoot studio.",
 };
 
+import { escapeJsonForHtml } from "@/lib/utils/escape";
+
 export default function PrivacyPolicyPage() {
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -30,7 +32,7 @@ export default function PrivacyPolicyPage() {
     <div className="pt-32 md:pt-48 pb-24 px-6 max-w-3xl mx-auto flex flex-col gap-8">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: escapeJsonForHtml(JSON.stringify(breadcrumbJsonLd)) }}
         key="breadcrumb-json"
       />
       <h1 className="font-heading text-4xl text-[#2C2A29] tracking-tight uppercase">Privacy Policy</h1>

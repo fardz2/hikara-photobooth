@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import {
   Dialog,
@@ -49,8 +49,8 @@ export function EditReservationDialog({ reservation, open, onOpenChange }: Props
   const [extraPrintCount, setExtraPrintCount] = useState<number>(reservation?.extra_print_count || 0);
   const [paymentMethod, setPaymentMethod] = useState<"tunai" | "qris">(reservation?.payment_method || "tunai");
 
-  // Keep synced when open/reservation changes
-  useState(() => {
+  // Sync state when opening dialog with different reservation
+  useEffect(() => {
     if (reservation && open) {
       setName(reservation.name);
       setPhone(reservation.phone);
@@ -62,7 +62,7 @@ export function EditReservationDialog({ reservation, open, onOpenChange }: Props
       setExtraPrintCount(reservation.extra_print_count || 0);
       setPaymentMethod(reservation.payment_method || "tunai");
     }
-  });
+  }, [reservation, open]);
 
   if (!reservation) return null;
 

@@ -5,6 +5,8 @@ import { Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { LenisProvider } from "@/components/providers/lenis-provider";
 
+import { escapeJsonForHtml } from "@/lib/utils/escape";
+
 export default function PublicLayout({
   children,
 }: {
@@ -64,7 +66,7 @@ export default function PublicLayout({
         <div className="relative z-10 bg-[#F6F4F0] mb-[500px] md:mb-[400px] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            dangerouslySetInnerHTML={{ __html: escapeJsonForHtml(JSON.stringify(jsonLd)) }}
             key="ld-json"
           />
           <NoiseOverlay />

@@ -29,7 +29,6 @@ export async function submitReservation(data: ReservationInput) {
   // 1. Validate with Zod for better security/consistency
   const validation = FormSchema.safeParse({
     ...data,
-    // data.date is already a Date object from the form
   });
 
   if (!validation.success) {
@@ -39,26 +38,26 @@ export async function submitReservation(data: ReservationInput) {
 
   const validatedData = validation.data;
 
-  // Enforce Indonesia Number (62) - Keep existing logic for phone prefixing
-  if (!isValidWhatsApp(data.phone)) {
+  // Phone already normalized by Zod transform (08xxx → 628xxx)
+  if (!isValidWhatsApp(validatedData.phone)) {
     return { success: false, message: "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...)." };
   }
 
-  const dateStr = typeof data.date === "string" ? data.date : format(data.date, "yyyy-MM-dd");
+  const dateStr = typeof validatedData.date === "string" ? validatedData.date : format(validatedData.date, "yyyy-MM-dd");
 
-  console.log(`[BE] Handling reservation for ${dateStr} at ${data.time}`);
+  console.log(`[BE] Handling reservation for ${dateStr} at ${validatedData.time}`);
 
   // Calculate Price Server Side
   const totalPrice = calculateTotalPrice({
-    packageId: data.package,
-    extraPeopleCount: data.extraPeopleCount,
-    extraPrintCount: data.extraPrintCount,
-    addons: data.addons
+    packageId: validatedData.package,
+    extraPeopleCount: validatedData.extraPeopleCount,
+    extraPrintCount: validatedData.extraPrintCount,
+    addons: validatedData.addons
   });
 
   // 1. Use service for availability check
   try {
-    const isBooked = await reservationService.checkSlotAvailability(dateStr, data.time);
+    const isBooked = await reservationService.checkSlotAvailability(dateStr, validatedData.time);
     if (isBooked) {
       return { success: false, message: "Maaf, slot ini sudah habis." };
     }
@@ -70,15 +69,15 @@ export async function submitReservation(data: ReservationInput) {
   const { error: insertError } = await supabase
     .from("reservations")
     .insert({
-      name: data.name,
-      phone: data.phone,
+      name: validatedData.name,
+      phone: validatedData.phone,
       date: dateStr,
-      time: data.time,
-      package: data.package,
-      addons: data.addons,
-      extra_people_count: data.extraPeopleCount || 0,
-      extra_print_count: data.extraPrintCount || 0,
-      payment_method: data.paymentMethod,
+      time: validatedData.time,
+      package: validatedData.package,
+      addons: validatedData.addons,
+      extra_people_count: validatedData.extraPeopleCount || 0,
+      extra_print_count: validatedData.extraPrintCount || 0,
+      payment_method: validatedData.paymentMethod,
       payment_proof_url: data.paymentProofUrl || null,
       total_price: totalPrice, 
       is_walk_in: false,
@@ -93,7 +92,7 @@ export async function submitReservation(data: ReservationInput) {
   console.log(`[BE] Reservation SUCCESS for ${data.name} on ${dateStr} - Total: Rp ${totalPrice.toLocaleString('id-ID')} (${data.paymentMethod})`);
   
   // 3. Send WhatsApp Notifications (Async, don't block response)
-  const paymentStatus = data.paymentMethod === "qris" 
+  const paymentStatus = validatedData.paymentMethod === "qris" 
     ? "Dibayar via QRIS (Menunggu Konfirmasi)" 
     : "Bayar di Studio (Tunai/QRIS)";
 
@@ -103,40 +102,40 @@ export async function submitReservation(data: ReservationInput) {
 
   const customerMsg = `*HIKARA PHOTOBOX - RESERVASI BERHASIL* 📸
 
-Halo *${data.name}*, 
+Halo *${validatedData.name}*, 
 Terima kasih telah melakukan reservasi di Hikara Photobox.
 
 *Detail Reservasi:*
 📅 Tanggal: ${format(displayDate, "EEEE, dd MMMM yyyy", { locale: idLocale })}
-⏰ Waktu: ${data.time} WITA
-${data.extraPeopleCount && data.extraPeopleCount > 0 ? `👤 Tambahan Orang: ${data.extraPeopleCount}\n` : ""}${data.extraPrintCount && data.extraPrintCount > 0 ? `🖼️ Tambahan Print: ${data.extraPrintCount}\n` : ""}💳 Metode: *${data.paymentMethod === 'qris' ? 'QRIS' : 'Tunai di Tempat'}*
+⏰ Waktu: ${validatedData.time} WITA
+${validatedData.extraPeopleCount && validatedData.extraPeopleCount > 0 ? `👤 Tambahan Orang: ${validatedData.extraPeopleCount}\\n` : ""}${validatedData.extraPrintCount && validatedData.extraPrintCount > 0 ? `🖼️ Tambahan Print: ${validatedData.extraPrintCount}\\n` : ""}💳 Metode: *${validatedData.paymentMethod === 'qris' ? 'QRIS' : 'Tunai di Tempat'}*
 💵 Total: *Rp ${totalPrice.toLocaleString('id-ID')}*
 📝 Status: ${paymentStatus}
 
 *Syarat & Ketentuan:*
 1. Harap datang 5-10 menit sebelum jadwal sesi.
 2. Tunjukkan pesan ini saat kedatangan.
-${data.paymentMethod === 'tunai' ? "3. Pembayaran diselesaikan di studio." : "3. Pembayaran sudah kami terima (via QRIS)."}
+${validatedData.paymentMethod === 'tunai' ? "3. Pembayaran diselesaikan di studio." : "3. Pembayaran sudah kami terima (via QRIS)."}
 
 Sampai jumpa di studio! ✨`;
 
-  const adminMsg = data.paymentMethod === "qris" 
+  const adminMsg = validatedData.paymentMethod === "qris" 
     ? `*KONFIRMASI PEMBAYARAN QRIS!* 💳 🔥
   
-👤 Nama: ${data.name}
-📱 WA: ${data.phone}
+👤 Nama: ${validatedData.name}
+📱 WA: ${validatedData.phone}
 📅 Tanggal: ${format(displayDate, "dd MMM yyyy", { locale: idLocale })}
-⏰ Waktu: ${data.time}
+⏰ Waktu: ${validatedData.time}
 💰 Total: *Rp ${totalPrice.toLocaleString('id-ID')}*
 📎 Bukti: ${data.paymentProofUrl || "Tidak ada bukti terlampir"}
 
 Segera cek dashboard untuk verifikasi bukti & konfirmasi!`
     : `*RESERVASI BARU (TUNAI)!* 💵 🔥
   
-👤 Nama: ${data.name}
-📱 WA: ${data.phone}
+👤 Nama: ${validatedData.name}
+📱 WA: ${validatedData.phone}
 📅 Tanggal: ${format(displayDate, "dd MMM yyyy", { locale: idLocale })}
-⏰ Waktu: ${data.time}
+⏰ Waktu: ${validatedData.time}
 💰 Total: Rp ${totalPrice.toLocaleString('id-ID')}
 
 Konfirmasi kehadiran di dashboard admin.`;
@@ -147,7 +146,7 @@ Konfirmasi kehadiran di dashboard admin.`;
   } else {
     try {
       await Promise.all([
-        fonnteService.sendMessage(data.phone, customerMsg),
+        fonnteService.sendMessage(validatedData.phone, customerMsg),
         fonnteService.sendMessage(adminPhone, adminMsg)
       ]);
     } catch (err) {
@@ -265,6 +264,8 @@ export async function editReservation(id: string, data: Partial<ReservationInput
     return { success: false, message: validation.error.issues[0].message };
   }
 
+  const validatedData = validation.data;
+
   // 2. Ambil data saat ini untuk pembandingan dan perhitungan harga
   const { data: current, error: fetchError } = await supabase
     .from("reservations")
@@ -277,8 +278,10 @@ export async function editReservation(id: string, data: Partial<ReservationInput
   }
 
   // 3. Jika tanggal/waktu diubah, cek ketersediaan (kecuali diri sendiri)
-  const targetDate = data.date ? (typeof data.date === "string" ? data.date : format(data.date, "yyyy-MM-dd")) : current.date;
-  const targetTime = data.time || current.time;
+  const targetDate = validatedData.date 
+    ? (typeof validatedData.date === "string" ? validatedData.date : format(validatedData.date, "yyyy-MM-dd")) 
+    : current.date;
+  const targetTime = validatedData.time || current.time;
 
   if (targetDate !== current.date || targetTime !== current.time) {
     try {
@@ -294,17 +297,17 @@ export async function editReservation(id: string, data: Partial<ReservationInput
   // 4. Hitung ulang total price jika ada perubahan harga
   let updatedTotalPrice = current.total_price;
   const isPricingChanged = 
-    data.package !== undefined || 
-    data.addons !== undefined || 
-    data.extraPeopleCount !== undefined || 
-    data.extraPrintCount !== undefined;
+    validatedData.package !== undefined || 
+    validatedData.addons !== undefined || 
+    validatedData.extraPeopleCount !== undefined || 
+    validatedData.extraPrintCount !== undefined;
 
   if (isPricingChanged) {
     updatedTotalPrice = calculateTotalPrice({
-      packageId: data.package !== undefined ? data.package : current.package,
-      extraPeopleCount: data.extraPeopleCount !== undefined ? data.extraPeopleCount : current.extra_people_count,
-      extraPrintCount: data.extraPrintCount !== undefined ? data.extraPrintCount : current.extra_print_count,
-      addons: data.addons !== undefined ? data.addons : current.addons || []
+      packageId: validatedData.package !== undefined ? validatedData.package : current.package,
+      extraPeopleCount: validatedData.extraPeopleCount !== undefined ? validatedData.extraPeopleCount : current.extra_people_count,
+      extraPrintCount: validatedData.extraPrintCount !== undefined ? validatedData.extraPrintCount : current.extra_print_count,
+      addons: validatedData.addons !== undefined ? validatedData.addons : current.addons || []
     });
   }
 
@@ -315,13 +318,13 @@ export async function editReservation(id: string, data: Partial<ReservationInput
     total_price: updatedTotalPrice,
   };
 
-  if (data.name !== undefined) updatePayload.name = data.name;
-  if (data.phone !== undefined) updatePayload.phone = data.phone;
-  if (data.package !== undefined) updatePayload.package = data.package;
-  if (data.addons !== undefined) updatePayload.addons = data.addons;
-  if (data.extraPeopleCount !== undefined) updatePayload.extra_people_count = data.extraPeopleCount;
-  if (data.extraPrintCount !== undefined) updatePayload.extra_print_count = data.extraPrintCount;
-  if (data.paymentMethod !== undefined) updatePayload.payment_method = data.paymentMethod;
+  if (validatedData.name !== undefined) updatePayload.name = validatedData.name;
+  if (validatedData.phone !== undefined) updatePayload.phone = validatedData.phone;
+  if (validatedData.package !== undefined) updatePayload.package = validatedData.package;
+  if (validatedData.addons !== undefined) updatePayload.addons = validatedData.addons;
+  if (validatedData.extraPeopleCount !== undefined) updatePayload.extra_people_count = validatedData.extraPeopleCount;
+  if (validatedData.extraPrintCount !== undefined) updatePayload.extra_print_count = validatedData.extraPrintCount;
+  if (validatedData.paymentMethod !== undefined) updatePayload.payment_method = validatedData.paymentMethod;
 
   const { error: updateError } = await supabase
     .from("reservations")

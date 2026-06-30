@@ -14,6 +14,8 @@ export const metadata: Metadata = {
     "Jadwalkan sesi foto studio premium Anda di Hikara Photobox Kotabaru. Tersedia berbagai pilihan frame eksklusif dan cetakan berkualitas tinggi.",
 };
 
+import { escapeJsonForHtml } from "@/lib/utils/escape";
+
 export default function ReservasiPage() {
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -38,7 +40,7 @@ export default function ReservasiPage() {
     <div className="pt-32 md:pt-48 pb-24 px-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-24">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: escapeJsonForHtml(JSON.stringify(breadcrumbJsonLd)) }}
         key="breadcrumb-json"
       />
       <div className="w-full lg:w-1/3 flex flex-col gap-6">

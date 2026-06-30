@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { escapeJsonForHtml } from "@/lib/utils/escape";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -67,6 +68,44 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "PhotographyStore",
+    "name": "HIKARA Photobox Kotabaru",
+    "image": "https://hikara-photobox.vercel.app/logo.png",
+    "@id": "https://hikara-photobox.vercel.app",
+    "url": "https://hikara-photobox.vercel.app",
+    "telephone": "6285652046716",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Jl. Veteran, Dirgahayu",
+      "addressLocality": "Kotabaru",
+      "addressRegion": "Kalimantan Selatan",
+      "postalCode": "72111",
+      "addressCountry": "ID"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -3.226315,
+      "longitude": 116.223056
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "14:00",
+      "closes": "23:00"
+    },
+    "priceRange": "Rp 35.000 - Rp 100.000"
+  };
+
   return (
     <html
       lang="id"
@@ -84,43 +123,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "PhotographyStore",
-              "name": "HIKARA Photobox Kotabaru",
-              "image": "https://hikara-photobox.vercel.app/logo.png",
-              "@id": "https://hikara-photobox.vercel.app",
-              "url": "https://hikara-photobox.vercel.app",
-              "telephone": "6285652046716",
-              "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "Jl. Veteran, Dirgahayu",
-                "addressLocality": "Kotabaru",
-                "addressRegion": "Kalimantan Selatan",
-                "postalCode": "72111",
-                "addressCountry": "ID"
-              },
-              "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": -3.226315,
-                "longitude": 116.223056
-              },
-              "openingHoursSpecification": {
-                "@type": "OpeningHoursSpecification",
-                "dayOfWeek": [
-                  "Monday",
-                  "Tuesday",
-                  "Wednesday",
-                  "Thursday",
-                  "Friday",
-                  "Saturday",
-                  "Sunday"
-                ],
-                "opens": "14:00",
-                "closes": "23:00"
-              },
-              "priceRange": "Rp 35.000 - Rp 100.000"
-            }),
+            __html: escapeJsonForHtml(JSON.stringify(jsonLd)),
           }}
         />
       </body>

@@ -43,10 +43,17 @@ drop policy if exists "Allow public select" on reservations;
 drop policy if exists "Allow service role to select all" on reservations;
 drop policy if exists "Allow service role full access" on reservations;
 
--- Policy: siapa saja boleh insert (public booking)
+-- Policy: siapa saja boleh insert (public booking) dengan anon role
 create policy "Allow public insert"
   on reservations for insert
-  with check (true);
+  to anon
+  with check (
+    name is not null
+    and phone is not null
+    and date is not null
+    and time is not null
+    and package is not null
+  );
 
 -- Policy: siapa saja boleh melihat jadwal
 create policy "Allow public select"
