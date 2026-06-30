@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatRevenueStats } from "@/lib/utils/revenue";
+import { getPricing } from "@/lib/data/pricing";
 
 export const revenueService = {
   async getRevenueStats(from: string, to: string) {
@@ -14,6 +15,7 @@ export const revenueService = {
 
     if (error || !data) return null;
 
-    return formatRevenueStats(data);
+    const pricing = await getPricing();
+    return formatRevenueStats(data, pricing);
   },
 };

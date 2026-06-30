@@ -1,6 +1,17 @@
 import { FadeUp, ParallaxElement } from "@/components/ui/motion";
 
-export const LocationSection = () => {
+interface Props {
+  data: Record<string, any> | null;
+}
+
+export const LocationSection = ({ data }: Props) => {
+  const d: Record<string, any> = {
+    map_embed_url: "https://maps.google.com/maps?q=Hikara.photobox%2C%20Jl.%20Veteran%2C%20Dirgahayu%2C%20Kec.%20Pulau%20Laut%20Utara%2C%20Kab.%20Kotabaru%2C%20Kalimantan%20Selatan%2072111&t=&z=16&ie=UTF8&iwloc=&output=embed",
+    address_line1: "Jl. Veteran,",
+    address_line2: "Dirgahayu",
+    address_sub: "(Sebelah RM. Barokah Muka Hotel Kartika) <br /> Kec. Pulau Laut Utara, Kab. Kotabaru <br /> Kalimantan Selatan",
+    ...data,
+  };
   return (
     <section
       id="location"
@@ -27,14 +38,12 @@ export const LocationSection = () => {
       <div className="w-full max-w-5xl mx-auto flex flex-col items-center">
         <FadeUp delay={0.1}>
           <p className="font-heading text-3xl md:text-5xl text-[#F6F4F0] mb-4 text-center">
-            Jl. Veteran,{" "}
-            <span className="text-[#8B5E56] font-serif italic">Dirgahayu</span>
+            {d.address_line1}{" "}
+            <span className="text-[#8B5E56] font-serif italic">{d.address_line2}</span>
           </p>
         </FadeUp>
         <FadeUp delay={0.2}>
-          <p className="font-light tracking-[0.15em] text-[#EFEBDE]/60 text-xs md:text-sm mb-16 uppercase text-center max-w-xl leading-relaxed">
-            (Sebelah RM. Barokah Muka Hotel Kartika) <br />
-            Kec. Pulau Laut Utara, Kab. Kotabaru <br /> Kalimantan Selatan
+          <p className="font-light tracking-[0.15em] text-[#EFEBDE]/60 text-xs md:text-sm mb-16 uppercase text-center max-w-xl leading-relaxed" dangerouslySetInnerHTML={{ __html: d.address_sub }}>
           </p>
         </FadeUp>
 
@@ -42,7 +51,7 @@ export const LocationSection = () => {
           <div className="w-full aspect-square md:aspect-21/9 bg-[#F6F4F0]/5 relative group overflow-hidden border border-[#F6F4F0]/10 p-2 md:p-4">
             <div className="w-full h-full relative overflow-hidden bg-[#2C2A29]">
               <iframe
-                src="https://maps.google.com/maps?q=Hikara.photobox%2C%20Jl.%20Veteran%2C%20Dirgahayu%2C%20Kec.%20Pulau%20Laut%20Utara%2C%20Kab.%20Kotabaru%2C%20Kalimantan%20Selatan%2072111&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                src={d.map_embed_url}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

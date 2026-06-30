@@ -1,7 +1,18 @@
 import { FadeUp, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import Image from "next/image";
 
-export const AboutSection = () => {
+interface Props {
+  data: Record<string, any> | null;
+}
+
+const DEFAULTS = {
+  image_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
+  description_heading: "Kami menciptakan ruang sederhana untuk menangkap momen yang jujur dan apa adanya.",
+  description_sub: "Desain elegan, pencahayaan presisi, dan estetika majalah dalam setiap cetakan.",
+};
+
+export const AboutSection = ({ data }: Props) => {
+  const d = { ...DEFAULTS, ...data };
   return (
     <section
       id="about"
@@ -31,11 +42,9 @@ export const AboutSection = () => {
 
       <FadeUp delay={0.2} className="w-full">
         <p className="font-heading text-2xl md:text-4xl text-[#2C2A29] max-w-3xl leading-relaxed my-12 mx-auto">
-          Kami menciptakan ruang sederhana untuk menangkap momen yang jujur dan
-          apa adanya.
+          {d.description_heading}
           <span className="block mt-6 text-sm font-sans font-light tracking-widest text-[#5A5550] uppercase leading-loose">
-            Desain elegan, pencahayaan presisi, dan estetika majalah dalam
-            setiap cetakan.
+            {d.description_sub}
           </span>
         </p>
       </FadeUp>
@@ -55,7 +64,7 @@ export const AboutSection = () => {
            </div>
            
            <div className="absolute inset-0 z-0">
-             <Image src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop" alt="HIKARA Studio Foto Kotabaru - Proses Foto Studio Premium" fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" />
+             <Image src={d.image_url} alt="HIKARA Studio Foto Kotabaru - Proses Foto Studio Premium" fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" />
              <div className="absolute inset-0 bg-linear-to-t from-[#F6F4F0] via-[#F6F4F0]/80 to-transparent"></div>
            </div>
            <span className="font-serif text-8xl md:text-9xl text-[#8B5E56] opacity-30 relative z-10 mix-blend-multiply">H</span>

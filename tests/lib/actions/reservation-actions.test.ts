@@ -52,9 +52,15 @@ vi.mock('@/lib/services/fonnte-service', () => ({
   },
 }))
 
-vi.mock('next/cache', () => ({
-  revalidatePath: vi.fn(),
-}))
+vi.mock('next/cache', async (importOriginal) => {
+  const actual = await importOriginal() as any
+  return {
+    ...actual,
+    cacheLife: vi.fn(),
+    cacheTag: vi.fn(),
+    revalidatePath: vi.fn(),
+  }
+})
 
 describe('Reservation Actions', () => {
   beforeEach(() => {

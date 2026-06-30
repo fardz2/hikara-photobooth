@@ -156,7 +156,7 @@ export const RevenueStats = async ({ searchParams }: Props) => {
                 </SheetDescription>
               </SheetHeader>
               <div className="p-8 overflow-y-auto h-[calc(100vh-140px)]">
-                <LogTransactionForm />
+                <LogTransactionForm pricing={{}} />
               </div>
             </SheetContent>
           </Sheet>
@@ -179,7 +179,7 @@ export const RevenueStats = async ({ searchParams }: Props) => {
                 <SheetTitle className="font-heading text-xl text-[#2C2A29] text-left">Pencatatan Transaksi</SheetTitle>
               </SheetHeader>
               <div className="p-6 overflow-y-auto h-[calc(90vh-80px)]">
-                <LogTransactionForm />
+                <LogTransactionForm pricing={{}} />
               </div>
             </SheetContent>
           </Sheet>

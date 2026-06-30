@@ -7,7 +7,29 @@ import { Magnetic } from "@/components/ui/magnetic";
 import Image from "next/image";
 import Link from "next/link";
 
-export const HeroSection = () => {
+const DEFAULTS = {
+  tagline: "HIKARA PHOTOBOX",
+  title_line1: "MOMEN KECIL,",
+  title_highlight: "KENANGAN",
+  title_line2: "ABADI",
+  subtitle: "Photobox estetik dengan sentuhan minimalis.",
+  subtitle_cursive: "Tangkap versi terbaik dari dirimu.",
+  brand_name: "HIKARA",
+  vertical_text_right: "PHOTOBOX",
+  vertical_text_left: "Abadikan Momen",
+  cta_text: "Book Now",
+  cta_link: "/reservasi",
+  polaroid_1: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop",
+  polaroid_2: "https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop",
+  polaroid_3: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
+};
+
+interface Props {
+  data: Record<string, any> | null;
+}
+
+export const HeroSection = ({ data }: Props) => {
+  const d = { ...DEFAULTS, ...data };
   const heroRef = useRef(null);
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroBgY = useTransform(heroScroll, [0, 1], ["0%", "15%"]);
@@ -22,7 +44,7 @@ export const HeroSection = () => {
         className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none overflow-hidden opacity-[0.04] select-none z-0"
       >
         <span className="font-heading text-[25vw] leading-none text-[#2C2A29] whitespace-nowrap tracking-tighter">
-          HIKARA
+          {d.brand_name}
         </span>
       </motion.div>
 
@@ -37,7 +59,7 @@ export const HeroSection = () => {
          <div className="aspect-3/4 bg-[#EFEBDE] overflow-hidden">
            <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
              <Image 
-               src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" 
+               src={d.polaroid_1}
                width={400} 
                height={533} 
                priority 
@@ -59,7 +81,7 @@ export const HeroSection = () => {
          <div className="aspect-square bg-[#EFEBDE] overflow-hidden">
            <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
              <Image 
-               src="https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop" 
+               src={d.polaroid_2}
                width={400} 
                height={400} 
                priority 
@@ -81,7 +103,7 @@ export const HeroSection = () => {
          <div className="aspect-4/3 bg-[#EFEBDE] overflow-hidden">
            <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
              <Image 
-               src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop" 
+               src={d.polaroid_3}
                width={400} 
                height={300} 
                priority 
@@ -100,7 +122,7 @@ export const HeroSection = () => {
         className="absolute right-6 md:right-16 top-1/2 -translate-y-1/2 text-[#8B5E56]/40 font-serif text-xl md:text-3xl tracking-[0.5em] pointer-events-none hidden sm:block" 
         style={{ writingMode: 'vertical-rl' }}
       >
-        PHOTOBOX
+        {d.vertical_text_right}
       </motion.div>
 
       <motion.div 
@@ -110,25 +132,25 @@ export const HeroSection = () => {
         className="absolute left-6 md:left-16 top-1/2 -translate-y-1/2 text-[#2C2A29]/20 font-serif text-sm tracking-[1em] uppercase pointer-events-none hidden sm:block" 
         style={{ writingMode: 'vertical-rl' }}
       >
-        Abadikan Momen
+        {d.vertical_text_left}
       </motion.div>
 
       <motion.div style={{ y: heroTextY, opacity: heroTextOpacity }} className="max-w-4xl z-10">
         <FadeUp delay={0.2} className="flex flex-col items-center gap-4 mb-8">
-          <span className="text-[#8B5E56] text-xs md:text-sm tracking-[0.5em] uppercase font-heading font-medium">HIKARA PHOTOBOX</span>
+          <span className="text-[#8B5E56] text-xs md:text-sm tracking-[0.5em] uppercase font-heading font-medium">{d.tagline}</span>
           <span className="w-12 h-px bg-[#8B5E56]/50 mb-2"></span>
           
           <div className="flex flex-col items-center">
-            <h1 className="sr-only">HIKARA Photobox Kotabaru - Studio Foto Premium & Estetik. Momen Kecil, Kenangan Abadi.</h1>
+            <h1 className="sr-only">HIKARA Photobox Kotabaru - Studio Foto Premium &amp; Estetik. Momen Kecil, Kenangan Abadi.</h1>
             <div className="overflow-hidden" aria-hidden="true">
               <span className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide">
-                <TextReveal text="MOMEN KECIL," delay={0.2} />
+                <TextReveal text={d.title_line1} delay={0.2} />
               </span>
             </div>
             <div className="overflow-hidden" aria-hidden="true">
               <span className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide mt-2">
-                <span className="text-[#8B5E56] italic font-serif pr-2">KENANGAN</span>
-                <TextReveal text="ABADI" delay={0.4} />
+                <span className="text-[#8B5E56] italic font-serif pr-2">{d.title_highlight}</span>
+                <TextReveal text={d.title_line2} delay={0.4} />
               </span>
             </div>
           </div>
@@ -136,18 +158,18 @@ export const HeroSection = () => {
 
         <FadeUp delay={0.8}>
           <p className="font-light text-sm md:text-base tracking-[0.2em] leading-relaxed text-[#5A5550] mb-12 max-w-lg mx-auto uppercase">
-            Photobox estetik dengan sentuhan minimalis. 
-            <span className="block mt-2 font-serif text-lg tracking-widest text-[#8B5E56] capitalize">Tangkap versi terbaik dari dirimu.</span>
+            {d.subtitle}
+            <span className="block mt-2 font-serif text-lg tracking-widest text-[#8B5E56] capitalize">{d.subtitle_cursive}</span>
           </p>
         </FadeUp>
 
         <FadeUp delay={1.1}>
           <Magnetic intensity={0.15}>
             <Link
-              href="/reservasi"
+              href={d.cta_link}
               className="inline-block border border-[#2C2A29] text-[#2C2A29] hover:bg-[#2C2A29] hover:text-[#F6F4F0] transition-colors duration-700 text-[10px] md:text-xs font-medium tracking-[0.3em] uppercase px-10 py-5"
             >
-              Book Now
+              {d.cta_text}
             </Link>
           </Magnetic>
         </FadeUp>

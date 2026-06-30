@@ -2,9 +2,29 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { revenueService } from '@/lib/services/revenue-service'
 import { createClient } from '@/lib/supabase/server'
 
+const mockPricing = {
+  paket_utama: { label: "Paket", price: 35000, maxPeople: 3 },
+  extra_person: { label: "Extra Person", price: 5000 },
+  extra_print: { label: "Extra Print", price: 10000 },
+  custom_frame: { label: "Frame", price: 15000 },
+}
+
+const { mockGetPricing } = vi.hoisted(() => ({
+  mockGetPricing: vi.fn(),
+}))
+
 // Mocking to ensure stable utility-based testing
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
+}))
+
+vi.mock('next/cache', () => ({
+  cacheLife: vi.fn(),
+  cacheTag: vi.fn(),
+}))
+
+vi.mock('@/lib/data/pricing', () => ({
+  getPricing: mockGetPricing,
 }))
 
 describe('Revenue Service', () => {
@@ -19,6 +39,7 @@ describe('Revenue Service', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(createClient).mockResolvedValue(mockSupabase as any)
+    mockGetPricing.mockResolvedValue(mockPricing as any)
   })
 
   it('returns formatted stats when data is available', async () => {

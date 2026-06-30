@@ -14,14 +14,24 @@ import { CreditCardIcon, Money01Icon, Loading03Icon, Add01Icon, Clock01Icon } fr
 
 // Slot jam operasional: 14:00 - 23:00 WIB
 
-const ADDONS = [
-  { id: "custom_frame", label: "Custom Frame", price: 15000 },
-];
+interface Props {
+  pricing: Record<string, any>;
+}
 
-const EXTRA_PERSON_PRICE = 5000;
-const EXTRA_PRINT_PRICE = 10000;
+const DEFAULTS = {
+  extra_person: { price: 5000 },
+  extra_print: { price: 10000 },
+  custom_frame: { label: "Custom Frame", price: 15000 },
+};
 
-export const LogTransactionForm = () => {
+export const LogTransactionForm = ({ pricing }: Props) => {
+  const p = { ...DEFAULTS, ...pricing };
+  const EXTRA_PERSON_PRICE = p.extra_person.price;
+  const EXTRA_PRINT_PRICE = p.extra_print.price;
+  const ADDONS = [
+    { id: "custom_frame", label: p.custom_frame?.label || "Custom Frame", price: p.custom_frame?.price || 15000 },
+  ];
+
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<TransactionValues>({
@@ -45,7 +55,6 @@ export const LogTransactionForm = () => {
     reset,
     formState: { errors },
   } = form;
-
 
 
 
@@ -189,8 +198,8 @@ export const LogTransactionForm = () => {
                 <button 
                   type="button"
                   className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
-                  onClick={() => setValue("extraPeopleCount", Math.min(5, (extraPeopleCount || 0) + 1))}
-                  disabled={extraPeopleCount >= 5}
+                  onClick={() => setValue("extraPeopleCount", Math.min(3, (extraPeopleCount || 0) + 1))}
+                  disabled={extraPeopleCount >= 3}
                 >
                   +
                 </button>

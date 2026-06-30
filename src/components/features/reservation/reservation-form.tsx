@@ -58,14 +58,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
-
-// Constants
-import { 
-  PRICELIST, 
-  ADDONS, 
-  EXTRA_PERSON_PRICE, 
-  EXTRA_PRINT_PRICE 
-} from "@/lib/constants/reservation";
+import { calculateTotalPriceSync } from "@/lib/utils/price";
 
 // Time slot logic moved to @/lib/utils/slots
 
@@ -73,7 +66,24 @@ const timeSlots = generateTimeSlots();
 
 // Schema moved to @/lib/validations/reservation
 
-export const ReservationForm = () => {
+interface Props {
+  pricing: Record<string, any>;
+}
+
+export const ReservationForm = ({ pricing }: Props) => {
+  const p = {
+    paket_utama: { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000 },
+    extra_person: { label: "Tambahan per Orang", price: 5000 },
+    extra_print: { label: "Extra Print", price: 10000 },
+    custom_frame: { label: "Custom Frame Birthday, Dll", price: 15000 },
+    ...pricing,
+  };
+
+  const pricelist = [{ id: "paket_utama", label: p.paket_utama.label, price: p.paket_utama.price }];
+  const addons = [{ id: "custom_frame", label: p.custom_frame.label, price: p.custom_frame.price }];
+  const EXTRA_PERSON_PRICE = p.extra_person.price;
+  const EXTRA_PRINT_PRICE = p.extra_print.price;
+
   // WITA (Asia/Makassar) Today Calculation
   const nowWita = new Date(
     new Date().toLocaleString("en-US", { timeZone: "Asia/Makassar" }),
@@ -119,9 +129,9 @@ export const ReservationForm = () => {
   const [isPending, startTransition] = useTransition();
 
   // Calculate total price
-  const basePrice = PRICELIST.find((p) => p.id === pkg)?.price || 0;
+  const basePrice = pricelist.find((p) => p.id === pkg)?.price || 0;
   const addonsPrice = selectedAddons.reduce((acc, addonId) => {
-    const addon = ADDONS.find((a) => a.id === addonId);
+    const addon = addons.find((a) => a.id === addonId);
     return acc + (addon?.price || 0);
   }, 0);
   const extraPeoplePrice = extraPeopleCount * EXTRA_PERSON_PRICE;
@@ -482,7 +492,7 @@ export const ReservationForm = () => {
               </div>
               <div className="flex flex-col">
                 <span className="text-sm font-semibold text-[#2C2A29] tracking-tight">
-                  {PRICELIST[0].label}
+                  {pricelist[0].label}
                 </span>
                 <span className="text-[10px] text-[#5A5550] font-light tracking-widest uppercase">
                   Base Experience
@@ -490,7 +500,7 @@ export const ReservationForm = () => {
               </div>
             </div>
             <span className="text-sm font-bold text-[#8B5E56]" data-testid="total-price">
-              Rp {PRICELIST[0].price.toLocaleString("id-ID")}
+              Rp {pricelist[0].price.toLocaleString("id-ID")}
             </span>
           </div>
         </div>
@@ -540,10 +550,10 @@ export const ReservationForm = () => {
                   onClick={() =>
                     setValue(
                       "extraPeopleCount",
-                      Math.min(5, extraPeopleCount + 1),
+                      Math.min(3, extraPeopleCount + 1),
                     )
                   }
-                  disabled={extraPeopleCount >= 5}
+                  disabled={extraPeopleCount >= 3}
                 >
                   <span className="text-lg font-bold" aria-hidden="true">+</span>
                 </Button>
@@ -625,7 +635,7 @@ export const ReservationForm = () => {
           <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">
             Add-ons Lainnya (Opsional)
           </label>
-          {ADDONS.map((addon) => (
+          {addons.map((addon) => (
             <div key={addon.id} className="flex items-center space-x-2">
               <Checkbox
                 id={addon.id}

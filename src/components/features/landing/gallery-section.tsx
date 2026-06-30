@@ -5,15 +5,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { FadeUp } from "@/components/ui/motion";
 import Image from "next/image";
 
-const GALLERY_IMAGES = [
-  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1516726817505-f5ed825624d8?q=80&w=800&auto=format&fit=crop",
-];
+interface Props {
+  images: string[];
+}
 
-export const GallerySection = () => {
+export const GallerySection = ({ images }: Props) => {
   const targetRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: targetRef,
@@ -43,7 +39,7 @@ export const GallerySection = () => {
 
         {/* Scrolling Strip */}
         <motion.div style={{ x }} className="flex gap-12 md:gap-24 px-6 md:px-32 relative z-10 items-center">
-          {GALLERY_IMAGES.map((img, idx) => (
+          {images.map((img, idx) => (
             <div key={idx} className={`w-[75vw] md:w-[35vw] shrink-0 relative group cursor-pointer ${idx % 2 === 0 ? '-mb-12 md:-mb-24' : 'mb-12 md:mt-24'}`}>
               <div className="aspect-3/4 overflow-hidden bg-[#EFEBDE] relative shadow-2xl shadow-[#2C2A29]/10">
                 {/* Custom Hover Mask Reveal (Desktop Only) */}

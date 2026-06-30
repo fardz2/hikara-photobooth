@@ -26,16 +26,29 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Loading03Icon, Edit01Icon } from "@hugeicons/core-free-icons";
 import { normalizePhoneNumber } from "@/lib/utils/validation";
 import { generateTimeSlots } from "@/lib/utils/slots";
-import { PRICELIST, ADDONS } from "@/lib/constants/reservation";
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface Props {
   reservation: Reservation | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  pricing: Record<string, any>;
 }
 
-export function EditReservationDialog({ reservation, open, onOpenChange }: Props) {
+export function EditReservationDialog({ reservation, open, onOpenChange, pricing }: Props) {
+  const p = {
+    paket_utama: { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000 },
+    extra_person: { label: "Tambahan per Orang", price: 5000 },
+    extra_print: { label: "Extra Print", price: 10000 },
+    custom_frame: { label: "Custom Frame Birthday, Dll", price: 15000 },
+    ...pricing,
+  };
+
+  const PRICELIST = [{ id: "paket_utama", label: p.paket_utama.label, price: p.paket_utama.price }];
+  const ADDONS = [{ id: "custom_frame", label: p.custom_frame.label, price: p.custom_frame.price }];
+  const EXTRA_PERSON_PRICE = p.extra_person.price;
+  const EXTRA_PRINT_PRICE = p.extra_print.price;
+
   const [isPending, startTransition] = useTransition();
 
   // State
@@ -207,7 +220,7 @@ export function EditReservationDialog({ reservation, open, onOpenChange }: Props
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="extraPeople" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Extra Orang (+Rp 5.000)</Label>
+              <Label htmlFor="extraPeople" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Extra Orang (+Rp {EXTRA_PERSON_PRICE.toLocaleString('id-ID')})</Label>
               <Input
                 id="extraPeople"
                 type="number"
@@ -220,7 +233,7 @@ export function EditReservationDialog({ reservation, open, onOpenChange }: Props
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="extraPrint" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Extra Print (+Rp 10.000)</Label>
+              <Label htmlFor="extraPrint" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Extra Print (+Rp {EXTRA_PRINT_PRICE.toLocaleString('id-ID')})</Label>
               <Input
                 id="extraPrint"
                 type="number"

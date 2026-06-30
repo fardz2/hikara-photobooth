@@ -4,7 +4,17 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FadeUp } from "@/components/ui/motion";
 
-const TESTIMONIALS = [
+interface TestimonialItem {
+  quote: string;
+  author: string;
+  context: string;
+}
+
+interface Props {
+  items: TestimonialItem[];
+}
+
+const DEFAULTS = [
   {
     quote: "Pengalaman photobox yang belum pernah ada di Kotabaru. Lightingnya benar-benar terasa seperti studio eksklusif. Sangat premium!",
     author: "RANI & ANDI",
@@ -22,15 +32,16 @@ const TESTIMONIALS = [
   }
 ];
 
-export const TestimonialSection = () => {
+export const TestimonialSection = ({ items }: Props) => {
+  const testimonials = items.length > 0 ? items : DEFAULTS;
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % TESTIMONIALS.length);
+      setCurrent((prev) => (prev + 1) % testimonials.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [testimonials.length]);
 
   return (
     <section className="py-32 md:py-48 bg-[#EFEBDE]/30 flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
@@ -59,18 +70,18 @@ export const TestimonialSection = () => {
           >
             <span className="text-8xl text-[#8B5E56]/30 font-serif leading-none h-10 block mb-4">"</span>
             <p className="font-heading text-2xl md:text-5xl text-[#2C2A29] leading-relaxed md:leading-tight tracking-wide mb-10 max-w-4xl text-center">
-              {TESTIMONIALS[current].quote}
+              {testimonials[current].quote}
             </p>
             <div className="flex flex-col items-center gap-2">
-              <span className="text-xs font-sans tracking-[0.3em] font-bold text-[#2C2A29] uppercase">{TESTIMONIALS[current].author}</span>
-              <span className="text-[10px] uppercase tracking-[0.3em] italic font-serif text-[#8B5E56]">{TESTIMONIALS[current].context}</span>
+              <span className="text-xs font-sans tracking-[0.3em] font-bold text-[#2C2A29] uppercase">{testimonials[current].author}</span>
+              <span className="text-[10px] uppercase tracking-[0.3em] italic font-serif text-[#8B5E56]">{testimonials[current].context}</span>
             </div>
           </motion.div>
         </AnimatePresence>
       </div>
 
       <div className="flex gap-4 mt-12 z-10">
-        {TESTIMONIALS.map((_, idx) => (
+        {testimonials.map((_, idx) => (
           <button 
             key={idx} 
             onClick={() => setCurrent(idx)}

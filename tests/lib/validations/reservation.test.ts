@@ -35,8 +35,8 @@ describe('ReservationSchema', () => {
     expect(result.success).toBe(false)
   })
 
-  it('enforces maximum 5 extra people', () => {
-    const data = { ...validData, extraPeopleCount: 6 }
+  it('enforces maximum 10 extra people (safety cap)', () => {
+    const data = { ...validData, extraPeopleCount: 11 }
     const result = ReservationSchema.safeParse(data)
     expect(result.success).toBe(false)
   })

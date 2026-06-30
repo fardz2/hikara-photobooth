@@ -61,7 +61,7 @@ export default function ReservasiPage() {
 
       <div className="w-full lg:w-2/3 bg-white p-8 md:p-12 shadow-xl border border-[#2C2A29]/10">
         <Suspense fallback={<ReservationFormSkeleton />}>
-          <ReservationForm />
+          <ReservationForm pricing={{}} />
         </Suspense>
       </div>
     </div>

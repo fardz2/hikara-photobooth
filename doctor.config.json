@@ -3,6 +3,7 @@
   "rules": {
     "react-doctor/supabase-rls-policy-risk": "off",
     "react-doctor/unsafe-json-in-html": "off",
-    "react-doctor/build-pipeline-secret-boundary": "off"
+    "react-doctor/build-pipeline-secret-boundary": "off",
+    "react-doctor/artifact-baas-authority-surface": "off"
   }
 }

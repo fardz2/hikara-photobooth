@@ -11,6 +11,12 @@
       "sourceType": "github",
       "computedHash": "516bd2154eb843a8240e43d5b285229129853114ad7075a5e141e1c08e408c84"
     },
+    "nextjs-cache-architecture": {
+      "source": "mohamed-hossam1/nextjs-cache-architecture",
+      "sourceType": "github",
+      "skillPath": "skills/nextjs-cache-architecture/SKILL.md",
+      "computedHash": "1920a70af3f3ffb6036aaf91b667a54ff87775757cbd9fc6a1945b38c9e8a323"
+    },
     "seo": {
       "source": "addyosmani/web-quality-skills",
       "sourceType": "github",

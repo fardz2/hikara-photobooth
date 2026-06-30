@@ -14,78 +14,50 @@ import {
   useAnimationFrame 
 } from "framer-motion";
 
-const STRIP_IMAGES = [
+const DEFAULT_STRIP_IMAGES = [
   "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=300&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=300&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=300&auto=format&fit=crop",
 ];
 
-const THEMES = [
+const DEFAULT_THEMES = [
   {
     name: "Classic Monochrome",
     desc: "Nuansa hitam putih abadi dengan kontras yang dramatis. Sempurna untuk ekspresi tegas dan editorial.",
-    img: "https://images.unsplash.com/photo-1516726817505-f5ed825624d8?q=80&w=800&auto=format&fit=crop"
+    img: "https://images.unsplash.com/photo-1516726817505-f5ed825624d8?q=80&w=800&auto=format&fit=crop",
+    images: [],
   },
   {
     name: "Tokyo Vintage",
     desc: "Warna analog pudar khas cuci film 90-an. Membawa kembali kenangan hangat yang bernuansa nostalgia.",
-    img: "https://images.unsplash.com/photo-1542051842920-c7aa7111c12e?q=80&w=800&auto=format&fit=crop"
+    img: "https://images.unsplash.com/photo-1542051842920-c7aa7111c12e?q=80&w=800&auto=format&fit=crop",
+    images: [],
   },
   {
     name: "Soft Cinematic",
     desc: "Tonasi pastel hangat yang memberikan kesan dreamy. Sangat lembut dan cocok untuk momen manis berpasangan.",
-    img: "https://images.unsplash.com/photo-1493612276216-ee3925520721?q=80&w=800&auto=format&fit=crop"
+    img: "https://images.unsplash.com/photo-1493612276216-ee3925520721?q=80&w=800&auto=format&fit=crop",
+    images: [],
   },
   {
     name: "Y2K Pop",
     desc: "Saturasi tinggi dengan sentuhan lo-fi retro 2000-an. Sangat energetik, ceria, dan cocok untuk grup dinamis.",
-    img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop"
-  }
+    img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop",
+    images: [],
+  },
 ];
 
-const TEMPLATES = [
-  {
-    name: "Classic Strip",
-    size: "2x6 Inch",
-    type: "strip",
-    images: STRIP_IMAGES,
-    bgColor: "bg-white",
-    textColor: "text-[#2C2A29]",
-  },
-  {
-    name: "Postcard Wide",
-    size: "4x6 Inch",
-    type: "postcard",
-    images: ["https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop"],
-    bgColor: "bg-white",
-    textColor: "text-[#2C2A29]",
-  },
-  {
-    name: "Noir Strip",
-    size: "2x6 Inch",
-    type: "strip",
-    images: STRIP_IMAGES.slice().reverse(),
-    bgColor: "bg-[#2C2A29]",
-    textColor: "text-[#F6F4F0]",
-  },
-  {
-    name: "Quad Grid",
-    size: "4x6 Inch",
-    type: "grid",
-    images: STRIP_IMAGES,
-    bgColor: "bg-white",
-    textColor: "text-[#2C2A29]",
-  },
-  {
-    name: "Round Pocket",
-    size: "3x3 Inch",
-    type: "mini",
-    images: [THEMES[1].img || "https://images.unsplash.com/photo-1516726817505-f5ed825624d8?q=80&w=300"],
-    bgColor: "bg-[#EFEBDE]",
-    textColor: "text-[#8B5E56]",
-  }
-];
+interface ThemeItem {
+  name: string;
+  desc: string;
+  img: string;
+  images?: string[];
+}
+
+interface Props {
+  items: ThemeItem[];
+}
 
 const TemplateCard = ({ item }: { item: any }) => {
   return (
@@ -215,7 +187,53 @@ const SmoothMarquee = ({ children, baseVelocity = 1 }: { children: React.ReactNo
   );
 };
 
-export const ThemesSection = () => {
+export const ThemesSection = ({ items }: Props) => {
+  const themes = items.length > 0 ? items : DEFAULT_THEMES;
+  const stripImages = themes[0]?.images || DEFAULT_STRIP_IMAGES;
+
+  const templates = [
+    {
+      name: "Classic Strip",
+      size: "2x6 Inch",
+      type: "strip",
+      images: stripImages,
+      bgColor: "bg-white",
+      textColor: "text-[#2C2A29]",
+    },
+    {
+      name: "Postcard Wide",
+      size: "4x6 Inch",
+      type: "postcard",
+      images: [stripImages[3] || stripImages[0] || ""],
+      bgColor: "bg-white",
+      textColor: "text-[#2C2A29]",
+    },
+    {
+      name: "Noir Strip",
+      size: "2x6 Inch",
+      type: "strip",
+      images: [...stripImages].reverse(),
+      bgColor: "bg-[#2C2A29]",
+      textColor: "text-[#F6F4F0]",
+    },
+    {
+      name: "Quad Grid",
+      size: "4x6 Inch",
+      type: "grid",
+      images: stripImages,
+      bgColor: "bg-white",
+      textColor: "text-[#2C2A29]",
+    },
+    {
+      name: "Round Pocket",
+      size: "3x3 Inch",
+      type: "mini",
+      images: [themes[1]?.img || themes[0]?.img || ""],
+      bgColor: "bg-[#EFEBDE]",
+      textColor: "text-[#8B5E56]",
+    }
+  ];
+
   return (
     <>
       <section id="themes" className="bg-[#F6F4F0] relative pt-24 md:pt-32 pb-12 md:pb-16 overflow-hidden">
@@ -247,7 +265,7 @@ export const ThemesSection = () => {
             <SmoothMarquee baseVelocity={1}>
               {[...Array(4)].map((_, i) => (
                 <div key={i} className="flex shrink-0 items-center justify-around pr-8">
-                  {TEMPLATES.map((item, idx) => (
+                  {templates.map((item, idx) => (
                     <TemplateCard key={idx} item={item} />
                   ))}
                 </div>
@@ -275,7 +293,7 @@ export const ThemesSection = () => {
         </FadeUp>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-x-24 md:gap-y-32">
-          {THEMES.map((theme, idx) => (
+          {themes.map((theme, idx) => (
             <div key={idx} className="flex flex-col md:flex-row gap-8 md:gap-10 group cursor-pointer items-start">
               <div className="w-full md:w-1/2">
                 <ImageMaskReveal 
