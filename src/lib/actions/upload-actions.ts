@@ -1,8 +1,6 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { revalidateTag } from "next/cache";
-import { CACHE_TAGS } from "@/lib/cache/tags";
 
 export async function uploadSiteImage(formData: FormData) {
   const file = formData.get("file") as File;
@@ -23,8 +21,6 @@ export async function uploadSiteImage(formData: FormData) {
   if (error) return { error: error.message };
 
   const { data: urlData } = supabase.storage.from("site-images").getPublicUrl(path);
-  revalidateTag(CACHE_TAGS.siteContent("gallery"));
-
   return { url: urlData.publicUrl };
 }
 
@@ -34,6 +30,5 @@ export async function deleteSiteImage(url: string) {
   const path = decodeURIComponent(parts.pop() || "");
 
   const { error } = await supabase.storage.from("site-images").remove([path]);
-  revalidateTag(CACHE_TAGS.siteContent("gallery"));
   return error ? { error: error.message } : { success: true };
 }
