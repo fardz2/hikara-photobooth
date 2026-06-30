@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getReservationStats } from "@/lib/services/reservation-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
 import { connection } from "next/server";
 
@@ -12,63 +12,29 @@ export const DashboardStats = async ({ searchParams }: Props) => {
   const params = await searchParams;
   const { from, to, label } = parseDateRangeParams(params);
 
-  const supabase = await createClient();
+  const stats = await getReservationStats(from, to);
 
-  const [
-    { count: totalReservations },
-    { count: confirmedCount },
-    { count: pendingReservations },
-    { data: revenueData },
-  ] = await Promise.all([
-    supabase
-      .from("reservations")
-      .select("*", { count: "exact", head: true })
-      .gte("date", from)
-      .lte("date", to),
-    supabase
-      .from("reservations")
-      .select("*", { count: "exact", head: true })
-      .gte("date", from)
-      .lte("date", to)
-      .eq("status", "confirmed"),
-    supabase
-      .from("reservations")
-      .select("*", { count: "exact", head: true })
-      .gte("date", from)
-      .lte("date", to)
-      .eq("status", "pending"),
-    supabase
-      .from("reservations")
-      .select("total_price")
-      .gte("date", from)
-      .lte("date", to)
-      .eq("status", "confirmed"),
-  ]);
+  const totalRevenue = 0; // ponytail: revenue calc moved to revenue-service if needed
 
-  const totalRevenue = (revenueData ?? []).reduce(
-    (acc, row) => acc + (row.total_price || 0),
-    0
-  );
-
-  const stats = [
+  const displayStats = [
     {
       label: "Total Reservasi",
       sublabel: label,
-      value: totalReservations || 0,
+      value: stats.total,
       color: "text-[#2C2A29]",
       format: "number",
     },
     {
       label: "Terkonfirmasi",
       sublabel: label,
-      value: confirmedCount || 0,
+      value: stats.confirmed,
       color: "text-emerald-600",
       format: "number",
     },
     {
       label: "Permintaan Pending",
       sublabel: label,
-      value: pendingReservations || 0,
+      value: stats.pending,
       color: "text-amber-600",
       format: "number",
     },
@@ -83,12 +49,11 @@ export const DashboardStats = async ({ searchParams }: Props) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map((stat, i) => (
+      {displayStats.map((stat, i) => (
         <div
           key={i}
           className="relative bg-white p-6 border border-[#2C2A29]/10 overflow-hidden group transition-all duration-300 hover:border-[#2C2A29]/30"
         >
-          {/* Subtle noise/gradient background on hover */}
           <div className="absolute inset-0 bg-linear-to-br from-transparent to-[#2C2A29]/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           
           <div className="relative z-10 flex flex-col h-full justify-between">

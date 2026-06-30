@@ -1,28 +1,17 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
-import { format } from "date-fns";
-import { revalidatePath } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 import { TransactionSchema } from "@/lib/validations/revenue";
+import { logTransaction as insertTransaction, type TransactionInput } from "@/lib/services/revenue-service";
 
-export type TransactionInput = {
-  package: string;
-  payment_method: "tunai" | "qris";
-  amount: number;
-  addons?: string[];
-  customer_name?: string;
-  session_time?: string;
-  extra_people_count?: number;
-  extra_print_count?: number;
-};
+export type { TransactionInput };
 
 export async function logTransaction(data: TransactionInput) {
-  const supabase = await createClient();
-  
-  // 1. Validate with Zod
+  // 1. Validate
   const validation = TransactionSchema.safeParse({
     customerName: data.customer_name || "Walk-in Customer",
-    sessionTime: data.session_time ?? format(new Date(), "HH:mm"),
+    sessionTime: data.session_time,
     package: data.package,
     addons: data.addons || [],
     paymentMethod: data.payment_method,
@@ -31,32 +20,15 @@ export async function logTransaction(data: TransactionInput) {
   });
 
   if (!validation.success) {
-    const errorMsg = validation.error.issues[0]?.message || "Data transaksi tidak valid";
-    return { success: false, message: errorMsg };
+    return { success: false, message: validation.error.issues[0]?.message || "Data tidak valid" };
   }
 
-  const validatedData = validation.data;
-  const { error } = await supabase.from("reservations").insert({
-    name: data.customer_name || "Walk-in Customer",
-    phone: "620000000000",
-    date: format(new Date(), "yyyy-MM-dd"),
-    time: data.session_time ?? format(new Date(), "HH:mm"),
-    package: data.package,
-    addons: data.addons || [], 
-    payment_method: data.payment_method,
-    total_price: data.amount,
-    extra_people_count: data.extra_people_count || 0,
-    extra_print_count: data.extra_print_count || 0,
-    is_walk_in: true,
-    status: "confirmed",
-    created_at: new Date().toISOString(),
-  });
+  // 2. Call service
+  const result = await insertTransaction(data);
+  if (result.error) return { success: false, message: result.error };
 
-  if (error) {
-    console.error("Error logging transaction:", error);
-    return { success: false, message: error.message };
-  }
-
+  // 3. Revalidate
+  revalidateTag(CACHE_TAGS.reservations, "minutes");
   revalidatePath("/dashboard/pendapatan");
   revalidatePath("/dashboard/reservations");
   return { success: true };

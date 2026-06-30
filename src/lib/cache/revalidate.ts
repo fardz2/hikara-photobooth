@@ -1,16 +1,31 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { revalidateTag, revalidatePath } from "next/cache";
 import { CACHE_TAGS } from "./tags";
 
-function updateTags(tags: string[]) {
-  for (const tag of tags) updateTag(tag);
-}
-
 export async function revalidateSiteContent(section: string) {
-  updateTags([CACHE_TAGS.siteContent, CACHE_TAGS.siteContentSection(section)]);
+  revalidateTag(CACHE_TAGS.siteContent, "hours");
+  revalidateTag(CACHE_TAGS.siteContentSection(section), "hours");
 }
 
 export async function revalidatePricing() {
-  updateTags([CACHE_TAGS.pricing, CACHE_TAGS.siteContentSection("pricing")]);
+  revalidateTag(CACHE_TAGS.siteContent, "hours");
+  revalidateTag(CACHE_TAGS.pricing, "hours");
+}
+
+export async function revalidateReservations() {
+  revalidateTag(CACHE_TAGS.reservations, "minutes");
+}
+
+export async function revalidateReservation(id: string | number) {
+  revalidateTag(CACHE_TAGS.reservations, "minutes");
+  revalidateTag(CACHE_TAGS.reservation(id), "minutes");
+}
+
+export async function revalidateBookedSlots(date: string) {
+  revalidateTag(CACHE_TAGS.bookedSlots(date), "seconds");
+}
+
+export async function revalidateRevenue(from: string, to: string) {
+  revalidateTag(CACHE_TAGS.revenue(from, to), "hours");
 }

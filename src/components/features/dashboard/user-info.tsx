@@ -1,8 +1,7 @@
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/services/auth-service";
 
 export const UserEmailDisplay = async () => {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) return null;
 
@@ -14,8 +13,7 @@ export const UserEmailDisplay = async () => {
 };
 
 export const UserAvatar = async () => {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) return <div className="w-8 h-8 rounded-full bg-[#EFEBDE] border border-[#2C2A29]/5" />;
 

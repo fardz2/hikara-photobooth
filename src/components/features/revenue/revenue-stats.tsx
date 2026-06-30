@@ -1,4 +1,4 @@
-import { revenueService } from "@/lib/services/revenue-service";
+import { getRevenueStats } from "@/lib/services/revenue-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
 import { LogTransactionForm } from "@/components/features/revenue/log-transaction-form";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -22,7 +22,7 @@ export const RevenueStats = async ({ searchParams }: Props) => {
   await connection();
   const params = await searchParams;
   const { from, to, label } = parseDateRangeParams(params);
-  const stats = await revenueService.getRevenueStats(from, to);
+  const stats = await getRevenueStats(from, to);
 
   if (!stats)
     return (

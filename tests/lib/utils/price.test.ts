@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { calculateTotalPriceSync, type PriceInput } from '@/lib/utils/price'
-import type { PricingDict } from '@/lib/data/pricing'
+import { type PricingDict } from "@/lib/services/site-content-service";
 
 const MOCK_PRICING: PricingDict = {
   paket_utama: { label: "Paket Utama", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG" },

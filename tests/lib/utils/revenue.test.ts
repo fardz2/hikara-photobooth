@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { formatRevenueStats, type RawRevenueRow } from '@/lib/utils/revenue'
-import type { PricingDict } from '@/lib/data/pricing'
+import { type PricingDict } from "@/lib/services/site-content-service";
 
 const mockPricing: PricingDict = {
   paket_utama: { label: "Paket", price: 35000, maxPeople: 3 },

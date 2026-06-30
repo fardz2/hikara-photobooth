@@ -1,16 +1,19 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
-import { revalidateSiteContent, revalidatePricing } from "@/lib/cache/revalidate";
+import { revalidateTag } from "next/cache";
+import { CACHE_TAGS } from "@/lib/cache/tags";
+import {
+  upsertSiteContent,
+  upsertSectionContent,
+  upsertPricing,
+} from "@/lib/services/site-content-service";
 
 export async function updateSiteContent(section: string, key: string, value: unknown) {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("site_content")
-    .upsert({ section, key, value }, { onConflict: "section, key" });
+  const result = await upsertSiteContent(section, key, value);
+  if (result.error) return result;
 
-  if (error) return { error: error.message };
-  await revalidateSiteContent(section);
+  revalidateTag(CACHE_TAGS.siteContent, "hours");
+  revalidateTag(CACHE_TAGS.siteContentSection(section), "hours");
   return { success: true };
 }
 
@@ -18,25 +21,19 @@ export async function updateSectionContent(
   section: string,
   entries: { key: string; value: unknown }[]
 ) {
-  const supabase = await createClient();
-  const rows = entries.map((e) => ({ section, key: e.key, value: e.value }));
-  const { error } = await supabase.from("site_content").upsert(rows, {
-    onConflict: "section, key",
-  });
-  if (error) return { error: error.message };
-  await revalidateSiteContent(section);
+  const result = await upsertSectionContent(section, entries);
+  if (result.error) return result;
+
+  revalidateTag(CACHE_TAGS.siteContent, "hours");
+  revalidateTag(CACHE_TAGS.siteContentSection(section), "hours");
   return { success: true };
 }
 
-export async function updatePricing(
-  entries: { key: string; value: unknown }[]
-) {
-  const supabase = await createClient();
-  const rows = entries.map((e) => ({ section: "pricing", key: e.key, value: e.value }));
-  const { error } = await supabase.from("site_content").upsert(rows, {
-    onConflict: "section, key",
-  });
-  if (error) return { error: error.message };
-  await revalidatePricing();
+export async function updatePricing(entries: { key: string; value: unknown }[]) {
+  const result = await upsertPricing(entries);
+  if (result.error) return result;
+
+  revalidateTag(CACHE_TAGS.siteContent, "hours");
+  revalidateTag(CACHE_TAGS.pricing, "hours");
   return { success: true };
 }

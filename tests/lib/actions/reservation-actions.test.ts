@@ -1,49 +1,41 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { submitReservation, updateReservationStatus } from '@/lib/actions/reservation-actions'
-import { createClient } from '@/lib/supabase/server'
-import { reservationService } from '@/lib/services/reservation-service'
+import * as reservationService from "@/lib/services/reservation-service";
 import { fonnteService } from '@/lib/services/fonnte-service'
 import { revalidatePath } from 'next/cache'
 
-// Use vi.hoisted to ensure mocks are available during vi.mock hoisting
-const { mockSupabase, mockFunctions } = vi.hoisted(() => {
-  const mFuncs = {
-    insert: vi.fn(),
-    update: vi.fn(),
-    select: vi.fn(),
-    eq: vi.fn(),
-    single: vi.fn(),
-    from: vi.fn(),
-  }
+// Hoisted mock fns — referenced inside vi.mock factories
+const {
+  mockCheckSlot,
+  mockInsertReservation,
+  mockUpdateStatus,
+  mockGetById,
+  mockDeleteRes,
+  mockUpdateReservation,
+} = vi.hoisted(() => ({
+  mockCheckSlot: vi.fn(),
+  mockInsertReservation: vi.fn(),
+  mockUpdateStatus: vi.fn(),
+  mockGetById: vi.fn(),
+  mockDeleteRes: vi.fn(),
+  mockUpdateReservation: vi.fn(),
+}))
 
-  const mSupabase = {
-    from: mFuncs.from,
-    insert: mFuncs.insert,
-    update: mFuncs.update,
-    select: mFuncs.select,
-    eq: mFuncs.eq,
-    single: mFuncs.single,
-  }
-
-  // Set up default chain behavior
-  mFuncs.from.mockReturnValue(mSupabase)
-  mFuncs.select.mockReturnValue(mSupabase)
-  mFuncs.update.mockReturnValue(mSupabase)
-  mFuncs.eq.mockReturnValue(mSupabase)
-
-  return { mockSupabase: mSupabase, mockFunctions: mFuncs }
-})
-
-// Mock dependencies
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn().mockImplementation(() => Promise.resolve(mockSupabase)),
+vi.mock('@/lib/utils/price', () => ({
+  calculateTotalPrice: vi.fn().mockResolvedValue(35000),
 }))
 
 vi.mock('@/lib/services/reservation-service', () => ({
-  reservationService: {
-    checkSlotAvailability: vi.fn(),
-    getBookedSlots: vi.fn(),
-  },
+  checkSlotAvailability: mockCheckSlot,
+  insertReservation: mockInsertReservation,
+  updateReservationStatus: mockUpdateStatus,
+  getReservationById: mockGetById,
+  deleteReservation: mockDeleteRes,
+  updateReservation: mockUpdateReservation,
+  getReservations: vi.fn(),
+  getReservationStats: vi.fn(),
+  getRecentReservations: vi.fn(),
+  getBookedSlots: vi.fn(),
 }))
 
 vi.mock('@/lib/services/fonnte-service', () => ({
@@ -59,21 +51,23 @@ vi.mock('next/cache', async (importOriginal) => {
     cacheLife: vi.fn(),
     cacheTag: vi.fn(),
     revalidatePath: vi.fn(),
+    revalidateTag: vi.fn(),
   }
 })
 
 describe('Reservation Actions', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    
-    // Terminal operations return promises
-    mockFunctions.insert.mockResolvedValue({ error: null })
-    mockFunctions.eq.mockReturnThis() // Allow .single() after .eq()
-    mockFunctions.single.mockResolvedValue({ 
-      data: { id: '1', name: 'John', phone: '62812', total_price: 35000, date: '2024-03-01', time: '14:00', payment_method: 'qris', status: 'pending' }, 
-      error: null 
+
+    // Defaults: slot free, insert succeeds, reservation found
+    mockCheckSlot.mockResolvedValue(false)
+    mockInsertReservation.mockResolvedValue({ success: true })
+    mockUpdateStatus.mockResolvedValue({ success: true })
+    mockGetById.mockResolvedValue({
+      id: '1', name: 'John', phone: '62812', total_price: 35000,
+      date: '2024-03-01', time: '14:00', payment_method: 'qris', status: 'pending',
     })
-    
+
     process.env.ADMIN_PHONE = '6281111111'
   })
 
@@ -85,7 +79,7 @@ describe('Reservation Actions', () => {
       time: '14:00',
       package: 'basic',
       addons: [],
-      paymentMethod: 'tunai'
+      paymentMethod: 'tunai',
     }
 
     it('returns error if required fields are missing', async () => {
@@ -95,19 +89,19 @@ describe('Reservation Actions', () => {
     })
 
     it('returns error if slot is already booked', async () => {
-      vi.mocked(reservationService.checkSlotAvailability).mockResolvedValue(true)
+      mockCheckSlot.mockResolvedValue(true)
       const result = await submitReservation(validData)
       expect(result.success).toBe(false)
       expect(result.message).toContain('sudah habis')
     })
 
     it('creates reservation and sends notifications on success', async () => {
-      vi.mocked(reservationService.checkSlotAvailability).mockResolvedValue(false)
-      
+      mockCheckSlot.mockResolvedValue(false)
+
       const result = await submitReservation(validData)
-      
+
       expect(result.success).toBe(true)
-      expect(mockFunctions.insert).toHaveBeenCalled()
+      expect(mockInsertReservation).toHaveBeenCalled()
       expect(fonnteService.sendMessage).toHaveBeenCalledTimes(2)
       expect(revalidatePath).toHaveBeenCalledWith('/reservasi')
     })
@@ -116,28 +110,25 @@ describe('Reservation Actions', () => {
   describe('updateReservationStatus', () => {
     it('updates status and sends WA if confirmed and QRIS', async () => {
       const result = await updateReservationStatus('1', 'confirmed')
-      
+
       expect(result.success).toBe(true)
-      expect(mockFunctions.update).toHaveBeenCalledWith({ status: 'confirmed' })
+      expect(mockUpdateStatus).toHaveBeenCalledWith('1', 'confirmed')
       expect(fonnteService.sendMessage).toHaveBeenCalledWith('62812', expect.stringContaining('Pesan untuk Anda'))
     })
 
     it('fails when slot is taken during re-enable', async () => {
-      // Mock being currently cancelled
-      mockFunctions.single.mockResolvedValueOnce({ 
-        data: { id: '1', date: '2024-03-01', time: '14:00', status: 'cancelled' }, 
-        error: null 
+      mockGetById.mockResolvedValueOnce({
+        id: '1', date: '2024-03-01', time: '14:00', status: 'cancelled', payment_method: 'qris', total_price: 35000, name: 'John', phone: '62812',
       })
-      // Mock slot now being booked by someone else
-      vi.mocked(reservationService.checkSlotAvailability).mockResolvedValue(true)
-      
+      mockCheckSlot.mockResolvedValue(true)
+
       const result = await updateReservationStatus('1', 'confirmed')
       expect(result.success).toBe(false)
       expect(result.message).toContain('sudah terisi')
     })
 
     it('returns error if reservation not found during status update', async () => {
-      mockFunctions.single.mockResolvedValueOnce({ data: null, error: { message: 'Not found' } })
+      mockGetById.mockResolvedValueOnce(null)
       const result = await updateReservationStatus('non-existent', 'confirmed')
       expect(result.success).toBe(false)
       expect(result.message).toContain('tidak ditemukan')
@@ -146,19 +137,19 @@ describe('Reservation Actions', () => {
 
   describe('Edge Cases', () => {
     it('rejects reservation with invalid phone number', async () => {
-      const result = await submitReservation({ 
-        name: 'John', phone: 'abc', date: new Date(), time: '14:00', package: 'basic', addons: [], paymentMethod: 'tunai' 
+      const result = await submitReservation({
+        name: 'John', phone: 'abc', date: new Date(), time: '14:00', package: 'basic', addons: [], paymentMethod: 'tunai',
       })
       expect(result.success).toBe(false)
       expect(result.message).toMatch(/minimal|valid/i)
     })
 
     it('returns error if database insertion fails', async () => {
-      mockFunctions.insert.mockResolvedValueOnce({ error: { message: 'Database crash' } })
-      vi.mocked(reservationService.checkSlotAvailability).mockResolvedValue(false)
-      
-      const result = await submitReservation({ 
-        name: 'John', phone: '628123456789', date: new Date(), time: '14:00', package: 'basic', addons: [], paymentMethod: 'tunai' 
+      mockInsertReservation.mockResolvedValueOnce({ error: 'Database crash' })
+      mockCheckSlot.mockResolvedValue(false)
+
+      const result = await submitReservation({
+        name: 'John', phone: '628123456789', date: new Date(), time: '14:00', package: 'basic', addons: [], paymentMethod: 'tunai',
       })
       expect(result.success).toBe(false)
       expect(result.message).toContain('Gagal menyimpan')

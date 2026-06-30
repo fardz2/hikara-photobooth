@@ -1,11 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { reservationService } from '@/lib/services/reservation-service'
+import * as reservationService from "@/lib/services/reservation-service";
 import { createClient } from '@/lib/supabase/server'
 
 // Mock createClient
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
 }))
+
+vi.mock('next/cache', async (importOriginal) => {
+  const actual = await importOriginal() as any
+  return { ...actual, cacheLife: vi.fn(), cacheTag: vi.fn() }
+})
 
 describe('Reservation Service', () => {
   const mockSupabase = {

@@ -1,4 +1,4 @@
-import { reservationService } from "@/lib/services/reservation-service";
+import { getReservations } from "@/lib/services/reservation-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
 import { DataTable } from "@/components/features/dashboard/data-table";
 import { columns, type Reservation } from "@/components/features/dashboard/columns";
@@ -18,7 +18,7 @@ export const RecentTransactions = async ({ searchParams }: Props) => {
   const page = Number(params.page) || 1;
   const q = params.q;
 
-  const { data, count, error } = await reservationService.getReservations(from, to, "confirmed", page, 10, q);
+  const { data, count, error } = await getReservations(from, to, "confirmed", page, 10, q);
   const transactions = (data as any[] | null)?.map((item) => ({
     ...item,
     status: item.status as "pending" | "confirmed" | "cancelled",

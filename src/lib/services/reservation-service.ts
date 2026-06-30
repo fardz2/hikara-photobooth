@@ -1,98 +1,156 @@
+import { cacheLife, cacheTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 
-export const reservationService = {
-  async getReservations(from?: string, to?: string, status?: string, page: number = 1, pageSize: number = 10, search?: string) {
-    const supabase = await createClient();
-    
-    // Narrow selection: Avoid "*" to reduce payload and allow covering indexes
-    const selectColumns = `
-      id, name, phone, package, date, time, status, 
-      total_price, payment_proof_url, payment_method, 
-      extra_print_count, extra_people_count, addons, created_at
-    `.replace(/\s+/g, "");
+// ─── Read: public, cached (booked slots) ───
 
-    let query = supabase
-      .from("reservations")
-      .select(selectColumns, { count: "exact" })
-      .order("date", { ascending: false })
-      .order("time", { ascending: true });
+export async function getBookedSlots(date: string) {
+  "use cache";
+  cacheLife("seconds");
+  cacheTag(CACHE_TAGS.bookedSlots(date));
 
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("reservations")
+    .select("time")
+    .eq("date", date)
+    .in("status", ["pending", "confirmed"]);
+
+  if (error) throw error;
+  return data.map((row) => row.time as string);
+}
+
+// ─── Read: admin, no cache ───
+
+export async function getReservations(
+  from?: string, to?: string, status?: string,
+  page: number = 1, pageSize: number = 10, search?: string
+) {
+  const supabase = await createClient();
+
+  const selectColumns = `
+    id, name, phone, package, date, time, status,
+    total_price, payment_proof_url, payment_method,
+    extra_print_count, extra_people_count, addons, created_at
+  `.replace(/\s+/g, "");
+
+  let query = supabase
+    .from("reservations")
+    .select(selectColumns, { count: "exact" })
+    .order("date", { ascending: false })
+    .order("time", { ascending: true });
+
+  if (from) query = query.gte("date", from);
+  if (to) query = query.lte("date", to);
+  if (status && status !== "all") query = query.eq("status", status);
+  if (search) query = query.ilike("name", `%${search}%`);
+
+  const fromRange = (page - 1) * pageSize;
+  const toRange = fromRange + pageSize - 1;
+
+  return query.range(fromRange, toRange);
+}
+
+export async function getReservationStats(from?: string, to?: string, search?: string) {
+  const supabase = await createClient();
+
+  const buildQuery = (status?: string) => {
+    let query = supabase.from("reservations").select("*", { count: "exact", head: true });
     if (from) query = query.gte("date", from);
     if (to) query = query.lte("date", to);
-    if (status && status !== "all") query = query.eq("status", status);
     if (search) query = query.ilike("name", `%${search}%`);
+    if (status) query = query.eq("status", status);
+    return query;
+  };
 
-    const fromRange = (page - 1) * pageSize;
-    const toRange = fromRange + pageSize - 1;
-    
-    return query.range(fromRange, toRange);
-  },
+  const [
+    { count: totalCount },
+    { count: pendingCount },
+    { count: confirmedCount },
+    { count: cancelledCount },
+  ] = await Promise.all([
+    buildQuery(),
+    buildQuery("pending"),
+    buildQuery("confirmed"),
+    buildQuery("cancelled"),
+  ]);
 
-  async getReservationStats(from?: string, to?: string, search?: string) {
-    const supabase = await createClient();
+  return {
+    total: totalCount || 0,
+    pending: pendingCount || 0,
+    confirmed: confirmedCount || 0,
+    cancelled: cancelledCount || 0,
+  };
+}
 
-    const buildQuery = (status?: string) => {
-      let query = supabase.from("reservations").select("*", { count: "exact", head: true });
-      if (from) query = query.gte("date", from);
-      if (to) query = query.lte("date", to);
-      if (search) query = query.ilike("name", `%${search}%`);
-      if (status) query = query.eq("status", status);
-      return query;
-    };
+export async function getRecentReservations(limit: number = 6) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("reservations")
+    .select("id, name, status, total_price, date, time")
+    .order("created_at", { ascending: false })
+    .limit(limit);
 
-    const [
-      { count: totalCount },
-      { count: pendingCount },
-      { count: confirmedCount },
-      { count: cancelledCount }
-    ] = await Promise.all([
-      buildQuery(),
-      buildQuery("pending"),
-      buildQuery("confirmed"),
-      buildQuery("cancelled")
-    ]);
+  if (error) throw error;
+  return data;
+}
 
-    return {
-      total: totalCount || 0,
-      pending: pendingCount || 0,
-      confirmed: confirmedCount || 0,
-      cancelled: cancelledCount || 0,
-    };
-  },
+// ─── Read: uncached (slot checks must be fresh) ───
 
-  /** @deprecated use getReservations() */
-  async getAllReservations() {
-    return this.getReservations();
-  },
+export async function checkSlotAvailability(date: string, time: string, excludeId?: string) {
+  const supabase = await createClient();
+  let query = supabase
+    .from("reservations")
+    .select("id")
+    .eq("date", date)
+    .eq("time", time)
+    .in("status", ["pending", "confirmed"]);
 
-  async getBookedSlots(date: string) {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("reservations")
-      .select("time")
-      .eq("date", date)
-      .in("status", ["pending", "confirmed"]);
+  if (excludeId) query = query.neq("id", excludeId);
 
-    if (error) throw error;
-    return data.map((row) => row.time as string);
-  },
+  const { data, error } = await query;
+  if (error) throw error;
+  return data && data.length > 0;
+}
 
-  async checkSlotAvailability(date: string, time: string, excludeId?: string) {
-    const supabase = await createClient();
-    let query = supabase
-      .from("reservations")
-      .select("id")
-      .eq("date", date)
-      .eq("time", time)
-      .in("status", ["pending", "confirmed"]);
+export async function getReservationById(id: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("reservations")
+    .select("name, phone, date, time, package, addons, extra_people_count, extra_print_count, payment_method, total_price, status")
+    .eq("id", id)
+    .single();
 
-    if (excludeId) {
-      query = query.neq("id", excludeId);
-    }
+  if (error || !data) return null;
+  return data;
+}
 
-    const { data, error } = await query;
+// ─── Write ───
 
-    if (error) throw error;
-    return data && data.length > 0;
-  }
-};
+export async function insertReservation(record: Record<string, unknown>) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("reservations").insert(record);
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
+export async function updateReservation(id: string, payload: Record<string, unknown>) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("reservations").update(payload).eq("id", id);
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
+export async function updateReservationStatus(id: string, status: string) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("reservations").update({ status }).eq("id", id);
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
+export async function deleteReservation(id: string) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("reservations").delete().eq("id", id);
+  if (error) return { error: error.message };
+  return { success: true };
+}

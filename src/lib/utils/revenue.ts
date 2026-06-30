@@ -1,4 +1,4 @@
-import type { PricingDict } from "../data/pricing";
+import { type PricingDict } from "../services/site-content-service";
 
 export interface RawRevenueRow {
   total_price: number | null;

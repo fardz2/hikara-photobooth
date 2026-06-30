@@ -1,13 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { RevenueStats } from '@/components/features/revenue/revenue-stats'
-import { revenueService } from '@/lib/services/revenue-service'
+import * as revenueService from "@/lib/services/revenue-service";
 import { render, screen } from '@testing-library/react'
 
 // Mock dependencies
 vi.mock('@/lib/services/revenue-service', () => ({
-  revenueService: {
-    getRevenueStats: vi.fn(),
-  },
+  getRevenueStats: vi.fn(),
 }))
 
 vi.mock('next/server', () => ({

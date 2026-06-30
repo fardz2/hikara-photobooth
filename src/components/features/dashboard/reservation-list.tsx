@@ -1,4 +1,4 @@
-import { reservationService } from "@/lib/services/reservation-service";
+import { getReservations, getReservationStats } from "@/lib/services/reservation-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
 import { DataTable } from "./data-table";
 import { columns, type Reservation } from "./columns";
@@ -19,8 +19,8 @@ export const ReservationList = async ({ searchParams }: Props) => {
   const q = params.q;
 
   const [{ data, count, error }, globalStats] = await Promise.all([
-    reservationService.getReservations(from, to, status, page, 10, q),
-    reservationService.getReservationStats(from, to, q)
+    getReservations(from, to, status, page, 10, q),
+    getReservationStats(from, to, q)
   ]);
   
   const reservations = (data as any[] | null)?.map((item) => ({

@@ -84,7 +84,7 @@ function ChangePasswordForm() {
     <form
       action={async (fd) => {
         const res = await changePassword(fd);
-        if (res.error) toast.error(res.error);
+        if ('error' in res && res.error) toast.error(res.error);
         else toast.success("Password berhasil diubah");
       }}
       className="space-y-4"
@@ -127,7 +127,7 @@ function PricingForm({
           },
         }));
         const res = await updatePricing(entries);
-        if (res.error) toast.error(res.error);
+        if ('error' in res && res.error) toast.error(res.error);
         else toast.success("Harga berhasil diupdate");
       }}
       className="space-y-6"
@@ -186,7 +186,7 @@ function SectionForm({ section, data }: { section: string; data: Record<string, 
           return { key, value };
         });
         const res = await updateSectionContent(section, upsertEntries);
-        if (res.error) toast.error(res.error);
+        if ('error' in res && res.error) toast.error(res.error);
         else toast.success(`${section} content updated`);
       }}
       className="space-y-4"

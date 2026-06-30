@@ -1,5 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
-import { revenueService } from "@/lib/services/revenue-service";
+import { getRecentReservations } from "@/lib/services/reservation-service";
+import { getRevenueStats } from "@/lib/services/revenue-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
 import { RevenueChart } from "@/components/features/revenue/revenue-chart";
 import { format } from "date-fns";
@@ -16,14 +16,8 @@ export async function DashboardOverviewData({ searchParams }: Props) {
   const { from, to } = parseDateRangeParams(params);
 
   const [revenueStats, recentReservations] = await Promise.all([
-    revenueService.getRevenueStats(from, to),
-    createClient().then((c) =>
-      c
-        .from("reservations")
-        .select("id, name, status, total_price, date, time")
-        .order("created_at", { ascending: false })
-        .limit(6)
-    ),
+    getRevenueStats(from, to),
+    getRecentReservations(6),
   ]);
 
   return (
@@ -48,14 +42,13 @@ export async function DashboardOverviewData({ searchParams }: Props) {
           Aktivitas Terbaru
         </h3>
         <div className="flex-1 space-y-6">
-          {recentReservations.data?.map((res, i) => {
+          {recentReservations.map((res, i) => {
             const firstLetter = res.name ? res.name.charAt(0).toUpperCase() : "?";
             return (
               <div
                 key={res.id || i}
                 className="flex items-center gap-4 group border-b border-[#2C2A29]/5 pb-4 last:border-0 last:pb-0 hover:bg-[#F6F4F0]/30 transition-colors p-2 -mx-2"
               >
-                {/* Initials Avatar */}
                 <div className="w-10 h-10 shrink-0 bg-[#2C2A29] flex items-center justify-center">
                   <span className="text-white text-xs font-bold font-heading">{firstLetter}</span>
                 </div>
@@ -95,7 +88,7 @@ export async function DashboardOverviewData({ searchParams }: Props) {
               </div>
             );
           })}
-          {!recentReservations.data?.length && (
+          {!recentReservations.length && (
             <p className="text-xs text-[#5A5550]/60 italic uppercase tracking-widest text-center mt-12">
               Belum ada aktivitas.
             </p>

@@ -1,12 +1,11 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { Nav } from "@/components/layout/nav";
-import { Footer } from "@/components/layout/footer";
-import { NoiseOverlay } from "@/components/ui/noise-overlay";
-import { CustomCursor } from "@/components/ui/custom-cursor";
+
+
 import { ReservationForm } from "@/components/features/reservation/reservation-form";
 import { ReservationFormSkeleton } from "@/components/skeletons/reservation-form-skeleton";
-import { Toaster } from "@/components/ui/sonner";
+import { getPricing } from "@/lib/services/site-content-service";
+import { escapeJsonForHtml } from "@/lib/utils/escape";
 
 export const metadata: Metadata = {
   title: "Reservasi Photobox Premium - Hikara Photobox Kotabaru",
@@ -14,25 +13,13 @@ export const metadata: Metadata = {
     "Jadwalkan sesi foto studio premium Anda di Hikara Photobox Kotabaru. Tersedia berbagai pilihan frame eksklusif dan cetakan berkualitas tinggi.",
 };
 
-import { escapeJsonForHtml } from "@/lib/utils/escape";
-
-export default function ReservasiPage() {
+function ReservasiPageShell({ children }: { children: React.ReactNode }) {
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://hikara-photobox.vercel.app",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Reservasi",
-        item: "https://hikara-photobox.vercel.app/reservasi",
-      },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://hikara-photobox.vercel.app" },
+      { "@type": "ListItem", position: 2, name: "Reservasi", item: "https://hikara-photobox.vercel.app/reservasi" },
     ],
   };
 
@@ -48,8 +35,7 @@ export default function ReservasiPage() {
           Kunci Momen Anda
         </h1>
         <p className="text-sm text-[#5A5550] leading-loose">
-          Jadwalkan sesi foto Anda dan nikmati pengalaman studio eksklusif
-          bersama kami.
+          Jadwalkan sesi foto Anda dan nikmati pengalaman studio eksklusif bersama kami.
         </p>
         <div className="w-16 h-px bg-[#8B5E56] my-4"></div>
         <div className="flex flex-col gap-2 text-xs tracking-widest text-[#5A5550] uppercase">
@@ -58,12 +44,24 @@ export default function ReservasiPage() {
           <span>Monday - Sunday</span>
         </div>
       </div>
-
       <div className="w-full lg:w-2/3 bg-white p-8 md:p-12 shadow-xl border border-[#2C2A29]/10">
-        <Suspense fallback={<ReservationFormSkeleton />}>
-          <ReservationForm pricing={{}} />
-        </Suspense>
+        {children}
       </div>
     </div>
+  );
+}
+
+async function ReservationFormWithPricing() {
+  const pricing = await getPricing();
+  return <ReservationForm pricing={pricing} />;
+}
+
+export default function ReservasiPage() {
+  return (
+    <ReservasiPageShell>
+      <Suspense fallback={<ReservationFormSkeleton />}>
+        <ReservationFormWithPricing />
+      </Suspense>
+    </ReservasiPageShell>
   );
 }

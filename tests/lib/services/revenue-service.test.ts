@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { revenueService } from '@/lib/services/revenue-service'
+import * as revenueService from "@/lib/services/revenue-service";
 import { createClient } from '@/lib/supabase/server'
 
 const mockPricing = {
@@ -23,7 +23,7 @@ vi.mock('next/cache', () => ({
   cacheTag: vi.fn(),
 }))
 
-vi.mock('@/lib/data/pricing', () => ({
+vi.mock('@/lib/services/site-content-service', () => ({
   getPricing: mockGetPricing,
 }))
 
