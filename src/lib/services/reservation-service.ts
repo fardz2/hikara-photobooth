@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 
 // ─── Read: public, cached (booked slots) ───
@@ -9,7 +10,7 @@ export async function getBookedSlots(date: string) {
   cacheLife("seconds");
   cacheTag(CACHE_TAGS.bookedSlots(date));
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("reservations")
     .select("time")

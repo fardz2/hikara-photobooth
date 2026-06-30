@@ -1,10 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import * as reservationService from "@/lib/services/reservation-service";
 import { createClient } from '@/lib/supabase/server'
+import { createPublicClient } from '@/lib/supabase/public'
 
 // Mock createClient
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
+}))
+
+vi.mock('@/lib/supabase/public', () => ({
+  createPublicClient: vi.fn(),
 }))
 
 vi.mock('next/cache', async (importOriginal) => {
@@ -25,6 +30,7 @@ describe('Reservation Service', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(createClient).mockResolvedValue(mockSupabase as any)
+    vi.mocked(createPublicClient).mockReturnValue(mockSupabase as any)
   })
 
   describe('getBookedSlots', () => {
