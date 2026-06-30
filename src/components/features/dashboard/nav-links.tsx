@@ -8,6 +8,7 @@ const links = [
   { href: "/dashboard", label: "Overview" },
   { href: "/dashboard/reservations", label: "Reservasi" },
   { href: "/dashboard/pendapatan", label: "Pendapatan" },
+  { href: "/dashboard/settings", label: "Settings" },
 ];
 
 export const NavLinks = () => {
