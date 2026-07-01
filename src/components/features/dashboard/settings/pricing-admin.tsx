@@ -2,20 +2,12 @@
 
 import { Add01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { savePricingItem, removePricingItem } from "@/lib/actions/pricing-actions";
-import { getAllPricing } from "@/lib/services/pricing-service";
 import type { PricingCategory, PricingItem } from "@/lib/services/pricing-service";
 
 type TabId = "package" | "extra" | "addon";
@@ -56,17 +48,8 @@ interface Props {
 
 export function PricingAdmin({ initial }: Props) {
   const [items, setItems] = useState<PricingItem[]>(initial ?? []);
-  const [loading, setLoading] = useState(!initial);
   const [saving, startSave] = useTransition();
   const [tab, setTab] = useState<TabId>("package");
-
-  useEffect(() => {
-    if (initial) return;
-    getAllPricing().then((data) => {
-      setItems(data);
-      setLoading(false);
-    });
-  }, [initial]);
 
   const filtered = items.filter((i) => i.category === tab);
 
@@ -121,8 +104,6 @@ export function PricingAdmin({ initial }: Props) {
       toast.success("Harga tersimpan");
     });
   };
-
-  if (loading) return <PricingFormSkeleton />;
 
   return (
     <div className="space-y-6 pb-20">
