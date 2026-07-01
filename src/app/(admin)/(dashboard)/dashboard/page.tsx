@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Dashboard Overview",
+};
 import { DashboardOverviewData } from "@/components/features/dashboard/dashboard-overview-data";
 import { DashboardStats } from "@/components/features/dashboard/dashboard-stats";
 import { DashboardOverviewSkeleton } from "@/components/skeletons/dashboard-overview-skeleton";

@@ -12,10 +12,9 @@ export async function getBookedSlots(date: string) {
 
   const supabase = createPublicClient();
   const { data, error } = await supabase
-    .from("reservations")
+    .from("booked_slots")
     .select("time")
-    .eq("date", date)
-    .in("status", ["pending", "confirmed"]);
+    .eq("date", date);
 
   if (error) throw error;
   return data.map((row) => row.time as string);

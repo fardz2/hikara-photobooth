@@ -36,17 +36,16 @@ describe('Reservation Service', () => {
   describe('getBookedSlots', () => {
     it('returns array of time strings on success', async () => {
       const mockData = [{ time: '10:00' }, { time: '11:00' }]
-      // In getBookedSlots, .in() is the last call in the chain
-      mockSupabase.in.mockResolvedValueOnce({ data: mockData, error: null })
+      // getBookedSlots now uses booked_slots view, .eq is terminal
+      mockSupabase.eq.mockResolvedValueOnce({ data: mockData, error: null })
 
       const result = await reservationService.getBookedSlots('2024-03-01')
       expect(result).toEqual(['10:00', '11:00'])
       expect(mockSupabase.eq).toHaveBeenCalledWith('date', '2024-03-01')
-      expect(mockSupabase.in).toHaveBeenCalledWith('status', ['pending', 'confirmed'])
     })
 
     it('throws error on database failure', async () => {
-      mockSupabase.in.mockResolvedValueOnce({ data: null, error: new Error('Database failure') })
+      mockSupabase.eq.mockResolvedValueOnce({ data: null, error: new Error('Database failure') })
       await expect(reservationService.getBookedSlots('2024-03-01')).rejects.toThrow('Database failure')
     })
   })

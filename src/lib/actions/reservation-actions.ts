@@ -120,6 +120,10 @@ export async function updateReservationStatus(
   id: string,
   status: "confirmed" | "cancelled" | "pending",
 ) {
+  // 0. Auth check
+  const user = await getCurrentUser();
+  if (!user) return { success: false, message: "Unauthorized" };
+
   // 1. Fetch current reservation
   const reservation = await getReservationById(id);
   if (!reservation)
@@ -179,6 +183,9 @@ Terima kasih telah melakukan pembayaran. Sampai jumpa di studio! ✨`;
 // ─── Delete ───
 
 export async function deleteReservation(id: string) {
+  const user = await getCurrentUser();
+  if (!user) return { success: false, message: "Unauthorized" };
+
   const result = await deleteRes(id);
   if (result.error) return { success: false, message: result.error };
 
@@ -194,6 +201,8 @@ export async function editReservation(
   id: string,
   data: Partial<ReservationInput>,
 ) {
+  const user = await getCurrentUser();
+  if (!user) return { success: false, message: "Unauthorized" };
   if (!id) return { success: false, message: "ID tidak valid" };
 
   // 1. Validate

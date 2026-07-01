@@ -19,7 +19,7 @@ export async function login(formData: FormData) {
     return { error: error.message };
   }
 
-  revalidatePath("/", "layout");
+  revalidatePath("/dashboard", "layout");
   redirect("/dashboard");
 }
 
@@ -31,7 +31,7 @@ export async function logout() {
     console.error("Error logging out:", error);
   }
 
-  revalidatePath("/", "layout");
+  revalidatePath("/dashboard", "layout");
   redirect("/login");
 }
 

@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Pengaturan Situs",
+};
 import { CONTENT_SECTIONS } from "@/components/features/dashboard/settings/section-config";
 import { SettingsClient } from "@/components/features/dashboard/settings/settings-client";
 import { SettingsSkeleton } from "@/components/skeletons/settings-skeleton";
