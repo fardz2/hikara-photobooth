@@ -15,7 +15,7 @@ export function ImagePreview({ src, onDelete, onReplace, uploading }: Props) {
   const [error, setError] = useState(false);
 
   return (
-    <div className="relative w-full aspect-[3/2] overflow-hidden border border-[#E8E2D9] bg-[#EBE6DF] group">
+    <div className="relative w-full aspect-video overflow-hidden border border-[#E8E2D9] bg-[#EBE6DF] group">
       {!loaded && !error && <Skeleton className="absolute inset-0 w-full h-full rounded-none" />}
       {error && (
         <div className="absolute inset-0 flex items-center justify-center text-[10px] text-[#5A5550] bg-white/80">
@@ -30,7 +30,6 @@ export function ImagePreview({ src, onDelete, onReplace, uploading }: Props) {
         onError={() => { setError(true); setLoaded(true); }}
       />
 
-      {/* Hover overlay: ganti */}
       {onReplace && (
         <button
           type="button"
@@ -44,7 +43,6 @@ export function ImagePreview({ src, onDelete, onReplace, uploading }: Props) {
         </button>
       )}
 
-      {/* Delete × — konsisten di semua komponen */}
       {onDelete && (
         <button
           type="button"

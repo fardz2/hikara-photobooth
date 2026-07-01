@@ -10,8 +10,9 @@ import { CtaSection } from "@/components/features/landing/cta-section";
 import { AnchorSection } from "@/components/features/landing/anchor-section";
 import { TestimonialSection } from "@/components/features/landing/testimonial-section";
 import { Suspense } from "react";
+
 async function HomeContent() {
-  const [heroData, aboutData, galleryData, themesData, testimonialsData, locationData, ctaData, pricing] =
+  const [heroData, aboutData, galleryData, themesData, testimonialsData, locationData, ctaData, marqueeData, pricing] =
     await Promise.all([
       getSiteContent("hero"),
       getSiteContent("about"),
@@ -20,10 +21,11 @@ async function HomeContent() {
       getSiteContent("testimonials"),
       getSiteContent("location"),
       getSiteContent("cta"),
+      getSiteContent("marquee"),
       getPricing(),
     ]);
 
-  const marqueeText = ["HIKARA", "PHOTOBOX", "STUDIO QUALITY", "MEMORIES"];
+  const marqueeText = (marqueeData?.text as string[]) || ["HIKARA", "PHOTOBOX"];
   const galleryImages = (galleryData?.images as string[]) || [];
   const themesItems = (themesData?.items as any[]) || [];
   const testimonialItems = (testimonialsData?.items as any[]) || [];
