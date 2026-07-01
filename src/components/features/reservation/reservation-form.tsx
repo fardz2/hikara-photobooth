@@ -565,7 +565,8 @@ export const ReservationForm = ({ pricing }: Props) => {
                       {item.label}
                     </span>
                     <span className="text-[8px] text-[#5A5550]/60 italic font-medium uppercase tracking-wider">
-                      Maks {maxQty === Infinity ? "∞" : maxQty}
+                      Maks {maxQty === Infinity ? "∞" : maxQty} · +Rp{" "}
+                      {item.price.toLocaleString("id-ID")}
                     </span>
                   </div>
 
