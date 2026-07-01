@@ -7,12 +7,6 @@ export interface PriceInput {
   addons?: string[];
 }
 
-const norm = (s: string) =>
-  s
-    .toLowerCase()
-    .replace(/[^a-z]/g, "_")
-    .replace(/_+/g, "_");
-
 export async function calculateTotalPrice(input: PriceInput): Promise<number> {
   const pricing = await getPricing();
   return calculateTotalPriceSync(input, pricing);
@@ -23,40 +17,29 @@ export function calculateTotalPriceSync(
   input: PriceInput,
   pricing: PricingItem[],
 ): number {
-  const mainPkg = pricing.find((p) => p.maxPeople) || pricing[0];
-  let total = mainPkg?.price || 0;
+  const mainPkg = input.packageId
+    ? pricing.find((p) => p.id === input.packageId)
+    : undefined;
+  const basePrice = mainPkg?.price || (
+    pricing.find((p) => p.category === "package")?.price ?? 0
+  );
 
-  const extraPerson =
-    pricing.find(
-      (p) =>
-        p.label.toLowerCase().includes("tambahan") &&
-        p.label.toLowerCase().includes("orang"),
-    ) ||
-    pricing.find(
-      (p) => !p.maxPeople && p.label.toLowerCase().includes("orang"),
-    );
-  const extraPrint =
-    pricing.find(
-      (p) =>
-        p.label.toLowerCase().includes("extra") &&
-        p.label.toLowerCase().includes("print"),
-    ) ||
-    pricing.find(
-      (p) => p.label.toLowerCase().includes("print") && !p.maxPeople,
-    );
+  const extras = pricing.filter((p) => p.category === "extra");
+  const extraPerson = extras.find((p) =>
+    p.label.toLowerCase().includes("orang"),
+  ) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = extras.find((p) =>
+    p.label.toLowerCase().includes("print"),
+  ) || { label: "Extra Print", price: 10000 };
 
+  let total = basePrice;
   total += (input.extraPeopleCount || 0) * (extraPerson?.price || 5000);
   total += (input.extraPrintCount || 0) * (extraPrint?.price || 10000);
 
   if (input.addons) {
+    const addonItems = pricing.filter((p) => p.category === "addon");
     for (const addonId of input.addons) {
-      const addon = pricing.find((p) => {
-        if (p === mainPkg || p === extraPerson || p === extraPrint)
-          return false;
-        const normLabel = norm(p.label);
-        const normId = norm(addonId);
-        return normLabel.includes(normId) || normId.includes(normLabel);
-      });
+      const addon = addonItems.find((a) => a.id === addonId);
       if (addon) total += addon.price;
     }
   }

@@ -3,10 +3,10 @@ import { calculateTotalPriceSync, type PriceInput } from '@/lib/utils/price'
 import { type PricingItem } from "@/lib/services/pricing-service";
 
 const MOCK_PRICING: PricingItem[] = [
-  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG", category: "package" as const },
-  { label: "Tambahan per Orang", price: 5000, category: "extra" as const },
-  { label: "Extra Print", price: 10000, category: "extra" as const },
-  { label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" as const },
+  { id: "pkg1", label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG", category: "package" as const },
+  { id: "ext1", label: "Tambahan per Orang", price: 5000, category: "extra" as const },
+  { id: "ext2", label: "Extra Print", price: 10000, category: "extra" as const },
+  { id: "addon1", label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" as const },
 ]
 
 const BASE_PRICE = MOCK_PRICING[0].price
@@ -32,7 +32,7 @@ describe('calculateTotalPriceSync', () => {
   })
 
   it('calculates total with addons', () => {
-    const addons = ['custom_frame']
+    const addons = ['addon1']
     const expected = BASE_PRICE + CUSTOM_FRAME_PRICE
     expect(calculateTotalPriceSync({ addons }, MOCK_PRICING)).toBe(expected)
   })
@@ -41,7 +41,7 @@ describe('calculateTotalPriceSync', () => {
     const input: PriceInput = {
       extraPeopleCount: 2,
       extraPrintCount: 1,
-      addons: ['custom_frame']
+      addons: ['addon1']
     }
     const expected = BASE_PRICE + 
                      (2 * EXTRA_PERSON_PRICE) + 

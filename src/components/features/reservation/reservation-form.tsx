@@ -70,7 +70,6 @@ export const ReservationForm = ({ pricing }: Props) => {
   const extraItems = pricing.filter((p) => p.category === "extra");
   const addonItems = pricing.filter((p) => p.category === "addon");
 
-  const mainPkg = packages[0];
   const extraPerson = extraItems.find((p) =>
     p.label.toLowerCase().includes("orang"),
   ) || { label: "Tambahan per Orang", price: 5000 };
@@ -78,11 +77,14 @@ export const ReservationForm = ({ pricing }: Props) => {
     p.label.toLowerCase().includes("print"),
   ) || { label: "Extra Print", price: 10000 };
 
-  const pricelist = mainPkg
-    ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }]
-    : [];
+  const pricelist = packages.map((p, i) => ({
+    id: p.id ?? `pkg_${i}`,
+    label: p.label,
+    price: p.price,
+    note: p.note,
+  }));
   const addons = addonItems.map((a) => ({
-    id: a.label
+    id: a.id ?? a.label
       .toLowerCase()
       .replace(/[^a-z]/g, "_")
       .replace(/_+/g, "_"),
@@ -108,7 +110,7 @@ export const ReservationForm = ({ pricing }: Props) => {
       phone: "",
       date: undefined,
       time: "",
-      package: "paket_utama",
+      package: "",
       addons: [],
       extraPeopleCount: 0,
       extraPrintCount: 0,
@@ -488,32 +490,58 @@ export const ReservationForm = ({ pricing }: Props) => {
         {/* Paket Utama */}
         <div className="flex flex-col gap-2">
           <label className="text-xs tracking-widest text-[#5A5550] uppercase font-medium">
-            Paket Utama
+            Pilih Paket
           </label>
-          <div className="p-4 border border-[#8B5E56] bg-[#8B5E56]/5 rounded-xl flex justify-between items-center group transition-all duration-500 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="size-5 rounded-full bg-[#8B5E56] flex items-center justify-center shadow-md">
-                <HugeiconsIcon
-                  icon={Tick02Icon}
-                  strokeWidth={3}
-                  className="size-3 text-white"
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-[#2C2A29] tracking-tight">
-                  {pricelist[0].label}
-                </span>
-                <span className="text-[10px] text-[#5A5550] font-light tracking-widest uppercase">
-                  Base Experience
-                </span>
-              </div>
-            </div>
-            <span
-              className="text-sm font-bold text-[#8B5E56]"
-              data-testid="total-price"
-            >
-              Rp {pricelist[0].price.toLocaleString("id-ID")}
-            </span>
+          <div className="flex flex-col gap-3">
+            {pricelist.map((p) => {
+              const isSelected = pkg === p.id;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setValue("package", p.id)}
+                  className={`p-4 border rounded-xl flex justify-between items-center group transition-all duration-300 shadow-sm ${
+                    isSelected
+                      ? "border-[#8B5E56] bg-[#8B5E56]/5"
+                      : "border-[#2C2A29]/10 bg-white hover:border-[#8B5E56]/40 hover:bg-[#8B5E56]/[0.02]"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`size-5 rounded-full flex items-center justify-center shadow-md transition-colors ${
+                        isSelected
+                          ? "bg-[#8B5E56]"
+                          : "bg-[#2C2A29]/10"
+                      }`}
+                    >
+                      {isSelected && (
+                        <HugeiconsIcon
+                          icon={Tick02Icon}
+                          strokeWidth={3}
+                          className="size-3 text-white"
+                        />
+                      )}
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span className="text-sm font-semibold text-[#2C2A29] tracking-tight">
+                        {p.label}
+                      </span>
+                      {p.note && (
+                        <span className="text-[10px] text-[#5A5550] font-light tracking-widest uppercase">
+                          {p.note}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span
+                    className="text-sm font-bold text-[#8B5E56]"
+                    data-testid={isSelected ? "total-price" : undefined}
+                  >
+                    Rp {p.price.toLocaleString("id-ID")}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
