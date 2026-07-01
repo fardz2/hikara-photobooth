@@ -65,6 +65,11 @@ export const PackagesSection = ({ pricing }: Props) => {
             delayOrder={0.3}
             className="flex flex-col gap-10 w-full relative"
           >
+            {packages.length === 0 && (
+              <p className="text-sm text-center text-[#5A5550] py-10 col-span-full">
+                Belum ada paket yang tersedia.
+              </p>
+            )}
             {packages.map((item, idx) => (
               <StaggerItem
                 key={idx}

@@ -42,6 +42,9 @@ export const HeroSection = ({ data }: Props) => {
   const heroTextOpacity = useTransform(heroScroll, [0, 0.8], [1, 0]);
   const heroTextY = useTransform(heroScroll, [0, 1], ["0%", "50%"]);
   const imageScale = useTransform(heroScroll, [0, 1], [1.15, 1]);
+  const polaroid1Y = useTransform(heroScroll, [0, 1], ["0%", "-50%"]);
+  const polaroid2Y = useTransform(heroScroll, [0, 1], ["0%", "-80%"]);
+  const polaroid3Y = useTransform(heroScroll, [0, 1], ["0%", "-30%"]);
 
   return (
     <section
@@ -62,7 +65,7 @@ export const HeroSection = ({ data }: Props) => {
         initial={{ opacity: 0, y: 50, rotate: -10 }}
         animate={{ opacity: 1, y: 0, rotate: -12 }}
         transition={{ duration: 1.5, delay: 1 }}
-        style={{ y: useTransform(heroScroll, [0, 1], ["0%", "-50%"]) }}
+        style={{ y: polaroid1Y }}
         className="absolute left-[10%] top-[20%] w-32 md:w-48 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
         <div className="aspect-3/4 bg-[#EFEBDE] overflow-hidden">
@@ -87,7 +90,7 @@ export const HeroSection = ({ data }: Props) => {
         initial={{ opacity: 0, y: 50, rotate: 10 }}
         animate={{ opacity: 1, y: 0, rotate: 15 }}
         transition={{ duration: 1.5, delay: 1.2 }}
-        style={{ y: useTransform(heroScroll, [0, 1], ["0%", "-80%"]) }}
+        style={{ y: polaroid2Y }}
         className="absolute right-[5%] max-w-[200px] top-[15%] w-32 md:w-40 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
         <div className="aspect-square bg-[#EFEBDE] overflow-hidden">
@@ -112,7 +115,7 @@ export const HeroSection = ({ data }: Props) => {
         initial={{ opacity: 0, y: 50, rotate: -5 }}
         animate={{ opacity: 1, y: 0, rotate: -5 }}
         transition={{ duration: 1.5, delay: 1.4 }}
-        style={{ y: useTransform(heroScroll, [0, 1], ["0%", "-30%"]) }}
+        style={{ y: polaroid3Y }}
         className="absolute right-[15%] bottom-[10%] w-40 md:w-56 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
         <div className="aspect-4/3 bg-[#EFEBDE] overflow-hidden">

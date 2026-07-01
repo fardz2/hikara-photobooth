@@ -90,7 +90,10 @@ export function getColumns(
       header: "Orang",
       cell: ({ row }) => {
         const extra = row.original.extra_people_count || 0;
-        const total = 4 + extra;
+        const pkg = (row.original.pricing_snapshot || pricing).find(
+          (p: PricingItem) => p.category === "package",
+        );
+        const total = (pkg?.maxQty ?? 4) + extra;
         return (
           <div className="flex flex-col">
             <span className="text-xs text-[#2C2A29] font-bold">
@@ -145,10 +148,10 @@ export function getColumns(
       accessorKey: "total_price",
       header: "Total",
       cell: ({ row }) => {
-        const price = (row.getValue("total_price") as number) || 35000;
+        const price = row.getValue("total_price") as number | null;
         return (
           <span className="text-[10px] font-bold text-[#8B5E56]">
-            Rp {price.toLocaleString("id-ID")}
+            {price != null ? `Rp ${price.toLocaleString("id-ID")}` : "—"}
           </span>
         );
       },
