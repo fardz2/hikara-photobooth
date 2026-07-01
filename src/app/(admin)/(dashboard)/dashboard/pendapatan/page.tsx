@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { RevenueStats } from "@/components/features/revenue/revenue-stats";
 import { RecentTransactions } from "@/components/features/revenue/recent-transactions";
+import { RevenueStats } from "@/components/features/revenue/revenue-stats";
 import { RevenueStatsSkeleton } from "@/components/skeletons/revenue-stats-skeleton";
 import { DateRangeFilter } from "@/components/ui/date-range-filter";
 
@@ -29,7 +29,11 @@ export default function PendapatanPage({ searchParams }: Props) {
         <RevenueStats searchParams={searchParams} />
       </Suspense>
 
-      <Suspense fallback={<div className="h-96 animate-pulse bg-white/50 border border-dashed border-[#2C2A29]/10" />}>
+      <Suspense
+        fallback={
+          <div className="h-96 animate-pulse bg-white/50 border border-dashed border-[#2C2A29]/10" />
+        }
+      >
         <RecentTransactions searchParams={searchParams} />
       </Suspense>
     </div>

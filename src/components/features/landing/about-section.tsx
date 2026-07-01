@@ -1,14 +1,17 @@
-import { FadeUp, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 import Image from "next/image";
+import { FadeUp, StaggerContainer, StaggerItem } from "@/components/ui/motion";
 
 interface Props {
   data: Record<string, any> | null;
 }
 
 const DEFAULTS = {
-  image_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
-  description_heading: "Kami menciptakan ruang sederhana untuk menangkap momen yang jujur dan apa adanya.",
-  description_sub: "Desain elegan, pencahayaan presisi, dan estetika majalah dalam setiap cetakan.",
+  image_url:
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
+  description_heading:
+    "Kami menciptakan ruang sederhana untuk menangkap momen yang jujur dan apa adanya.",
+  description_sub:
+    "Desain elegan, pencahayaan presisi, dan estetika majalah dalam setiap cetakan.",
 };
 
 export const AboutSection = ({ data }: Props) => {
@@ -23,19 +26,24 @@ export const AboutSection = ({ data }: Props) => {
         STUDIO KAMI
       </div>
       <div className="absolute left-6 md:left-24 top-24 md:top-40 hidden lg:block opacity-[0.15] z-0">
-         <span className="font-serif text-4xl text-[#8B5E56] tracking-[0.3em] uppercase" style={{ writingMode: 'vertical-rl' }}>VISI</span>
+        <span
+          className="font-serif text-4xl text-[#8B5E56] tracking-[0.3em] uppercase"
+          style={{ writingMode: "vertical-rl" }}
+        >
+          VISI
+        </span>
       </div>
       <div className="absolute right-6 md:right-24 bottom-24 hidden lg:block opacity-[0.15] z-0">
-         <span className="font-sans text-[10px] tracking-[0.5em] text-[#2C2A29] uppercase border-l border-[#8B5E56] pl-4">HIKARA STUDIO</span>
+        <span className="font-sans text-[10px] tracking-[0.5em] text-[#2C2A29] uppercase border-l border-[#8B5E56] pl-4">
+          HIKARA STUDIO
+        </span>
       </div>
 
       <FadeUp className="relative z-10 w-full">
         <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] mb-4 font-sans font-medium flex items-center gap-4">
           <span className="w-8 h-px bg-[#8B5E56]"></span>
           Tentang Kami
-          <span className="font-serif text-[#2C2A29]/50 ml-2">
-            HIKARA
-          </span>
+          <span className="font-serif text-[#2C2A29]/50 ml-2">HIKARA</span>
           <span className="w-8 h-px bg-[#8B5E56]"></span>
         </h2>
       </FadeUp>
@@ -52,38 +60,74 @@ export const AboutSection = ({ data }: Props) => {
       <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-16 max-w-6xl mx-auto w-full border-t border-[#2C2A29]/10 pt-16 h-auto md:h-[500px]">
         {/* Bento Cell 1: Large Image/Title Span 2 */}
         <StaggerItem className="col-span-1 md:col-span-2 row-span-2 bg-[#EFEBDE]/50 border border-[#2C2A29]/5 p-8 md:p-12 flex flex-col justify-between relative overflow-hidden group text-left rounded-tl-[100px] rounded-br-[100px]">
-           <div className="absolute top-8 right-8 z-20 opacity-80 mix-blend-multiply hidden md:block animate-[spin_15s_linear_infinite]">
-             <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-               <path id="curve" d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="transparent" />
-               <text className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-heading fill-[#8B5E56] font-bold">
-                 <textPath href="#curve" startOffset="0%">
-                   PENGALAMAN FOTO PREMIUM • SEJAK 2024 • 
-                 </textPath>
-               </text>
-             </svg>
-           </div>
-           
-           <div className="absolute inset-0 z-0">
-             <Image src={d.image_url} alt="HIKARA Studio Foto Kotabaru - Proses Foto Studio Premium" fill sizes="(max-width: 768px) 100vw, 800px" className="object-cover grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" />
-             <div className="absolute inset-0 bg-linear-to-t from-[#F6F4F0] via-[#F6F4F0]/80 to-transparent"></div>
-           </div>
-           <span className="font-serif text-8xl md:text-9xl text-[#8B5E56] opacity-30 relative z-10 mix-blend-multiply">H</span>
-           <div className="relative z-10 mt-24">
-             <h3 className="text-sm md:text-base tracking-[0.3em] uppercase text-[#2C2A29] font-heading font-bold mb-4">Filosofi Eksklusif</h3>
-             <p className="text-xs leading-loose tracking-widest text-[#5A5550] max-w-sm uppercase">Ruang privat untuk berekspresi tanpa batas dengan sistem lighting level komersial.</p>
-           </div>
+          <div className="absolute top-8 right-8 z-20 opacity-80 mix-blend-multiply hidden md:block animate-[spin_15s_linear_infinite]">
+            <svg
+              width="100"
+              height="100"
+              viewBox="0 0 100 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                id="curve"
+                d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0"
+                fill="transparent"
+              />
+              <text className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-heading fill-[#8B5E56] font-bold">
+                <textPath href="#curve" startOffset="0%">
+                  PENGALAMAN FOTO PREMIUM • SEJAK 2024 •
+                </textPath>
+              </text>
+            </svg>
+          </div>
+
+          <div className="absolute inset-0 z-0">
+            <Image
+              src={d.image_url}
+              alt="HIKARA Studio Foto Kotabaru - Proses Foto Studio Premium"
+              fill
+              sizes="(max-width: 768px) 100vw, 800px"
+              className="object-cover grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-[#F6F4F0] via-[#F6F4F0]/80 to-transparent"></div>
+          </div>
+          <span className="font-serif text-8xl md:text-9xl text-[#8B5E56] opacity-30 relative z-10 mix-blend-multiply">
+            H
+          </span>
+          <div className="relative z-10 mt-24">
+            <h3 className="text-sm md:text-base tracking-[0.3em] uppercase text-[#2C2A29] font-heading font-bold mb-4">
+              Filosofi Eksklusif
+            </h3>
+            <p className="text-xs leading-loose tracking-widest text-[#5A5550] max-w-sm uppercase">
+              Ruang privat untuk berekspresi tanpa batas dengan sistem lighting
+              level komersial.
+            </p>
+          </div>
         </StaggerItem>
 
         <StaggerItem className="col-span-1 border border-[#2C2A29]/10 p-8 flex flex-col justify-center items-start text-left bg-white shadow-2xl shadow-[#2C2A29]/5 group hover:border-[#8B5E56]/50 transition-colors">
-          <span className="text-[10px] tracking-[0.3em] font-medium text-[#8B5E56] mb-4 uppercase">Langkah 01</span>
-          <h3 className="font-heading text-xl text-[#2C2A29] mb-2 group-hover:text-[#8B5E56] transition-colors">Reservasi Studio</h3>
-          <p className="text-xs text-[#5A5550] leading-relaxed">Booking waktu spesifik untuk kenyamanan sesi tanpa antre (zero-waiting).</p>
+          <span className="text-[10px] tracking-[0.3em] font-medium text-[#8B5E56] mb-4 uppercase">
+            Langkah 01
+          </span>
+          <h3 className="font-heading text-xl text-[#2C2A29] mb-2 group-hover:text-[#8B5E56] transition-colors">
+            Reservasi Studio
+          </h3>
+          <p className="text-xs text-[#5A5550] leading-relaxed">
+            Booking waktu spesifik untuk kenyamanan sesi tanpa antre
+            (zero-waiting).
+          </p>
         </StaggerItem>
 
         <StaggerItem className="col-span-1 border border-[#2C2A29]/10 p-8 flex flex-col justify-center items-start text-left bg-white shadow-2xl shadow-[#2C2A29]/5 group hover:border-[#8B5E56]/50 transition-colors">
-          <span className="text-[10px] tracking-[0.3em] font-medium text-[#8B5E56] mb-4 uppercase">Langkah 02</span>
-          <h3 className="font-heading text-xl text-[#2C2A29] mb-2 group-hover:text-[#8B5E56] transition-colors">Premium Print</h3>
-          <p className="text-xs text-[#5A5550] leading-relaxed">Terima foto cetak fisik berkelas editorial majalah.</p>
+          <span className="text-[10px] tracking-[0.3em] font-medium text-[#8B5E56] mb-4 uppercase">
+            Langkah 02
+          </span>
+          <h3 className="font-heading text-xl text-[#2C2A29] mb-2 group-hover:text-[#8B5E56] transition-colors">
+            Premium Print
+          </h3>
+          <p className="text-xs text-[#5A5550] leading-relaxed">
+            Terima foto cetak fisik berkelas editorial majalah.
+          </p>
         </StaggerItem>
       </StaggerContainer>
     </section>

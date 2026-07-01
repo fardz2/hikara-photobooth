@@ -1,13 +1,13 @@
 import {
+  addDays,
+  endOfDay,
+  endOfMonth,
+  endOfWeek,
   format,
   startOfDay,
-  endOfDay,
-  startOfWeek,
-  endOfWeek,
   startOfMonth,
-  endOfMonth,
+  startOfWeek,
   subDays,
-  addDays,
 } from "date-fns";
 import { id } from "date-fns/locale";
 
@@ -15,7 +15,7 @@ export type DateRangePreset = "today" | "week" | "month" | "all";
 
 export interface DateRange {
   from: string; // yyyy-MM-dd
-  to: string;   // yyyy-MM-dd
+  to: string; // yyyy-MM-dd
   label: string;
 }
 
@@ -40,7 +40,6 @@ export function getDateRangeFromPreset(preset: DateRangePreset): DateRange {
         to: format(endOfMonth(now), "yyyy-MM-dd"),
         label: "Bulan Ini",
       };
-    case "all":
     default:
       return {
         from: format(subDays(now, 365 * 5), "yyyy-MM-dd"),
@@ -56,7 +55,7 @@ export function parseDateRangeParams(
     from?: string;
     to?: string;
   },
-  defaultRange: DateRangePreset = "month"
+  defaultRange: DateRangePreset = "month",
 ): DateRange {
   // Custom date range takes priority
   if (searchParams.from && searchParams.to) {

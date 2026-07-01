@@ -1,21 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetTrigger, 
-  SheetHeader, 
-  SheetTitle 
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { Menu01Icon } from "@hugeicons/core-free-icons";
-import { logout } from "@/lib/actions/auth-actions";
-
+import { HugeiconsIcon } from "@hugeicons/react";
+import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { logout } from "@/lib/actions/auth-actions";
 import { cn } from "@/lib/utils";
 
 export const MobileNav = () => {
@@ -33,37 +32,52 @@ export const MobileNav = () => {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="md:hidden">
-          <HugeiconsIcon icon={Menu01Icon} size={24} className="text-[#2C2A29]" />
+          <HugeiconsIcon
+            icon={Menu01Icon}
+            size={24}
+            className="text-[#2C2A29]"
+          />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-[80%] p-0 border-r border-[#2C2A29]/5">
+      <SheetContent
+        side="left"
+        className="w-[80%] p-0 border-r border-[#2C2A29]/5"
+      >
         <SheetHeader className="px-8 py-8 text-left border-b border-[#2C2A29]/5">
           <SheetTitle>
-            <Image src="/logo.png" width={100} height={30} alt="HIKARA" className="h-6 w-auto mix-blend-multiply opacity-90" />
-            <p className="text-[8px] tracking-[0.3em] text-[#8B5E56] uppercase mt-1">Panel Admin</p>
+            <Image
+              src="/logo.png"
+              width={100}
+              height={30}
+              alt="HIKARA"
+              className="h-6 w-auto mix-blend-multiply opacity-90"
+            />
+            <p className="text-[8px] tracking-[0.3em] text-[#8B5E56] uppercase mt-1">
+              Panel Admin
+            </p>
           </SheetTitle>
         </SheetHeader>
-        
+
         <nav className="flex flex-col py-6 px-4 space-y-1">
           {links.map((link) => {
             const isActive = pathname === link.href;
             return (
-              <Link 
+              <Link
                 key={link.href}
-                href={link.href} 
+                href={link.href}
                 onClick={() => setOpen(false)}
                 className={cn(
                   "flex items-center gap-3 px-4 py-4 text-[10px] tracking-[0.2em] uppercase font-medium transition-colors",
                   isActive
                     ? "bg-[#F6F4F0] text-[#2C2A29] border-l-2 border-[#8B5E56]"
-                    : "text-[#5A5550] hover:bg-[#F6F4F0] border-l-2 border-transparent"
+                    : "text-[#5A5550] hover:bg-[#F6F4F0] border-l-2 border-transparent",
                 )}
               >
                 {link.label}
               </Link>
             );
           })}
-          
+
           <a
             href="/"
             onClick={() => setOpen(false)}

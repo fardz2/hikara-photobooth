@@ -24,16 +24,16 @@ export const NavLinks = () => {
             href={link.href}
             className={cn(
               "flex items-center gap-3 px-4 py-4 text-[10px] tracking-[0.2em] uppercase font-medium transition-colors",
-              isActive 
-                ? "bg-[#F6F4F0] text-[#2C2A29] border-l-2 border-[#8B5E56]" 
-                : "text-[#5A5550] hover:bg-[#F6F4F0] hover:text-[#2C2A29] border-l-2 border-transparent"
+              isActive
+                ? "bg-[#F6F4F0] text-[#2C2A29] border-l-2 border-[#8B5E56]"
+                : "text-[#5A5550] hover:bg-[#F6F4F0] hover:text-[#2C2A29] border-l-2 border-transparent",
             )}
           >
             {link.label}
           </Link>
         );
       })}
-      
+
       <a
         href="/"
         className="flex items-center gap-3 px-4 py-4 text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550] hover:text-[#2C2A29] transition-colors border-t border-[#2C2A29]/5 mt-4"

@@ -17,11 +17,11 @@ export function normalizePhoneNumber(phone: string): string {
   let cleaned = phone.replace(/\D/g, "");
 
   if (cleaned.startsWith("08")) {
-    cleaned = "62" + cleaned.slice(1);
+    cleaned = `62${cleaned.slice(1)}`;
   } else if (cleaned.startsWith("8")) {
-    cleaned = "62" + cleaned;
+    cleaned = `62${cleaned}`;
   } else if (cleaned.startsWith("6208")) {
-    cleaned = "628" + cleaned.slice(4);
+    cleaned = `628${cleaned.slice(4)}`;
   }
 
   return cleaned;

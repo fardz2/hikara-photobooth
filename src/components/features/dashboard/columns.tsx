@@ -1,27 +1,15 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-import { type PricingItem } from "@/lib/services/site-content-service";
-import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { MoreIcon } from "@hugeicons/core-free-icons";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { updateReservationStatus, deleteReservation } from "@/lib/actions/reservation-actions";
+  Alert01Icon,
+  Loading03Icon,
+  MoreIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import type { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { useTransition, useState } from "react";
-import { Loading03Icon, Alert01Icon } from "@hugeicons/core-free-icons";
-import { ProofPreview } from "./proof-preview";
-import { EditReservationDialog } from "./edit-reservation-dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +21,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  deleteReservation,
+  updateReservationStatus,
+} from "@/lib/actions/reservation-actions";
+import type { PricingItem } from "@/lib/services/site-content-service";
+import { cn } from "@/lib/utils";
+import { EditReservationDialog } from "./edit-reservation-dialog";
+import { ProofPreview } from "./proof-preview";
 
 export type Reservation = {
   id: string;
@@ -50,7 +56,9 @@ export type Reservation = {
   payment_proof_url?: string | null;
 };
 
-export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[] {
+export function getColumns(
+  pricing: PricingItem[] = [],
+): ColumnDef<Reservation>[] {
   return [
     {
       accessorKey: "name",
@@ -60,8 +68,10 @@ export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[
         const phone = row.original.phone;
         return (
           <div className="flex flex-col">
-            <span className="text-xs font-heading text-[#2C2A29] uppercase">{name}</span>
-            <a 
+            <span className="text-xs font-heading text-[#2C2A29] uppercase">
+              {name}
+            </span>
+            <a
               href={`https://wa.me/${phone}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -81,8 +91,14 @@ export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[
         const total = 4 + extra;
         return (
           <div className="flex flex-col">
-            <span className="text-xs text-[#2C2A29] font-bold">{total} Orang</span>
-            {extra > 0 && <span className="text-[8px] text-[#8B5E56] uppercase tracking-tighter">(+{extra} Extra)</span>}
+            <span className="text-xs text-[#2C2A29] font-bold">
+              {total} Orang
+            </span>
+            {extra > 0 && (
+              <span className="text-[8px] text-[#8B5E56] uppercase tracking-tighter">
+                (+{extra} Extra)
+              </span>
+            )}
           </div>
         );
       },
@@ -97,7 +113,14 @@ export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[
             className="p-0 hover:bg-transparent text-[10px] tracking-[0.2em] font-bold uppercase text-[#2C2A29] flex items-center gap-1"
           >
             Jadwal
-            <HugeiconsIcon icon={MoreIcon} size={12} className={cn("rotate-90 transition-transform", column.getIsSorted() && "text-[#8B5E56]")} />
+            <HugeiconsIcon
+              icon={MoreIcon}
+              size={12}
+              className={cn(
+                "rotate-90 transition-transform",
+                column.getIsSorted() && "text-[#8B5E56]",
+              )}
+            />
           </Button>
         );
       },
@@ -120,10 +143,10 @@ export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[
       accessorKey: "total_price",
       header: "Total",
       cell: ({ row }) => {
-        const price = row.getValue("total_price") as number || 35000;
+        const price = (row.getValue("total_price") as number) || 35000;
         return (
           <span className="text-[10px] font-bold text-[#8B5E56]">
-            Rp {price.toLocaleString('id-ID')}
+            Rp {price.toLocaleString("id-ID")}
           </span>
         );
       },
@@ -136,14 +159,17 @@ export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[
         const proofUrl = row.original.payment_proof_url;
         return (
           <div className="flex flex-col gap-1">
-            <Badge variant="outline" className={`text-[8px] uppercase font-bold rounded-none tracking-widest px-2 py-0.5 w-fit ${
-              method === 'qris' ? "border-[#2C2A29]/20 text-[#2C2A29] bg-transparent" : "border-none bg-[#2C2A29] text-white"
-            }`}>
+            <Badge
+              variant="outline"
+              className={`text-[8px] uppercase font-bold rounded-none tracking-widest px-2 py-0.5 w-fit ${
+                method === "qris"
+                  ? "border-[#2C2A29]/20 text-[#2C2A29] bg-transparent"
+                  : "border-none bg-[#2C2A29] text-white"
+              }`}
+            >
               {method}
             </Badge>
-            {method === 'qris' && proofUrl && (
-              <ProofPreview url={proofUrl} />
-            )}
+            {method === "qris" && proofUrl && <ProofPreview url={proofUrl} />}
           </div>
         );
       },
@@ -163,7 +189,10 @@ export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[
             )}
             {addons && addons.length > 0 ? (
               addons.map((addon, i) => (
-                <span key={i} className="text-[8px] bg-[#EFEBDE]/50 border border-[#2C2A29]/5 text-[#5A5550] px-2 py-1 uppercase tracking-tighter shadow-sm">
+                <span
+                  key={i}
+                  className="text-[8px] bg-[#EFEBDE]/50 border border-[#2C2A29]/5 text-[#5A5550] px-2 py-1 uppercase tracking-tighter shadow-sm"
+                >
                   {addon}
                 </span>
               ))
@@ -180,11 +209,16 @@ export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
         return (
-          <Badge variant="outline" className={`text-[8px] tracking-[0.2em] uppercase font-bold px-2 py-0.5 rounded-none ${
-            status === 'confirmed' ? "border-emerald-600/20 text-emerald-700 bg-emerald-50/50" :
-            status === 'cancelled' ? "border-red-600/20 text-red-700 bg-red-50/50" :
-            "border-amber-600/20 text-amber-700 bg-amber-50/50"
-          }`}>
+          <Badge
+            variant="outline"
+            className={`text-[8px] tracking-[0.2em] uppercase font-bold px-2 py-0.5 rounded-none ${
+              status === "confirmed"
+                ? "border-emerald-600/20 text-emerald-700 bg-emerald-50/50"
+                : status === "cancelled"
+                  ? "border-red-600/20 text-red-700 bg-red-50/50"
+                  : "border-amber-600/20 text-amber-700 bg-amber-50/50"
+            }`}
+          >
             {status}
           </Badge>
         );
@@ -192,7 +226,9 @@ export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[
     },
     {
       id: "actions",
-      cell: ({ row }) => <ActionCell reservation={row.original} pricing={pricing} />,
+      cell: ({ row }) => (
+        <ActionCell reservation={row.original} pricing={pricing} />
+      ),
     },
   ];
 }
@@ -200,7 +236,13 @@ export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[
 /** @deprecated Use getColumns(pricing) instead */
 export const columns: ColumnDef<Reservation>[] = getColumns([]);
 
-const ActionCell = ({ reservation, pricing }: { reservation: Reservation; pricing: PricingItem[] }) => {
+const ActionCell = ({
+  reservation,
+  pricing,
+}: {
+  reservation: Reservation;
+  pricing: PricingItem[];
+}) => {
   const [isPending, startTransition] = useTransition();
   const [isEditOpen, setIsEditOpen] = useState(false);
 
@@ -228,88 +270,111 @@ const ActionCell = ({ reservation, pricing }: { reservation: Reservation; pricin
 
   return (
     <>
-      <EditReservationDialog open={isEditOpen} onOpenChange={setIsEditOpen} reservation={reservation} pricing={pricing} />
+      <EditReservationDialog
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        reservation={reservation}
+        pricing={pricing}
+      />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          {isPending ? (
-            <HugeiconsIcon icon={Loading03Icon} size={18} className="text-[#8B5E56] animate-spin" />
-          ) : (
-            <HugeiconsIcon icon={MoreIcon} size={18} className="text-[#2C2A29]" />
-          )}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="rounded-none border-[#2C2A29]/10">
-        <DropdownMenuLabel className="text-[10px] uppercase tracking-widest opacity-50">Aksi</DropdownMenuLabel>
-        <DropdownMenuItem 
-          className="text-[10px] uppercase tracking-widest cursor-pointer"
-          onClick={() => navigator.clipboard.writeText(reservation.id)}
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            {isPending ? (
+              <HugeiconsIcon
+                icon={Loading03Icon}
+                size={18}
+                className="text-[#8B5E56] animate-spin"
+              />
+            ) : (
+              <HugeiconsIcon
+                icon={MoreIcon}
+                size={18}
+                className="text-[#2C2A29]"
+              />
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="rounded-none border-[#2C2A29]/10"
         >
-          Salin ID
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          className="text-[10px] uppercase tracking-widest cursor-pointer text-[#2C2A29] font-bold"
-          onClick={() => setIsEditOpen(true)}
-          disabled={isPending}
-        >
-          Edit Data
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        {reservation.status !== "confirmed" && (
-          <DropdownMenuItem 
-            className="text-[10px] uppercase tracking-widest cursor-pointer text-green-600 font-bold"
-            onClick={() => handleUpdateStatus("confirmed")}
+          <DropdownMenuLabel className="text-[10px] uppercase tracking-widest opacity-50">
+            Aksi
+          </DropdownMenuLabel>
+          <DropdownMenuItem
+            className="text-[10px] uppercase tracking-widest cursor-pointer"
+            onClick={() => navigator.clipboard.writeText(reservation.id)}
+          >
+            Salin ID
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="text-[10px] uppercase tracking-widest cursor-pointer text-[#2C2A29] font-bold"
+            onClick={() => setIsEditOpen(true)}
             disabled={isPending}
           >
-            Konfirmasi
+            Edit Data
           </DropdownMenuItem>
-        )}
-        {reservation.status !== "cancelled" && (
-          <DropdownMenuItem 
-            className="text-[10px] uppercase tracking-widest cursor-pointer text-red-600"
-            onClick={() => handleUpdateStatus("cancelled")}
-            disabled={isPending}
-          >
-            Batalkan
-          </DropdownMenuItem>
-        )}
-        <DropdownMenuSeparator />
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <DropdownMenuItem 
-              className="text-[10px] uppercase tracking-widest cursor-pointer text-red-600 font-bold bg-red-50 hover:bg-red-100"
-              onSelect={(e) => e.preventDefault()}
+          <DropdownMenuSeparator />
+          {reservation.status !== "confirmed" && (
+            <DropdownMenuItem
+              className="text-[10px] uppercase tracking-widest cursor-pointer text-green-600 font-bold"
+              onClick={() => handleUpdateStatus("confirmed")}
               disabled={isPending}
             >
-              Hapus Permanen
+              Konfirmasi
             </DropdownMenuItem>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="rounded-none border-[#2C2A29]/10">
-            <AlertDialogHeader className="items-start text-left">
-              <div className="flex items-center gap-3 text-red-600 mb-2">
-                <HugeiconsIcon icon={Alert01Icon} size={24} />
-                <AlertDialogTitle className="font-heading text-xl uppercase tracking-tight">Hapus Data Permanen?</AlertDialogTitle>
-              </div>
-              <AlertDialogDescription className="text-xs text-[#5A5550] leading-relaxed">
-                Tindakan ini tidak dapat dibatalkan. Seluruh data reservasi atas nama <strong className="text-[#2C2A29]">{reservation.name}</strong> akan dihapus selamanya dari database Hikara.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter className="mt-6">
-              <AlertDialogCancel className="rounded-none text-[10px] uppercase tracking-widest border-[#2C2A29]/10 hover:bg-[#FAFAFA]">
-                Batal
-              </AlertDialogCancel>
-              <AlertDialogAction 
-                onClick={handleDelete}
-                className="rounded-none bg-red-600 hover:bg-red-700 text-white text-[10px] uppercase tracking-widest font-bold"
+          )}
+          {reservation.status !== "cancelled" && (
+            <DropdownMenuItem
+              className="text-[10px] uppercase tracking-widest cursor-pointer text-red-600"
+              onClick={() => handleUpdateStatus("cancelled")}
+              disabled={isPending}
+            >
+              Batalkan
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuSeparator />
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <DropdownMenuItem
+                className="text-[10px] uppercase tracking-widest cursor-pointer text-red-600 font-bold bg-red-50 hover:bg-red-100"
+                onSelect={(e) => e.preventDefault()}
+                disabled={isPending}
               >
-                Ya, Hapus Sekarang
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </DropdownMenuContent>
-    </DropdownMenu>
+                Hapus Permanen
+              </DropdownMenuItem>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="rounded-none border-[#2C2A29]/10">
+              <AlertDialogHeader className="items-start text-left">
+                <div className="flex items-center gap-3 text-red-600 mb-2">
+                  <HugeiconsIcon icon={Alert01Icon} size={24} />
+                  <AlertDialogTitle className="font-heading text-xl uppercase tracking-tight">
+                    Hapus Data Permanen?
+                  </AlertDialogTitle>
+                </div>
+                <AlertDialogDescription className="text-xs text-[#5A5550] leading-relaxed">
+                  Tindakan ini tidak dapat dibatalkan. Seluruh data reservasi
+                  atas nama{" "}
+                  <strong className="text-[#2C2A29]">{reservation.name}</strong>{" "}
+                  akan dihapus selamanya dari database Hikara.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="mt-6">
+                <AlertDialogCancel className="rounded-none text-[10px] uppercase tracking-widest border-[#2C2A29]/10 hover:bg-[#FAFAFA]">
+                  Batal
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  className="rounded-none bg-red-600 hover:bg-red-700 text-white text-[10px] uppercase tracking-widest font-bold"
+                >
+                  Ya, Hapus Sekarang
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   );
 };

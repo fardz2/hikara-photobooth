@@ -6,10 +6,12 @@ interface Props {
 
 export const LocationSection = ({ data }: Props) => {
   const d: Record<string, any> = {
-    map_embed_url: "https://maps.google.com/maps?q=Hikara.photobox%2C%20Jl.%20Veteran%2C%20Dirgahayu%2C%20Kec.%20Pulau%20Laut%20Utara%2C%20Kab.%20Kotabaru%2C%20Kalimantan%20Selatan%2072111&t=&z=16&ie=UTF8&iwloc=&output=embed",
+    map_embed_url:
+      "https://maps.google.com/maps?q=Hikara.photobox%2C%20Jl.%20Veteran%2C%20Dirgahayu%2C%20Kec.%20Pulau%20Laut%20Utara%2C%20Kab.%20Kotabaru%2C%20Kalimantan%20Selatan%2072111&t=&z=16&ie=UTF8&iwloc=&output=embed",
     address_line1: "Jl. Veteran,",
     address_line2: "Dirgahayu",
-    address_sub: "(Sebelah RM. Barokah Muka Hotel Kartika) <br /> Kec. Pulau Laut Utara, Kab. Kotabaru <br /> Kalimantan Selatan",
+    address_sub:
+      "(Sebelah RM. Barokah Muka Hotel Kartika) <br /> Kec. Pulau Laut Utara, Kab. Kotabaru <br /> Kalimantan Selatan",
     ...data,
   };
   return (
@@ -18,19 +20,26 @@ export const LocationSection = ({ data }: Props) => {
       className="py-24 md:py-32 flex flex-col items-center justify-center px-6 bg-[#2C2A29] relative overflow-hidden"
     >
       {/* Decorative Background */}
-      <ParallaxElement direction="up" offset={150} className="absolute bottom-0 right-[-5%] text-[#F6F4F0] opacity-[0.03] font-heading text-[25vw] leading-none pointer-events-none whitespace-nowrap z-0 tracking-tighter mix-blend-overlay">
+      <ParallaxElement
+        direction="up"
+        offset={150}
+        className="absolute bottom-0 right-[-5%] text-[#F6F4F0] opacity-[0.03] font-heading text-[25vw] leading-none pointer-events-none whitespace-nowrap z-0 tracking-tighter mix-blend-overlay"
+      >
         LOKASI
       </ParallaxElement>
       <div className="absolute top-24 left-6 md:left-24 z-0 opacity-[0.15]">
-         <span className="font-serif text-4xl text-[#8B5E56] tracking-[0.3em] uppercase" style={{ writingMode: 'vertical-rl' }}>LOKASI</span>
+        <span
+          className="font-serif text-4xl text-[#8B5E56] tracking-[0.3em] uppercase"
+          style={{ writingMode: "vertical-rl" }}
+        >
+          LOKASI
+        </span>
       </div>
       <FadeUp>
         <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] mb-12 font-sans font-medium flex items-center justify-center gap-4 relative z-10">
           <span className="w-8 h-px bg-[#8B5E56]"></span>
           Lokasi Studio
-          <span className="font-serif text-[#F6F4F0]/50 ml-2">
-            LOKASI KAMI
-          </span>
+          <span className="font-serif text-[#F6F4F0]/50 ml-2">LOKASI KAMI</span>
           <span className="w-8 h-px bg-[#8B5E56]"></span>
         </h2>
       </FadeUp>
@@ -39,12 +48,16 @@ export const LocationSection = ({ data }: Props) => {
         <FadeUp delay={0.1}>
           <p className="font-heading text-3xl md:text-5xl text-[#F6F4F0] mb-4 text-center">
             {d.address_line1}{" "}
-            <span className="text-[#8B5E56] font-serif italic">{d.address_line2}</span>
+            <span className="text-[#8B5E56] font-serif italic">
+              {d.address_line2}
+            </span>
           </p>
         </FadeUp>
         <FadeUp delay={0.2}>
-          <p className="font-light tracking-[0.15em] text-[#EFEBDE]/60 text-xs md:text-sm mb-16 uppercase text-center max-w-xl leading-relaxed" dangerouslySetInnerHTML={{ __html: d.address_sub }}>
-          </p>
+          <p
+            className="font-light tracking-[0.15em] text-[#EFEBDE]/60 text-xs md:text-sm mb-16 uppercase text-center max-w-xl leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: d.address_sub }}
+          ></p>
         </FadeUp>
 
         <FadeUp delay={0.3} className="w-full">

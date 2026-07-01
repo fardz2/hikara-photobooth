@@ -1,21 +1,28 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 interface Props {
-  name: string
-  label: string
-  defaultValue?: string
-  multiline?: boolean
+  name: string;
+  label: string;
+  defaultValue?: string;
+  multiline?: boolean;
 }
 
-export function TextField({ name, label, defaultValue = "", multiline }: Props) {
+export function TextField({
+  name,
+  label,
+  defaultValue = "",
+  multiline,
+}: Props) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-xs uppercase tracking-wider text-[#5A5550]">{label}</Label>
+      <Label className="text-xs uppercase tracking-wider text-[#5A5550]">
+        {label}
+      </Label>
       {multiline ? (
         <Textarea
           name={name}
@@ -31,5 +38,5 @@ export function TextField({ name, label, defaultValue = "", multiline }: Props) 
         />
       )}
     </div>
-  )
+  );
 }

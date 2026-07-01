@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useState } from "react";
 
 interface Props {
   name: string;
@@ -21,17 +21,27 @@ export function TagField({ name, label, defaultValue = [] }: Props) {
     setInput("");
   };
 
-  const remove = (idx: number) => setTags((prev) => prev.filter((_, i) => i !== idx));
+  const remove = (idx: number) =>
+    setTags((prev) => prev.filter((_, i) => i !== idx));
 
   return (
     <div>
-      <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">{label}</label>
+      <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">
+        {label}
+      </label>
       <input type="hidden" name={name} value={JSON.stringify(tags)} />
       <div className="flex flex-wrap gap-2 mb-2">
         {tags.map((tag, i) => (
-          <span key={i} className="inline-flex items-center gap-1 bg-[#F6F4F0] border border-[#2C2A29]/10 px-3 py-1.5 text-xs text-[#2C2A29]">
+          <span
+            key={i}
+            className="inline-flex items-center gap-1 bg-[#F6F4F0] border border-[#2C2A29]/10 px-3 py-1.5 text-xs text-[#2C2A29]"
+          >
             {tag}
-            <button type="button" onClick={() => remove(i)} className="text-[#8B5E56] hover:text-red-600">
+            <button
+              type="button"
+              onClick={() => remove(i)}
+              className="text-[#8B5E56] hover:text-red-600"
+            >
               <HugeiconsIcon icon={Cancel01Icon} size={10} />
             </button>
           </span>

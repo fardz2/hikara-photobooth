@@ -1,6 +1,10 @@
 "use server";
 
-import { uploadSiteImage, deleteSiteImage, replaceSiteImage } from "@/lib/services/site-storage-service";
+import {
+  deleteSiteImage,
+  replaceSiteImage,
+  uploadSiteImage,
+} from "@/lib/services/site-storage-service";
 
 export async function uploadImage(formData: FormData) {
   const file = formData.get("file") as File;
@@ -14,7 +18,10 @@ export async function deleteImage(url: string) {
   return deleteSiteImage(url);
 }
 
-export async function replaceImage(oldUrl: string | null | undefined, formData: FormData) {
+export async function replaceImage(
+  oldUrl: string | null | undefined,
+  formData: FormData,
+) {
   const file = formData.get("file") as File;
   if (!file || file.size === 0) return { error: "Tidak ada file" };
 

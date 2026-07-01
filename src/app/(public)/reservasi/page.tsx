@@ -1,6 +1,5 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Metadata } from "next";
-
 
 import { ReservationForm } from "@/components/features/reservation/reservation-form";
 import { ReservationFormSkeleton } from "@/components/skeletons/reservation-form-skeleton";
@@ -18,8 +17,18 @@ function ReservasiPageShell({ children }: { children: React.ReactNode }) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://hikara-photobox.vercel.app" },
-      { "@type": "ListItem", position: 2, name: "Reservasi", item: "https://hikara-photobox.vercel.app/reservasi" },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://hikara-photobox.vercel.app",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Reservasi",
+        item: "https://hikara-photobox.vercel.app/reservasi",
+      },
     ],
   };
 
@@ -27,7 +36,9 @@ function ReservasiPageShell({ children }: { children: React.ReactNode }) {
     <div className="pt-32 md:pt-48 pb-24 px-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-24">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: escapeJsonForHtml(JSON.stringify(breadcrumbJsonLd)) }}
+        dangerouslySetInnerHTML={{
+          __html: escapeJsonForHtml(JSON.stringify(breadcrumbJsonLd)),
+        }}
         key="breadcrumb-json"
       />
       <div className="w-full lg:w-1/3 flex flex-col gap-6">
@@ -35,7 +46,8 @@ function ReservasiPageShell({ children }: { children: React.ReactNode }) {
           Kunci Momen Anda
         </h1>
         <p className="text-sm text-[#5A5550] leading-loose">
-          Jadwalkan sesi foto Anda dan nikmati pengalaman studio eksklusif bersama kami.
+          Jadwalkan sesi foto Anda dan nikmati pengalaman studio eksklusif
+          bersama kami.
         </p>
         <div className="w-16 h-px bg-[#8B5E56] my-4"></div>
         <div className="flex flex-col gap-2 text-xs tracking-widest text-[#5A5550] uppercase">

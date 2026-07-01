@@ -3,13 +3,17 @@
 import { revalidateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import {
-  upsertSiteContent,
-  upsertSectionContent,
-  upsertPricing,
   type PricingItem,
+  upsertPricing,
+  upsertSectionContent,
+  upsertSiteContent,
 } from "@/lib/services/site-content-service";
 
-export async function updateSiteContent(section: string, key: string, value: unknown) {
+export async function updateSiteContent(
+  section: string,
+  key: string,
+  value: unknown,
+) {
   const result = await upsertSiteContent(section, key, value);
   if (result.error) return result;
 
@@ -20,7 +24,7 @@ export async function updateSiteContent(section: string, key: string, value: unk
 
 export async function updateSectionContent(
   section: string,
-  entries: { key: string; value: unknown }[]
+  entries: { key: string; value: unknown }[],
 ) {
   const result = await upsertSectionContent(section, entries);
   if (result.error) return result;

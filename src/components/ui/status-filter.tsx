@@ -1,6 +1,8 @@
 "use client";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { FilterHorizontalIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import {
   Select,
@@ -9,8 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { FilterHorizontalIcon } from "@hugeicons/core-free-icons";
 
 const STATUSES = [
   { label: "Semua", value: "all" },

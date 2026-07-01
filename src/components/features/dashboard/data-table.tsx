@@ -1,17 +1,21 @@
 "use client";
 
+import { ArrowLeft02Icon, ArrowRight02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ColumnDef,
+  type ColumnDef,
+  type ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-  SortingState,
-  getSortedRowModel,
-  ColumnFiltersState,
   getFilteredRowModel,
+  getSortedRowModel,
+  type SortingState,
+  useReactTable,
 } from "@tanstack/react-table";
-
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -20,14 +24,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useState, useEffect } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowLeft02Icon, ArrowRight02Icon } from "@hugeicons/core-free-icons";
-
-
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -108,22 +104,30 @@ export function DataTable<TData, TValue>({
         </div>
 
         <div className="text-[8px] tracking-[0.3em] uppercase opacity-40 font-bold whitespace-nowrap">
-           {searchParams.get("q") ? `Pencarian: "${searchParams.get("q")}"` : `${table.getCoreRowModel().rows.length} Hasil ditampilkan`}
+          {searchParams.get("q")
+            ? `Pencarian: "${searchParams.get("q")}"`
+            : `${table.getCoreRowModel().rows.length} Hasil ditampilkan`}
         </div>
       </div>
       <div className="bg-white border border-[#2C2A29]/10 overflow-hidden">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-[#F6F4F0]/50 border-b border-[#2C2A29]/5">
+              <TableRow
+                key={headerGroup.id}
+                className="bg-[#F6F4F0]/50 border-b border-[#2C2A29]/5"
+              >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="px-6 py-5 text-[10px] tracking-[0.2em] font-bold uppercase text-[#2C2A29]">
+                    <TableHead
+                      key={header.id}
+                      className="px-6 py-5 text-[10px] tracking-[0.2em] font-bold uppercase text-[#2C2A29]"
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -141,14 +145,20 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="px-6 py-6">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-32 text-center text-xs text-[#5A5550]/40 uppercase tracking-widest italic">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-32 text-center text-xs text-[#5A5550]/40 uppercase tracking-widest italic"
+                >
                   Tidak ada data.
                 </TableCell>
               </TableRow>
@@ -158,17 +168,26 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="flex items-center justify-between pt-6 pb-2 border-t border-transparent">
         <div className="hidden sm:block text-[10px] font-medium tracking-widest text-[#5A5550] uppercase">
-          Menampilkan Halaman <span className="text-[#2C2A29] font-bold">{currentPage}</span> dari <span className="text-[#2C2A29] font-bold">{pageCount || 1}</span>
+          Menampilkan Halaman{" "}
+          <span className="text-[#2C2A29] font-bold">{currentPage}</span> dari{" "}
+          <span className="text-[#2C2A29] font-bold">{pageCount || 1}</span>
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
           <Button
             variant="outline"
             size="sm"
             onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage <= 1 || (onPageChange ? false : !table.getCanPreviousPage())}
+            disabled={
+              currentPage <= 1 ||
+              (onPageChange ? false : !table.getCanPreviousPage())
+            }
             className="rounded-none border-[#2C2A29]/10 text-[10px] uppercase tracking-widest h-11 px-5 font-bold hover:bg-[#2C2A29] hover:text-white transition-all duration-300 disabled:opacity-30 flex items-center gap-2 group"
           >
-            <HugeiconsIcon icon={ArrowLeft02Icon} size={14} className="group-hover:-translate-x-1 transition-transform" />
+            <HugeiconsIcon
+              icon={ArrowLeft02Icon}
+              size={14}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
             Sebelumnya
           </Button>
           <div className="sm:hidden text-[10px] font-bold tracking-widest text-[#2C2A29]">
@@ -178,11 +197,18 @@ export function DataTable<TData, TValue>({
             variant="outline"
             size="sm"
             onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage >= (pageCount || 1) || (onPageChange ? false : !table.getCanNextPage())}
+            disabled={
+              currentPage >= (pageCount || 1) ||
+              (onPageChange ? false : !table.getCanNextPage())
+            }
             className="rounded-none border-[#2C2A29]/10 text-[10px] uppercase tracking-widest h-11 px-5 font-bold hover:bg-[#2C2A29] hover:text-white transition-all duration-300 disabled:opacity-30 flex items-center gap-2 group"
           >
             Selanjutnya
-            <HugeiconsIcon icon={ArrowRight02Icon} size={14} className="group-hover:translate-x-1 transition-transform" />
+            <HugeiconsIcon
+              icon={ArrowRight02Icon}
+              size={14}
+              className="group-hover:translate-x-1 transition-transform"
+            />
           </Button>
         </div>
       </div>

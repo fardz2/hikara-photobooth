@@ -1,9 +1,9 @@
 import { Suspense } from "react";
+import { DashboardOverviewData } from "@/components/features/dashboard/dashboard-overview-data";
 import { DashboardStats } from "@/components/features/dashboard/dashboard-stats";
+import { DashboardOverviewSkeleton } from "@/components/skeletons/dashboard-overview-skeleton";
 import { DashboardStatsSkeleton } from "@/components/skeletons/dashboard-stats-skeleton";
 import { DateRangeFilter } from "@/components/ui/date-range-filter";
-import { DashboardOverviewData } from "@/components/features/dashboard/dashboard-overview-data";
-import { DashboardOverviewSkeleton } from "@/components/skeletons/dashboard-overview-skeleton";
 
 interface Props {
   searchParams: Promise<{ range?: string; from?: string; to?: string }>;

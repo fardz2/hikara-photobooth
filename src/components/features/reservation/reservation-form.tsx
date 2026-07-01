@@ -1,31 +1,33 @@
 "use client";
 
-import React, { useTransition, useState, useCallback } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import {
-  format,
-  addDays,
-  startOfDay,
-  isBefore,
-  isSameDay,
-  addMinutes,
-} from "date-fns";
+  Calendar01Icon,
+  Clock01Icon,
+  CreditCardIcon,
+  ImageUploadIcon,
+  InformationCircleIcon,
+  Loading03Icon,
+  Money01Icon,
+  Tick02Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { addMinutes, format, isBefore, isSameDay, startOfDay } from "date-fns";
 import { id } from "date-fns/locale";
-import {
-  submitReservation,
-  getBookedSlots,
-} from "@/lib/actions/reservation-actions";
+import Image from "next/image";
+import { useCallback, useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { generateDynamicQRIS } from "@/lib/utils/qris";
-import { generateTimeSlots } from "@/lib/utils/slots";
-import { normalizePhoneNumber } from "@/lib/utils/validation";
-import { ReservationSchema as FormSchema, type ReservationValues as FormValues } from "@/lib/validations/reservation";
-
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/components/ui/input-group";
 import {
   Popover,
   PopoverContent,
@@ -38,27 +40,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupText,
-} from "@/components/ui/input-group";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Calendar01Icon,
-  Clock01Icon,
-  Loading03Icon,
-  Tick02Icon,
-  InformationCircleIcon,
-  ImageUploadIcon,
-  Money01Icon,
-  CreditCardIcon,
-} from "@hugeicons/core-free-icons";
+  getBookedSlots,
+  submitReservation,
+} from "@/lib/actions/reservation-actions";
 import { createClient } from "@/lib/supabase/client";
-import Image from "next/image";
-import { calculateTotalPriceSync } from "@/lib/utils/price";
+import { generateDynamicQRIS } from "@/lib/utils/qris";
+import { generateTimeSlots } from "@/lib/utils/slots";
+import { normalizePhoneNumber } from "@/lib/utils/validation";
+import {
+  ReservationSchema as FormSchema,
+  type ReservationValues as FormValues,
+} from "@/lib/validations/reservation";
 
 // Time slot logic moved to @/lib/utils/slots
 
@@ -66,23 +59,36 @@ const timeSlots = generateTimeSlots();
 
 // Schema moved to @/lib/validations/reservation
 
-import { type PricingItem } from "@/lib/services/site-content-service";
+import type { PricingItem } from "@/lib/services/site-content-service";
 
 interface Props {
   pricing: PricingItem[];
 }
 
 export const ReservationForm = ({ pricing }: Props) => {
-  const packages = pricing.filter(p => p.category === "package");
-  const extraItems = pricing.filter(p => p.category === "extra");
-  const addonItems = pricing.filter(p => p.category === "addon");
+  const packages = pricing.filter((p) => p.category === "package");
+  const extraItems = pricing.filter((p) => p.category === "extra");
+  const addonItems = pricing.filter((p) => p.category === "addon");
 
   const mainPkg = packages[0];
-  const extraPerson = extraItems.find(p => p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
-  const extraPrint = extraItems.find(p => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
+  const extraPerson = extraItems.find((p) =>
+    p.label.toLowerCase().includes("orang"),
+  ) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = extraItems.find((p) =>
+    p.label.toLowerCase().includes("print"),
+  ) || { label: "Extra Print", price: 10000 };
 
-  const pricelist = mainPkg ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }] : [];
-  const addons = addonItems.map(a => ({ id: a.label.toLowerCase().replace(/[^a-z]/g, "_").replace(/_+/g, "_"), label: a.label, price: a.price }));
+  const pricelist = mainPkg
+    ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }]
+    : [];
+  const addons = addonItems.map((a) => ({
+    id: a.label
+      .toLowerCase()
+      .replace(/[^a-z]/g, "_")
+      .replace(/_+/g, "_"),
+    label: a.label,
+    price: a.price,
+  }));
   const EXTRA_PERSON_PRICE = extraPerson.price;
   const EXTRA_PRINT_PRICE = extraPrint.price;
 
@@ -138,7 +144,8 @@ export const ReservationForm = ({ pricing }: Props) => {
   }, 0);
   const extraPeoplePrice = extraPeopleCount * EXTRA_PERSON_PRICE;
   const extraPrintPrice = extraPrintCount * EXTRA_PRINT_PRICE;
-  const totalPrice = basePrice + addonsPrice + extraPeoplePrice + extraPrintPrice;
+  const totalPrice =
+    basePrice + addonsPrice + extraPeoplePrice + extraPrintPrice;
 
   const handleDateChange = useCallback(
     async (date: Date) => {
@@ -501,7 +508,10 @@ export const ReservationForm = ({ pricing }: Props) => {
                 </span>
               </div>
             </div>
-            <span className="text-sm font-bold text-[#8B5E56]" data-testid="total-price">
+            <span
+              className="text-sm font-bold text-[#8B5E56]"
+              data-testid="total-price"
+            >
               Rp {pricelist[0].price.toLocaleString("id-ID")}
             </span>
           </div>
@@ -536,7 +546,9 @@ export const ReservationForm = ({ pricing }: Props) => {
                   }
                   disabled={extraPeopleCount <= 0}
                 >
-                  <span className="text-lg font-bold" aria-hidden="true">−</span>
+                  <span className="text-lg font-bold" aria-hidden="true">
+                    −
+                  </span>
                 </Button>
                 <div className="w-8 text-center">
                   <span className="text-sm font-bold text-[#2C2A29]">
@@ -557,7 +569,9 @@ export const ReservationForm = ({ pricing }: Props) => {
                   }
                   disabled={extraPeopleCount >= 3}
                 >
-                  <span className="text-lg font-bold" aria-hidden="true">+</span>
+                  <span className="text-lg font-bold" aria-hidden="true">
+                    +
+                  </span>
                 </Button>
               </div>
             </div>
@@ -565,7 +579,9 @@ export const ReservationForm = ({ pricing }: Props) => {
               <span>Maksimal 5 orang tambahan</span>
               <span className="font-bold text-[#8B5E56]">
                 Rp{" "}
-                {(extraPeopleCount * EXTRA_PERSON_PRICE).toLocaleString("id-ID")}
+                {(extraPeopleCount * EXTRA_PERSON_PRICE).toLocaleString(
+                  "id-ID",
+                )}
               </span>
             </div>
           </div>
@@ -597,7 +613,9 @@ export const ReservationForm = ({ pricing }: Props) => {
                   }
                   disabled={extraPrintCount <= 0}
                 >
-                  <span className="text-lg font-bold" aria-hidden="true">−</span>
+                  <span className="text-lg font-bold" aria-hidden="true">
+                    −
+                  </span>
                 </Button>
                 <div className="w-8 text-center">
                   <span className="text-sm font-bold text-[#2C2A29]">
@@ -618,7 +636,9 @@ export const ReservationForm = ({ pricing }: Props) => {
                   }
                   disabled={extraPrintCount >= 10}
                 >
-                  <span className="text-lg font-bold" aria-hidden="true">+</span>
+                  <span className="text-lg font-bold" aria-hidden="true">
+                    +
+                  </span>
                 </Button>
               </div>
             </div>
@@ -829,7 +849,10 @@ export const ReservationForm = ({ pricing }: Props) => {
               </span>
             </div>
             <span className="text-[8px] sm:text-[9px] opacity-40 font-medium tracking-normal mt-1.5 sm:mt-1 flex items-center gap-1 text-center">
-              <HugeiconsIcon icon={Tick02Icon} className="size-2.5 hidden sm:block" />
+              <HugeiconsIcon
+                icon={Tick02Icon}
+                className="size-2.5 hidden sm:block"
+              />
               Satu kali klik untuk reservasi instan
             </span>
           </>

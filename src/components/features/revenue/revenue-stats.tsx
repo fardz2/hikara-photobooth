@@ -1,10 +1,11 @@
-import { getRevenueStats } from "@/lib/services/revenue-service";
-import { getPricing } from "@/lib/services/site-content-service";
-import { parseDateRangeParams } from "@/lib/utils/date-range";
-import { LogTransactionForm } from "@/components/features/revenue/log-transaction-form";
+import {
+  Analytics01Icon,
+  CashIcon,
+  Coins02Icon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Analytics01Icon, CashIcon, Coins02Icon } from "@hugeicons/core-free-icons";
 import { connection } from "next/server";
+import { LogTransactionForm } from "@/components/features/revenue/log-transaction-form";
 import {
   Sheet,
   SheetContent,
@@ -13,6 +14,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { getRevenueStats } from "@/lib/services/revenue-service";
+import { getPricing } from "@/lib/services/site-content-service";
+import { parseDateRangeParams } from "@/lib/utils/date-range";
 import { RevenueChart } from "./revenue-chart";
 
 interface Props {
@@ -43,9 +47,7 @@ export const RevenueStats = async ({ searchParams }: Props) => {
             <HugeiconsIcon icon={Analytics01Icon} size={14} />
             Pendapatan
           </span>
-          <span className="text-[10px] text-[#5A5550] mt-1 block">
-            {label}
-          </span>
+          <span className="text-[10px] text-[#5A5550] mt-1 block">{label}</span>
         </div>
       </div>
 
@@ -92,15 +94,20 @@ export const RevenueStats = async ({ searchParams }: Props) => {
           <Sheet>
             <SheetTrigger asChild>
               <button className="bg-[#2C2A29] text-white px-5 py-3 text-[9px] font-bold tracking-[0.2em] uppercase transition-colors hover:bg-[#8B5E56] flex items-center gap-2">
-                <HugeiconsIcon icon={Coins02Icon} size={14} />
-                + Catat Manual
+                <HugeiconsIcon icon={Coins02Icon} size={14} />+ Catat Manual
               </button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full sm:max-w-[540px] border-l border-[#2C2A29]/10 p-0 bg-white">
+            <SheetContent
+              side="right"
+              className="w-full sm:max-w-[540px] border-l border-[#2C2A29]/10 p-0 bg-white"
+            >
               <SheetHeader className="p-8 border-b border-[#2C2A29]/10 bg-[#FAFAFA]">
-                <SheetTitle className="font-heading text-2xl text-[#2C2A29] text-left">Pencatatan Transaksi</SheetTitle>
+                <SheetTitle className="font-heading text-2xl text-[#2C2A29] text-left">
+                  Pencatatan Transaksi
+                </SheetTitle>
                 <SheetDescription className="text-[10px] tracking-widest uppercase text-[#5A5550] text-left mt-2">
-                  Input data pendapatan manual di luar sistem reservasi otomatis.
+                  Input data pendapatan manual di luar sistem reservasi
+                  otomatis.
                 </SheetDescription>
               </SheetHeader>
               <div className="p-8 overflow-y-auto h-[calc(100vh-140px)]">
@@ -115,22 +122,27 @@ export const RevenueStats = async ({ searchParams }: Props) => {
 
       {/* Mobile Form Trigger */}
       <div className="md:hidden">
-         <Sheet>
-            <SheetTrigger asChild>
-              <button className="w-full bg-[#2C2A29] text-white px-5 py-4 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors hover:bg-[#8B5E56] flex items-center justify-center gap-2 border border-[#2C2A29]">
-                <HugeiconsIcon icon={Coins02Icon} size={14} />
-                + Catat Transaksi Manual
-              </button>
-            </SheetTrigger>
-            <SheetContent side="bottom" className="w-full h-[90vh] border-t border-[#2C2A29]/10 p-0 bg-white rounded-t-xl">
-              <SheetHeader className="p-6 border-b border-[#2C2A29]/10 bg-[#FAFAFA]">
-                <SheetTitle className="font-heading text-xl text-[#2C2A29] text-left">Pencatatan Transaksi</SheetTitle>
-              </SheetHeader>
-              <div className="p-6 overflow-y-auto h-[calc(90vh-80px)]">
-                <LogTransactionForm pricing={pricing} />
-              </div>
-            </SheetContent>
-         </Sheet>
+        <Sheet>
+          <SheetTrigger asChild>
+            <button className="w-full bg-[#2C2A29] text-white px-5 py-4 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors hover:bg-[#8B5E56] flex items-center justify-center gap-2 border border-[#2C2A29]">
+              <HugeiconsIcon icon={Coins02Icon} size={14} />+ Catat Transaksi
+              Manual
+            </button>
+          </SheetTrigger>
+          <SheetContent
+            side="bottom"
+            className="w-full h-[90vh] border-t border-[#2C2A29]/10 p-0 bg-white rounded-t-xl"
+          >
+            <SheetHeader className="p-6 border-b border-[#2C2A29]/10 bg-[#FAFAFA]">
+              <SheetTitle className="font-heading text-xl text-[#2C2A29] text-left">
+                Pencatatan Transaksi
+              </SheetTitle>
+            </SheetHeader>
+            <div className="p-6 overflow-y-auto h-[calc(90vh-80px)]">
+              <LogTransactionForm pricing={pricing} />
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );

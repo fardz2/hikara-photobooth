@@ -1,10 +1,10 @@
 "use client";
 
 import { Suspense } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { SectionForm, SectionFormSkeleton } from "./section-form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PasswordForm } from "./password-form";
 import { CONTENT_SECTIONS, SETTINGS_TABS } from "./section-config";
+import { SectionForm, SectionFormSkeleton } from "./section-form";
 
 interface Props {
   sectionData: Record<string, unknown>;
@@ -26,11 +26,16 @@ export function SettingsClient({ sectionData }: Props) {
       </TabsList>
 
       <div className="pt-6">
-        <TabsContent value="password" className="mt-0"><PasswordForm /></TabsContent>
+        <TabsContent value="password" className="mt-0">
+          <PasswordForm />
+        </TabsContent>
         {CONTENT_SECTIONS.map((s) => (
           <TabsContent key={s.id} value={s.id} className="mt-0">
             <Suspense fallback={<SectionFormSkeleton />}>
-              <SectionForm section={s.id} data={(sectionData[s.id] as Record<string, unknown>) || {}} />
+              <SectionForm
+                section={s.id}
+                data={(sectionData[s.id] as Record<string, unknown>) || {}}
+              />
             </Suspense>
           </TabsContent>
         ))}

@@ -11,11 +11,18 @@ export const Marquee = ({ text }: Props) => {
       <InfiniteMarquee className="flex gap-16 text-[#2C2A29]/40 text-xs md:text-sm tracking-[0.4em] font-medium uppercase font-heading min-w-max">
         {[...Array(6)].map((_, i) => (
           <span key={i} className="flex items-center gap-16">
-            {text.map((t, j) => (
-              j % 2 === 1
-                ? <span key={j} className="font-serif text-sm tracking-widest uppercase">{t}</span>
-                : <span key={j}>{t}</span>
-            ))}
+            {text.map((t, j) =>
+              j % 2 === 1 ? (
+                <span
+                  key={j}
+                  className="font-serif text-sm tracking-widest uppercase"
+                >
+                  {t}
+                </span>
+              ) : (
+                <span key={j}>{t}</span>
+              ),
+            )}
           </span>
         ))}
       </InfiniteMarquee>

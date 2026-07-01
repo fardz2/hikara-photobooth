@@ -13,9 +13,10 @@ export const ReservationSchema = z.object({
     }),
   date: z.union([
     z.instanceof(Date, { message: "Pilih tanggal reservasi" }),
-    z.string().min(1, "Pilih tanggal reservasi")
+    z.string().min(1, "Pilih tanggal reservasi"),
   ]),
-  time: z.string()
+  time: z
+    .string()
     .min(1, "Pilih waktu sesi")
     .refine((val) => {
       const parts = val.split(":");

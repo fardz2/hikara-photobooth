@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Props {
@@ -16,7 +16,9 @@ export function ImagePreview({ src, onDelete, onReplace, uploading }: Props) {
 
   return (
     <div className="relative w-full aspect-video overflow-hidden border border-[#E8E2D9] bg-[#EBE6DF] group">
-      {!loaded && !error && <Skeleton className="absolute inset-0 w-full h-full rounded-none" />}
+      {!loaded && !error && (
+        <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
+      )}
       {error && (
         <div className="absolute inset-0 flex items-center justify-center text-[10px] text-[#5A5550] bg-white/80">
           Gagal
@@ -27,7 +29,10 @@ export function ImagePreview({ src, onDelete, onReplace, uploading }: Props) {
         alt=""
         className={`w-full h-full object-cover ${loaded && !error ? "opacity-100" : "opacity-0"} transition-opacity`}
         onLoad={() => setLoaded(true)}
-        onError={() => { setError(true); setLoaded(true); }}
+        onError={() => {
+          setError(true);
+          setLoaded(true);
+        }}
       />
 
       {onReplace && (

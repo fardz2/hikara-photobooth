@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag, revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { CACHE_TAGS } from "./tags";
 
 export async function revalidateSiteContent(section: string) {

@@ -1,13 +1,22 @@
 "use client";
 
+import {
+  Loading03Icon,
+  ViewIcon,
+  ViewOffSlashIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ViewIcon, ViewOffSlashIcon, Loading03Icon } from "@hugeicons/core-free-icons";
-import { changePassword } from "@/lib/actions/auth-actions";
 import { Button } from "@/components/ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
-import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupButton } from "@/components/ui/input-group";
+import { changePassword } from "@/lib/actions/auth-actions";
 
 export function PasswordForm() {
   const [loading, startTransition] = useTransition();
@@ -32,10 +41,14 @@ export function PasswordForm() {
       }}
       className="space-y-6"
     >
-      <h2 className="text-lg font-heading uppercase tracking-wider text-[#2C2A29]">Ubah Kata Sandi</h2>
+      <h2 className="text-lg font-heading uppercase tracking-wider text-[#2C2A29]">
+        Ubah Kata Sandi
+      </h2>
 
       <div className="space-y-1.5">
-        <Label className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">Kata Sandi Saat Ini</Label>
+        <Label className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">
+          Kata Sandi Saat Ini
+        </Label>
         <InputGroup className="border-[#E8E2D9] bg-white rounded-none">
           <InputGroupInput
             name="currentPassword"
@@ -51,14 +64,20 @@ export function PasswordForm() {
               className="text-[#5A5550]/40 hover:text-[#8B5E56]"
               aria-label={showCurrent ? "Sembunyikan" : "Tampilkan"}
             >
-              <HugeiconsIcon icon={showCurrent ? ViewOffSlashIcon : ViewIcon} strokeWidth={2} className="size-5" />
+              <HugeiconsIcon
+                icon={showCurrent ? ViewOffSlashIcon : ViewIcon}
+                strokeWidth={2}
+                className="size-5"
+              />
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">Kata Sandi Baru</Label>
+        <Label className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">
+          Kata Sandi Baru
+        </Label>
         <InputGroup className="border-[#E8E2D9] bg-white rounded-none">
           <InputGroupInput
             name="newPassword"
@@ -74,14 +93,20 @@ export function PasswordForm() {
               className="text-[#5A5550]/40 hover:text-[#8B5E56]"
               aria-label={showNew ? "Sembunyikan" : "Tampilkan"}
             >
-              <HugeiconsIcon icon={showNew ? ViewOffSlashIcon : ViewIcon} strokeWidth={2} className="size-5" />
+              <HugeiconsIcon
+                icon={showNew ? ViewOffSlashIcon : ViewIcon}
+                strokeWidth={2}
+                className="size-5"
+              />
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">Konfirmasi Kata Sandi Baru</Label>
+        <Label className="text-[10px] tracking-[0.2em] uppercase font-medium text-[#5A5550]">
+          Konfirmasi Kata Sandi Baru
+        </Label>
         <InputGroup className="border-[#E8E2D9] bg-white rounded-none">
           <InputGroupInput
             name="confirmPassword"
@@ -97,7 +122,11 @@ export function PasswordForm() {
               className="text-[#5A5550]/40 hover:text-[#8B5E56]"
               aria-label={showConfirm ? "Sembunyikan" : "Tampilkan"}
             >
-              <HugeiconsIcon icon={showConfirm ? ViewOffSlashIcon : ViewIcon} strokeWidth={2} className="size-5" />
+              <HugeiconsIcon
+                icon={showConfirm ? ViewOffSlashIcon : ViewIcon}
+                strokeWidth={2}
+                className="size-5"
+              />
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>
@@ -110,7 +139,11 @@ export function PasswordForm() {
       >
         {loading ? (
           <>
-            <HugeiconsIcon icon={Loading03Icon} strokeWidth={2} className="size-4 animate-spin mr-2" />
+            <HugeiconsIcon
+              icon={Loading03Icon}
+              strokeWidth={2}
+              className="size-4 animate-spin mr-2"
+            />
             Menyimpan...
           </>
         ) : (

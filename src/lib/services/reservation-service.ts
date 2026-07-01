@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-import { createPublicClient } from "@/lib/supabase/public";
 import { CACHE_TAGS } from "@/lib/cache/tags";
+import { createPublicClient } from "@/lib/supabase/public";
+import { createClient } from "@/lib/supabase/server";
 
 // ─── Read: public, cached (booked slots) ───
 
@@ -24,8 +24,12 @@ export async function getBookedSlots(date: string) {
 // ─── Read: admin, no cache ───
 
 export async function getReservations(
-  from?: string, to?: string, status?: string,
-  page: number = 1, pageSize: number = 10, search?: string
+  from?: string,
+  to?: string,
+  status?: string,
+  page: number = 1,
+  pageSize: number = 10,
+  search?: string,
 ) {
   const supabase = await createClient();
 
@@ -52,11 +56,17 @@ export async function getReservations(
   return query.range(fromRange, toRange);
 }
 
-export async function getReservationStats(from?: string, to?: string, search?: string) {
+export async function getReservationStats(
+  from?: string,
+  to?: string,
+  search?: string,
+) {
   const supabase = await createClient();
 
   const buildQuery = (status?: string) => {
-    let query = supabase.from("reservations").select("*", { count: "exact", head: true });
+    let query = supabase
+      .from("reservations")
+      .select("*", { count: "exact", head: true });
     if (from) query = query.gte("date", from);
     if (to) query = query.lte("date", to);
     if (search) query = query.ilike("name", `%${search}%`);
@@ -98,7 +108,11 @@ export async function getRecentReservations(limit: number = 6) {
 
 // ─── Read: uncached (slot checks must be fresh) ───
 
-export async function checkSlotAvailability(date: string, time: string, excludeId?: string) {
+export async function checkSlotAvailability(
+  date: string,
+  time: string,
+  excludeId?: string,
+) {
   const supabase = await createClient();
   let query = supabase
     .from("reservations")
@@ -118,7 +132,9 @@ export async function getReservationById(id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("reservations")
-    .select("name, phone, date, time, package, addons, extra_people_count, extra_print_count, payment_method, total_price, status")
+    .select(
+      "name, phone, date, time, package, addons, extra_people_count, extra_print_count, payment_method, total_price, status",
+    )
     .eq("id", id)
     .single();
 
@@ -135,16 +151,25 @@ export async function insertReservation(record: Record<string, unknown>) {
   return { success: true };
 }
 
-export async function updateReservation(id: string, payload: Record<string, unknown>) {
+export async function updateReservation(
+  id: string,
+  payload: Record<string, unknown>,
+) {
   const supabase = await createClient();
-  const { error } = await supabase.from("reservations").update(payload).eq("id", id);
+  const { error } = await supabase
+    .from("reservations")
+    .update(payload)
+    .eq("id", id);
   if (error) return { error: error.message };
   return { success: true };
 }
 
 export async function updateReservationStatus(id: string, status: string) {
   const supabase = await createClient();
-  const { error } = await supabase.from("reservations").update({ status }).eq("id", id);
+  const { error } = await supabase
+    .from("reservations")
+    .update({ status })
+    .eq("id", id);
   if (error) return { error: error.message };
   return { success: true };
 }

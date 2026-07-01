@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactElement, cloneElement, useEffect, useRef } from "react";
-import { motion, useSpring, useTransform } from "framer-motion";
+import { motion, useSpring } from "framer-motion";
+import { type ReactElement, useEffect, useRef } from "react";
 
 interface MagneticProps {
   children: ReactElement;
@@ -12,7 +12,7 @@ export const Magnetic = ({ children, intensity = 0.5 }: MagneticProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   const springConfig = { damping: 15, stiffness: 150, mass: 0.1 };
-  
+
   const x = useSpring(0, springConfig);
   const y = useSpring(0, springConfig);
 
@@ -20,10 +20,11 @@ export const Magnetic = ({ children, intensity = 0.5 }: MagneticProps) => {
     const handleMouse = (e: MouseEvent) => {
       const { clientX, clientY } = e;
       if (ref.current) {
-        const { height, width, left, top } = ref.current.getBoundingClientRect();
+        const { height, width, left, top } =
+          ref.current.getBoundingClientRect();
         const middleX = clientX - (left + width / 2);
         const middleY = clientY - (top + height / 2);
-        
+
         // Intensitas tarikan magnet
         x.set(middleX * intensity);
         y.set(middleY * intensity);
@@ -48,7 +49,11 @@ export const Magnetic = ({ children, intensity = 0.5 }: MagneticProps) => {
   }, [x, y, intensity]);
 
   return (
-    <motion.div ref={ref} style={{ x, y }} className="inline-block relative z-50">
+    <motion.div
+      ref={ref}
+      style={{ x, y }}
+      className="inline-block relative z-50"
+    >
       {children}
     </motion.div>
   );

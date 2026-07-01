@@ -2,7 +2,8 @@ import * as z from "zod";
 
 export const TransactionSchema = z.object({
   customerName: z.string().min(1, "Nama pelanggan wajib diisi"),
-  sessionTime: z.string()
+  sessionTime: z
+    .string()
     .regex(/^([0-9]{2}:[0-9]{2})(:[0-9]{2})?$/, "Format jam tidak valid"),
   package: z.string().min(1, "Pilih paket"),
   addons: z.array(z.string()),

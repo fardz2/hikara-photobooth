@@ -5,7 +5,12 @@ import { DateRangeFilter } from "@/components/ui/date-range-filter";
 import { StatusFilter } from "@/components/ui/status-filter";
 
 interface Props {
-  searchParams: Promise<{ range?: string; from?: string; to?: string; status?: string }>;
+  searchParams: Promise<{
+    range?: string;
+    from?: string;
+    to?: string;
+    status?: string;
+  }>;
 }
 
 export default function ReservationsPage({ searchParams }: Props) {

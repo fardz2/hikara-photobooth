@@ -31,7 +31,11 @@ export async function deleteSiteImage(url: string) {
   return { success: true };
 }
 
-export async function replaceSiteImage(oldUrl: string | null | undefined, file: File, folder = "general") {
+export async function replaceSiteImage(
+  oldUrl: string | null | undefined,
+  file: File,
+  folder = "general",
+) {
   if (oldUrl) await deleteSiteImage(oldUrl);
   return uploadSiteImage(file, folder);
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { ReactLenis } from 'lenis/react';
-import type { LenisRef } from 'lenis/react';
 import { cancelFrame, frame } from "framer-motion";
+import type { LenisRef } from "lenis/react";
+import { ReactLenis } from "lenis/react";
+import { useEffect, useRef } from "react";
 
 export const LenisProvider = ({ children }: { children: React.ReactNode }) => {
   const lenisRef = useRef<LenisRef>(null);
@@ -18,7 +18,11 @@ export const LenisProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <ReactLenis root options={{ autoRaf: false, lerp: 0.1, duration: 1.5, smoothWheel: true }} ref={lenisRef}>
+    <ReactLenis
+      root
+      options={{ autoRaf: false, lerp: 0.1, duration: 1.5, smoothWheel: true }}
+      ref={lenisRef}
+    >
       {children}
     </ReactLenis>
   );

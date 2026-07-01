@@ -1,10 +1,10 @@
-import { getRecentReservations } from "@/lib/services/reservation-service";
-import { getRevenueStats } from "@/lib/services/revenue-service";
-import { parseDateRangeParams } from "@/lib/utils/date-range";
-import { RevenueChart } from "@/components/features/revenue/revenue-chart";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { connection } from "next/server";
+import { RevenueChart } from "@/components/features/revenue/revenue-chart";
+import { getRecentReservations } from "@/lib/services/reservation-service";
+import { getRevenueStats } from "@/lib/services/revenue-service";
+import { parseDateRangeParams } from "@/lib/utils/date-range";
 
 interface Props {
   searchParams: Promise<{ range?: string; from?: string; to?: string }>;
@@ -43,14 +43,18 @@ export async function DashboardOverviewData({ searchParams }: Props) {
         </h3>
         <div className="flex-1 space-y-6">
           {recentReservations.map((res, i) => {
-            const firstLetter = res.name ? res.name.charAt(0).toUpperCase() : "?";
+            const firstLetter = res.name
+              ? res.name.charAt(0).toUpperCase()
+              : "?";
             return (
               <div
                 key={res.id || i}
                 className="flex items-center gap-4 group border-b border-[#2C2A29]/5 pb-4 last:border-0 last:pb-0 hover:bg-[#F6F4F0]/30 transition-colors p-2 -mx-2"
               >
                 <div className="w-10 h-10 shrink-0 bg-[#2C2A29] flex items-center justify-center">
-                  <span className="text-white text-xs font-bold font-heading">{firstLetter}</span>
+                  <span className="text-white text-xs font-bold font-heading">
+                    {firstLetter}
+                  </span>
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -64,20 +68,28 @@ export async function DashboardOverviewData({ searchParams }: Props) {
                   </div>
                   <div className="flex justify-between items-center">
                     <p className="text-[9px] text-[#5A5550]/80 uppercase tracking-widest truncate">
-                      {res.date ? format(new Date(res.date), "dd MMM", { locale: id }) : "-"} •{" "}
-                      {res.time || "-"}
+                      {res.date
+                        ? format(new Date(res.date), "dd MMM", { locale: id })
+                        : "-"}{" "}
+                      • {res.time || "-"}
                     </p>
                     <div className="flex items-center gap-1.5">
-                      <span className={`w-1 h-1 rounded-full ${
-                        res.status === "confirmed" ? "bg-emerald-500" : res.status === "cancelled" ? "bg-red-500" : "bg-amber-500"
-                      }`} />
+                      <span
+                        className={`w-1 h-1 rounded-full ${
+                          res.status === "confirmed"
+                            ? "bg-emerald-500"
+                            : res.status === "cancelled"
+                              ? "bg-red-500"
+                              : "bg-amber-500"
+                        }`}
+                      />
                       <span
                         className={`text-[8px] uppercase tracking-[0.15em] font-bold ${
                           res.status === "confirmed"
                             ? "text-emerald-700"
                             : res.status === "cancelled"
-                            ? "text-red-700"
-                            : "text-amber-700"
+                              ? "text-red-700"
+                              : "text-amber-700"
                         }`}
                       >
                         {res.status}

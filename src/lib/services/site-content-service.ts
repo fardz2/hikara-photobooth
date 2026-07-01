@@ -1,8 +1,7 @@
-import { cacheLife, cacheTag } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { CACHE_TAGS } from "@/lib/cache/tags";
 import { createPublicClient } from "@/lib/supabase/public";
 import { createClient } from "@/lib/supabase/server";
-import { CACHE_TAGS } from "@/lib/cache/tags";
-import { revalidateTag } from "next/cache";
 
 // ─── Read: public, cached ───
 
@@ -26,7 +25,7 @@ export async function getSiteContent(section: string) {
   return map;
 }
 
-export type PricingCategory = "package" | "extra" | "addon"
+export type PricingCategory = "package" | "extra" | "addon";
 
 export interface PricingItem {
   label: string;
@@ -38,7 +37,13 @@ export interface PricingItem {
 
 function defaultPricing(): PricingItem[] {
   return [
-    { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG", category: "package" },
+    {
+      label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)",
+      price: 35000,
+      maxPeople: 3,
+      note: "MAX. 3 ORANG",
+      category: "package",
+    },
     { label: "Tambahan per Orang", price: 5000, category: "extra" },
     { label: "Extra Print", price: 10000, category: "extra" },
     { label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" },
@@ -69,8 +74,8 @@ export async function getAllSiteContent(sections: string[]) {
 
   const results = await Promise.all(
     sections.map((s) =>
-      supabase.from("site_content").select("key, value").eq("section", s)
-    )
+      supabase.from("site_content").select("key, value").eq("section", s),
+    ),
   );
 
   const sectionData: Record<string, unknown> = {};
@@ -86,7 +91,11 @@ export async function getAllSiteContent(sections: string[]) {
 
 // ─── Write ───
 
-export async function upsertSiteContent(section: string, key: string, value: unknown) {
+export async function upsertSiteContent(
+  section: string,
+  key: string,
+  value: unknown,
+) {
   const supabase = await createClient();
   const { error } = await supabase
     .from("site_content")
@@ -98,7 +107,7 @@ export async function upsertSiteContent(section: string, key: string, value: unk
 
 export async function upsertSectionContent(
   section: string,
-  entries: { key: string; value: unknown }[]
+  entries: { key: string; value: unknown }[],
 ) {
   const supabase = await createClient();
   const rows = entries.map((e) => ({ section, key: e.key, value: e.value }));
@@ -113,7 +122,10 @@ export async function upsertPricing(items: PricingItem[]) {
   const supabase = await createClient();
   const { error } = await supabase
     .from("site_content")
-    .upsert({ section: "pricing", key: "items", value: items }, { onConflict: "section, key" });
+    .upsert(
+      { section: "pricing", key: "items", value: items },
+      { onConflict: "section, key" },
+    );
 
   if (error) return { error: error.message };
   revalidateTag(CACHE_TAGS.pricing, "hours");

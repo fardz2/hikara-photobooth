@@ -2,18 +2,18 @@
 
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
-import { revalidateTag, revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
-import { getBookedSlots as fetchBookedSlots } from "@/lib/services/reservation-service";
+import { fonnteService } from "@/lib/services/fonnte-service";
 import {
   checkSlotAvailability,
+  deleteReservation as deleteRes,
+  getBookedSlots as fetchBookedSlots,
   getReservationById,
   insertReservation,
   updateReservation,
   updateReservationStatus as updateStatus,
-  deleteReservation as deleteRes,
 } from "@/lib/services/reservation-service";
-import { fonnteService } from "@/lib/services/fonnte-service";
 import { calculateTotalPrice } from "@/lib/utils/price";
 import { isValidWhatsApp } from "@/lib/utils/validation";
 import { ReservationSchema as FormSchema } from "@/lib/validations/reservation";
@@ -37,18 +37,26 @@ export async function submitReservation(data: ReservationInput) {
   // 1. Validate
   const validation = FormSchema.safeParse({ ...data });
   if (!validation.success) {
-    return { success: false, message: validation.error.issues[0]?.message || "Data tidak valid" };
+    return {
+      success: false,
+      message: validation.error.issues[0]?.message || "Data tidak valid",
+    };
   }
 
   const validatedData = validation.data;
 
   if (!isValidWhatsApp(validatedData.phone)) {
-    return { success: false, message: "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...)." };
+    return {
+      success: false,
+      message:
+        "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...).",
+    };
   }
 
-  const dateStr = typeof validatedData.date === "string"
-    ? validatedData.date
-    : format(validatedData.date, "yyyy-MM-dd");
+  const dateStr =
+    typeof validatedData.date === "string"
+      ? validatedData.date
+      : format(validatedData.date, "yyyy-MM-dd");
 
   // 2. Price
   const totalPrice = await calculateTotalPrice({
@@ -82,12 +90,16 @@ export async function submitReservation(data: ReservationInput) {
     created_at: new Date().toISOString(),
   });
 
-  if (result.error) return { success: false, message: `Gagal menyimpan: ${result.error}` };
+  if (result.error)
+    return { success: false, message: `Gagal menyimpan: ${result.error}` };
 
   // 5. WhatsApp notifications (async, don't block)
-  sendReservationNotifications(validatedData, dateStr, totalPrice, data.paymentProofUrl).catch(
-    (err) => console.error("[WA] Error sending notifications:", err)
-  );
+  sendReservationNotifications(
+    validatedData,
+    dateStr,
+    totalPrice,
+    data.paymentProofUrl,
+  ).catch((err) => console.error("[WA] Error sending notifications:", err));
 
   // 6. Revalidate
   revalidateTag(CACHE_TAGS.reservations, "minutes");
@@ -95,22 +107,36 @@ export async function submitReservation(data: ReservationInput) {
   revalidatePath("/reservasi");
   revalidatePath("/dashboard/reservations");
 
-  return { success: true, message: "Reservasi berhasil dikirim! Kami akan menghubungi Anda via WhatsApp." };
+  return {
+    success: true,
+    message:
+      "Reservasi berhasil dikirim! Kami akan menghubungi Anda via WhatsApp.",
+  };
 }
 
 // ─── Update status ───
 
-export async function updateReservationStatus(id: string, status: "confirmed" | "cancelled" | "pending") {
+export async function updateReservationStatus(
+  id: string,
+  status: "confirmed" | "cancelled" | "pending",
+) {
   // 1. Fetch current reservation
   const reservation = await getReservationById(id);
-  if (!reservation) return { success: false, message: "Reservasi tidak ditemukan." };
+  if (!reservation)
+    return { success: false, message: "Reservasi tidak ditemukan." };
 
   // 2. Check availability if reactivating
   const isMovingToActive = ["pending", "confirmed"].includes(status);
-  const isCurrentlyActive = ["pending", "confirmed"].includes(reservation.status as string);
+  const isCurrentlyActive = ["pending", "confirmed"].includes(
+    reservation.status as string,
+  );
 
   if (isMovingToActive && !isCurrentlyActive) {
-    const isBooked = await checkSlotAvailability(reservation.date, reservation.time, id);
+    const isBooked = await checkSlotAvailability(
+      reservation.date,
+      reservation.time,
+      id,
+    );
     if (isBooked) {
       return {
         success: false,
@@ -164,7 +190,10 @@ export async function deleteReservation(id: string) {
 
 // ─── Edit ───
 
-export async function editReservation(id: string, data: Partial<ReservationInput>) {
+export async function editReservation(
+  id: string,
+  data: Partial<ReservationInput>,
+) {
   if (!id) return { success: false, message: "ID tidak valid" };
 
   // 1. Validate
@@ -177,17 +206,24 @@ export async function editReservation(id: string, data: Partial<ReservationInput
 
   // 2. Fetch current
   const current = await getReservationById(id);
-  if (!current) return { success: false, message: "Reservasi tidak ditemukan." };
+  if (!current)
+    return { success: false, message: "Reservasi tidak ditemukan." };
 
   // 3. Check slot if date/time changed
   const targetDate = validatedData.date
-    ? (typeof validatedData.date === "string" ? validatedData.date : format(validatedData.date, "yyyy-MM-dd"))
+    ? typeof validatedData.date === "string"
+      ? validatedData.date
+      : format(validatedData.date, "yyyy-MM-dd")
     : current.date;
   const targetTime = validatedData.time || current.time;
 
   if (targetDate !== current.date || targetTime !== current.time) {
     const isBooked = await checkSlotAvailability(targetDate, targetTime, id);
-    if (isBooked) return { success: false, message: "Maaf, slot waktu tersebut sudah terisi." };
+    if (isBooked)
+      return {
+        success: false,
+        message: "Maaf, slot waktu tersebut sudah terisi.",
+      };
   }
 
   // 4. Recalculate price if needed
@@ -201,8 +237,10 @@ export async function editReservation(id: string, data: Partial<ReservationInput
   if (isPricingChanged) {
     updatedTotalPrice = await calculateTotalPrice({
       packageId: validatedData.package ?? current.package,
-      extraPeopleCount: validatedData.extraPeopleCount ?? current.extra_people_count,
-      extraPrintCount: validatedData.extraPrintCount ?? current.extra_print_count,
+      extraPeopleCount:
+        validatedData.extraPeopleCount ?? current.extra_people_count,
+      extraPrintCount:
+        validatedData.extraPrintCount ?? current.extra_print_count,
       addons: validatedData.addons ?? (current.addons || []),
     });
   }
@@ -215,15 +253,20 @@ export async function editReservation(id: string, data: Partial<ReservationInput
   };
   if (validatedData.name !== undefined) payload.name = validatedData.name;
   if (validatedData.phone !== undefined) payload.phone = validatedData.phone;
-  if (validatedData.package !== undefined) payload.package = validatedData.package;
+  if (validatedData.package !== undefined)
+    payload.package = validatedData.package;
   if (validatedData.addons !== undefined) payload.addons = validatedData.addons;
-  if (validatedData.extraPeopleCount !== undefined) payload.extra_people_count = validatedData.extraPeopleCount;
-  if (validatedData.extraPrintCount !== undefined) payload.extra_print_count = validatedData.extraPrintCount;
-  if (validatedData.paymentMethod !== undefined) payload.payment_method = validatedData.paymentMethod;
+  if (validatedData.extraPeopleCount !== undefined)
+    payload.extra_people_count = validatedData.extraPeopleCount;
+  if (validatedData.extraPrintCount !== undefined)
+    payload.extra_print_count = validatedData.extraPrintCount;
+  if (validatedData.paymentMethod !== undefined)
+    payload.payment_method = validatedData.paymentMethod;
 
   // 6. Update via service
   const result = await updateReservation(id, payload);
-  if (result.error) return { success: false, message: "Gagal memperbarui reservasi." };
+  if (result.error)
+    return { success: false, message: "Gagal memperbarui reservasi." };
 
   // 7. Revalidate
   revalidateTag(CACHE_TAGS.reservations, "minutes");
@@ -246,16 +289,16 @@ export async function getBookedSlots(date: string): Promise<string[]> {
   }
 }
 
-
 async function sendReservationNotifications(
   data: ReservationInput,
   dateStr: string,
   totalPrice: number,
-  paymentProofUrl?: string
+  paymentProofUrl?: string,
 ) {
-  const paymentStatus = data.paymentMethod === "qris"
-    ? "Dibayar via QRIS (Menunggu Konfirmasi)"
-    : "Bayar di Studio (Tunai/QRIS)";
+  const paymentStatus =
+    data.paymentMethod === "qris"
+      ? "Dibayar via QRIS (Menunggu Konfirmasi)"
+      : "Bayar di Studio (Tunai/QRIS)";
 
   const [y, m, d] = dateStr.split("-").map(Number);
   const displayDate = new Date(y, m - 1, d);
@@ -279,8 +322,9 @@ ${data.paymentMethod === "tunai" ? "3. Pembayaran diselesaikan di studio." : "3.
 
 Sampai jumpa di studio! ✨`;
 
-  const adminMsg = data.paymentMethod === "qris"
-    ? `*KONFIRMASI PEMBAYARAN QRIS!* 💳 🔥
+  const adminMsg =
+    data.paymentMethod === "qris"
+      ? `*KONFIRMASI PEMBAYARAN QRIS!* 💳 🔥
   
 👤 Nama: ${data.name}
 📱 WA: ${data.phone}
@@ -290,7 +334,7 @@ Sampai jumpa di studio! ✨`;
 📎 Bukti: ${paymentProofUrl || "Tidak ada bukti terlampir"}
 
 Segera cek dashboard untuk verifikasi bukti & konfirmasi!`
-    : `*RESERVASI BARU (TUNAI)!* 💵 🔥
+      : `*RESERVASI BARU (TUNAI)!* 💵 🔥
   
 👤 Nama: ${data.name}
 📱 WA: ${data.phone}

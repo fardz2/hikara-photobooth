@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { FadeUp, TextReveal, slowEase } from "@/components/ui/motion";
-import { Magnetic } from "@/components/ui/magnetic";
 import Image from "next/image";
 import Link from "next/link";
+import { useRef } from "react";
+import { Magnetic } from "@/components/ui/magnetic";
+import { FadeUp, slowEase, TextReveal } from "@/components/ui/motion";
 
 const DEFAULTS = {
   tagline: "HIKARA PHOTOBOX",
@@ -19,9 +19,12 @@ const DEFAULTS = {
   vertical_text_left: "Abadikan Momen",
   cta_text: "Book Now",
   cta_link: "/reservasi",
-  polaroid_1: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop",
-  polaroid_2: "https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop",
-  polaroid_3: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
+  polaroid_1:
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop",
+  polaroid_2:
+    "https://images.unsplash.com/photo-1518599904199-0ca897819ddb?q=80&w=400&auto=format&fit=crop",
+  polaroid_3:
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
 };
 
 interface Props {
@@ -31,15 +34,21 @@ interface Props {
 export const HeroSection = ({ data }: Props) => {
   const d = { ...DEFAULTS, ...data };
   const heroRef = useRef(null);
-  const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const { scrollYProgress: heroScroll } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
   const heroBgY = useTransform(heroScroll, [0, 1], ["0%", "15%"]);
   const heroTextOpacity = useTransform(heroScroll, [0, 0.8], [1, 0]);
   const heroTextY = useTransform(heroScroll, [0, 1], ["0%", "50%"]);
   const imageScale = useTransform(heroScroll, [0, 1], [1.15, 1]);
 
   return (
-    <section ref={heroRef} className="relative min-h-[95vh] flex flex-col items-center justify-center text-center px-6 pt-24 overflow-hidden">
-      <motion.div 
+    <section
+      ref={heroRef}
+      className="relative min-h-[95vh] flex flex-col items-center justify-center text-center px-6 pt-24 overflow-hidden"
+    >
+      <motion.div
         style={{ y: heroBgY }}
         className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none overflow-hidden opacity-[0.04] select-none z-0"
       >
@@ -49,99 +58,116 @@ export const HeroSection = ({ data }: Props) => {
       </motion.div>
 
       {/* Floating Polaroids */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 50, rotate: -10 }}
         animate={{ opacity: 1, y: 0, rotate: -12 }}
         transition={{ duration: 1.5, delay: 1 }}
         style={{ y: useTransform(heroScroll, [0, 1], ["0%", "-50%"]) }}
         className="absolute left-[10%] top-[20%] w-32 md:w-48 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
-         <div className="aspect-3/4 bg-[#EFEBDE] overflow-hidden">
-           <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
-             <Image 
-               src={d.polaroid_1}
-               width={400} 
-               height={533} 
-               priority 
-               sizes="(max-width: 1024px) 0vw, 20vw"
-               className="w-full h-full object-cover filter grayscale opacity-80" 
-               alt="HIKARA Photobox Kotabaru - Sesi Foto Estetik Wanita" 
-             />
-           </motion.div>
-         </div>
+        <div className="aspect-3/4 bg-[#EFEBDE] overflow-hidden">
+          <motion.div
+            style={{ scale: imageScale }}
+            className="w-full h-full relative"
+          >
+            <Image
+              src={d.polaroid_1}
+              width={400}
+              height={533}
+              priority
+              sizes="(max-width: 1024px) 0vw, 20vw"
+              className="w-full h-full object-cover filter grayscale opacity-80"
+              alt="HIKARA Photobox Kotabaru - Sesi Foto Estetik Wanita"
+            />
+          </motion.div>
+        </div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 50, rotate: 10 }}
         animate={{ opacity: 1, y: 0, rotate: 15 }}
         transition={{ duration: 1.5, delay: 1.2 }}
         style={{ y: useTransform(heroScroll, [0, 1], ["0%", "-80%"]) }}
         className="absolute right-[5%] max-w-[200px] top-[15%] w-32 md:w-40 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
-         <div className="aspect-square bg-[#EFEBDE] overflow-hidden">
-           <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
-             <Image 
-               src={d.polaroid_2}
-               width={400} 
-               height={400} 
-               priority 
-               sizes="(max-width: 1024px) 0vw, 15vw"
-               className="w-full h-full object-cover filter grayscale opacity-80" 
-               alt="HIKARA Studio Foto Premium - Pasangan Minimalis" 
-             />
-           </motion.div>
-         </div>
+        <div className="aspect-square bg-[#EFEBDE] overflow-hidden">
+          <motion.div
+            style={{ scale: imageScale }}
+            className="w-full h-full relative"
+          >
+            <Image
+              src={d.polaroid_2}
+              width={400}
+              height={400}
+              priority
+              sizes="(max-width: 1024px) 0vw, 15vw"
+              className="w-full h-full object-cover filter grayscale opacity-80"
+              alt="HIKARA Studio Foto Premium - Pasangan Minimalis"
+            />
+          </motion.div>
+        </div>
       </motion.div>
-      
-      <motion.div 
+
+      <motion.div
         initial={{ opacity: 0, y: 50, rotate: -5 }}
         animate={{ opacity: 1, y: 0, rotate: -5 }}
         transition={{ duration: 1.5, delay: 1.4 }}
         style={{ y: useTransform(heroScroll, [0, 1], ["0%", "-30%"]) }}
         className="absolute right-[15%] bottom-[10%] w-40 md:w-56 bg-white p-2 md:p-3 shadow-2xl shadow-[#2C2A29]/10 hidden lg:block z-0 pointer-events-none"
       >
-         <div className="aspect-4/3 bg-[#EFEBDE] overflow-hidden">
-           <motion.div style={{ scale: imageScale }} className="w-full h-full relative">
-             <Image 
-               src={d.polaroid_3}
-               width={400} 
-               height={300} 
-               priority 
-               sizes="(max-width: 1024px) 0vw, 25vw"
-               className="w-full h-full object-cover filter grayscale opacity-80" 
-               alt="HIKARA Photobox Kotabaru - Foto Hitam Putih Estetik" 
-             />
-           </motion.div>
-         </div>
+        <div className="aspect-4/3 bg-[#EFEBDE] overflow-hidden">
+          <motion.div
+            style={{ scale: imageScale }}
+            className="w-full h-full relative"
+          >
+            <Image
+              src={d.polaroid_3}
+              width={400}
+              height={300}
+              priority
+              sizes="(max-width: 1024px) 0vw, 25vw"
+              className="w-full h-full object-cover filter grayscale opacity-80"
+              alt="HIKARA Photobox Kotabaru - Foto Hitam Putih Estetik"
+            />
+          </motion.div>
+        </div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1.5, delay: 0.8, ease: slowEase }}
-        className="absolute right-6 md:right-16 top-1/2 -translate-y-1/2 text-[#8B5E56]/40 font-serif text-xl md:text-3xl tracking-[0.5em] pointer-events-none hidden sm:block" 
-        style={{ writingMode: 'vertical-rl' }}
+        className="absolute right-6 md:right-16 top-1/2 -translate-y-1/2 text-[#8B5E56]/40 font-serif text-xl md:text-3xl tracking-[0.5em] pointer-events-none hidden sm:block"
+        style={{ writingMode: "vertical-rl" }}
       >
         {d.vertical_text_right}
       </motion.div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1.5, delay: 0.8, ease: slowEase }}
-        className="absolute left-6 md:left-16 top-1/2 -translate-y-1/2 text-[#2C2A29]/20 font-serif text-sm tracking-[1em] uppercase pointer-events-none hidden sm:block" 
-        style={{ writingMode: 'vertical-rl' }}
+        className="absolute left-6 md:left-16 top-1/2 -translate-y-1/2 text-[#2C2A29]/20 font-serif text-sm tracking-[1em] uppercase pointer-events-none hidden sm:block"
+        style={{ writingMode: "vertical-rl" }}
       >
         {d.vertical_text_left}
       </motion.div>
 
-      <motion.div style={{ y: heroTextY, opacity: heroTextOpacity }} className="max-w-4xl z-10">
+      <motion.div
+        style={{ y: heroTextY, opacity: heroTextOpacity }}
+        className="max-w-4xl z-10"
+      >
         <FadeUp delay={0.2} className="flex flex-col items-center gap-4 mb-8">
-          <span className="text-[#8B5E56] text-xs md:text-sm tracking-[0.5em] uppercase font-heading font-medium">{d.tagline}</span>
+          <span className="text-[#8B5E56] text-xs md:text-sm tracking-[0.5em] uppercase font-heading font-medium">
+            {d.tagline}
+          </span>
           <span className="w-12 h-px bg-[#8B5E56]/50 mb-2"></span>
-          
+
           <div className="flex flex-col items-center">
-            <h1 className="sr-only">HIKARA Photobox Kotabaru - Studio Foto Premium &amp; Estetik. Momen Kecil, Kenangan Abadi.</h1>
+            <h1 className="sr-only">
+              HIKARA Photobox Kotabaru - Studio Foto Premium &amp; Estetik.
+              Momen Kecil, Kenangan Abadi.
+            </h1>
             <div className="overflow-hidden" aria-hidden="true">
               <span className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide">
                 <TextReveal text={d.title_line1} delay={0.2} />
@@ -149,7 +175,9 @@ export const HeroSection = ({ data }: Props) => {
             </div>
             <div className="overflow-hidden" aria-hidden="true">
               <span className="block font-heading text-5xl md:text-7xl lg:text-8xl text-[#2C2A29] leading-[1.1] tracking-wide mt-2">
-                <span className="text-[#8B5E56] italic font-serif pr-2">{d.title_highlight}</span>
+                <span className="text-[#8B5E56] italic font-serif pr-2">
+                  {d.title_highlight}
+                </span>
                 <TextReveal text={d.title_line2} delay={0.4} />
               </span>
             </div>
@@ -159,7 +187,9 @@ export const HeroSection = ({ data }: Props) => {
         <FadeUp delay={0.8}>
           <p className="font-light text-sm md:text-base tracking-[0.2em] leading-relaxed text-[#5A5550] mb-12 max-w-lg mx-auto uppercase">
             {d.subtitle}
-            <span className="block mt-2 font-serif text-lg tracking-widest text-[#8B5E56] capitalize">{d.subtitle_cursive}</span>
+            <span className="block mt-2 font-serif text-lg tracking-widest text-[#8B5E56] capitalize">
+              {d.subtitle_cursive}
+            </span>
           </p>
         </FadeUp>
 

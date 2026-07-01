@@ -1,8 +1,8 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 
 export async function login(formData: FormData) {
   const supabase = await createClient();
@@ -50,7 +50,9 @@ export async function changePassword(formData: FormData) {
     return { error: "Password baru minimal 6 karakter" };
   }
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user?.email) return { error: "Tidak terautentikasi" };
 
   // Verify current password

@@ -71,39 +71,39 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "PhotographyStore",
-    "name": "HIKARA Photobox Kotabaru",
-    "image": "https://hikara-photobox.vercel.app/logo.png",
+    name: "HIKARA Photobox Kotabaru",
+    image: "https://hikara-photobox.vercel.app/logo.png",
     "@id": "https://hikara-photobox.vercel.app",
-    "url": "https://hikara-photobox.vercel.app",
-    "telephone": "6285652046716",
-    "address": {
+    url: "https://hikara-photobox.vercel.app",
+    telephone: "6285652046716",
+    address: {
       "@type": "PostalAddress",
-      "streetAddress": "Jl. Veteran, Dirgahayu",
-      "addressLocality": "Kotabaru",
-      "addressRegion": "Kalimantan Selatan",
-      "postalCode": "72111",
-      "addressCountry": "ID"
+      streetAddress: "Jl. Veteran, Dirgahayu",
+      addressLocality: "Kotabaru",
+      addressRegion: "Kalimantan Selatan",
+      postalCode: "72111",
+      addressCountry: "ID",
     },
-    "geo": {
+    geo: {
       "@type": "GeoCoordinates",
-      "latitude": -3.226315,
-      "longitude": 116.223056
+      latitude: -3.226315,
+      longitude: 116.223056,
     },
-    "openingHoursSpecification": {
+    openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
+      dayOfWeek: [
         "Monday",
         "Tuesday",
         "Wednesday",
         "Thursday",
         "Friday",
         "Saturday",
-        "Sunday"
+        "Sunday",
       ],
-      "opens": "14:00",
-      "closes": "23:00"
+      opens: "14:00",
+      closes: "23:00",
     },
-    "priceRange": "Rp 35.000 - Rp 100.000"
+    priceRange: "Rp 35.000 - Rp 100.000",
   };
 
   return (

@@ -1,14 +1,23 @@
+import { Analytics01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { connection } from "next/server";
+import {
+  columns,
+  type Reservation,
+} from "@/components/features/dashboard/columns";
+import { DataTable } from "@/components/features/dashboard/data-table";
+import { FadeIn } from "@/components/ui/fade-in";
 import { getReservations } from "@/lib/services/reservation-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
-import { DataTable } from "@/components/features/dashboard/data-table";
-import { columns, type Reservation } from "@/components/features/dashboard/columns";
-import { FadeIn } from "@/components/ui/fade-in";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Analytics01Icon } from "@hugeicons/core-free-icons";
-import { connection } from "next/server";
 
 interface Props {
-  searchParams: Promise<{ range?: string; from?: string; to?: string; page?: string; q?: string }>;
+  searchParams: Promise<{
+    range?: string;
+    from?: string;
+    to?: string;
+    page?: string;
+    q?: string;
+  }>;
 }
 
 export const RecentTransactions = async ({ searchParams }: Props) => {
@@ -18,7 +27,14 @@ export const RecentTransactions = async ({ searchParams }: Props) => {
   const page = Number(params.page) || 1;
   const q = params.q;
 
-  const { data, count, error } = await getReservations(from, to, "confirmed", page, 10, q);
+  const { data, count, error } = await getReservations(
+    from,
+    to,
+    "confirmed",
+    page,
+    10,
+    q,
+  );
   const transactions = (data as any[] | null)?.map((item) => ({
     ...item,
     status: item.status as "pending" | "confirmed" | "cancelled",
@@ -52,9 +68,9 @@ export const RecentTransactions = async ({ searchParams }: Props) => {
       </div>
 
       <FadeIn direction="up">
-        <DataTable 
-          columns={columns} 
-          data={transactions || []} 
+        <DataTable
+          columns={columns}
+          data={transactions || []}
           pageCount={Math.ceil(total / 10)}
           currentPage={page}
         />

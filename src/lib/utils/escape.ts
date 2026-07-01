@@ -4,5 +4,5 @@
  * Only escapes the sequences that break out of script context.
  */
 export function escapeJsonForHtml(json: string): string {
-  return json.replace(/<\//g, '<\\/');
+  return json.replace(/<\//g, "<\\/");
 }

@@ -1,4 +1,4 @@
-import { type PricingItem } from "../services/site-content-service";
+import type { PricingItem } from "../services/site-content-service";
 
 export interface RawRevenueRow {
   total_price: number | null;
@@ -17,20 +17,35 @@ export interface RevenueStats {
     extraPeople: number;
   };
   transactionCount: number;
-  chartData: { date: string, amount: number }[];
+  chartData: { date: string; amount: number }[];
 }
 
 /**
  * Pure function to format and aggregate revenue data from raw database rows.
  * Pricing is passed in as a parameter (pre-fetched from DB).
  */
-export function formatRevenueStats(data: RawRevenueRow[], pricing: PricingItem[]): RevenueStats {
+export function formatRevenueStats(
+  data: RawRevenueRow[],
+  pricing: PricingItem[],
+): RevenueStats {
   const total = data.reduce((acc, row) => acc + (row.total_price || 0), 0);
 
-  const extraPerson = pricing.find((p) => p.label.toLowerCase().includes("tambahan") && p.label.toLowerCase().includes("orang")) ||
-    pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("orang")) || { price: 5000 };
-  const extraPrint = pricing.find((p) => p.label.toLowerCase().includes("extra") && p.label.toLowerCase().includes("print")) ||
-    pricing.find((p) => p.label.toLowerCase().includes("print") && !p.maxPeople) || { price: 10000 };
+  const extraPerson = pricing.find(
+    (p) =>
+      p.label.toLowerCase().includes("tambahan") &&
+      p.label.toLowerCase().includes("orang"),
+  ) ||
+    pricing.find(
+      (p) => !p.maxPeople && p.label.toLowerCase().includes("orang"),
+    ) || { price: 5000 };
+  const extraPrint = pricing.find(
+    (p) =>
+      p.label.toLowerCase().includes("extra") &&
+      p.label.toLowerCase().includes("print"),
+  ) ||
+    pricing.find(
+      (p) => p.label.toLowerCase().includes("print") && !p.maxPeople,
+    ) || { price: 10000 };
   const extraPersonPrice = extraPerson.price;
   const extraPrintPrice = extraPrint.price;
 
@@ -46,12 +61,12 @@ export function formatRevenueStats(data: RawRevenueRow[], pricing: PricingItem[]
       acc.extraPeople += (row.extra_people_count || 0) * extraPersonPrice;
       return acc;
     },
-    { tunai: 0, qris: 0, extraPrint: 0, extraPeople: 0 }
+    { tunai: 0, qris: 0, extraPrint: 0, extraPeople: 0 },
   );
 
   const countByDate: Record<string, number> = {};
   data.forEach((row) => {
-    const d = row.date || 'unknown';
+    const d = row.date || "unknown";
     countByDate[d] = (countByDate[d] || 0) + (row.total_price || 0);
   });
 

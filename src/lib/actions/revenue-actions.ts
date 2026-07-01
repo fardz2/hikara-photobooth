@@ -1,9 +1,12 @@
 "use server";
 
-import { revalidateTag, revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
+import {
+  logTransaction as insertTransaction,
+  type TransactionInput,
+} from "@/lib/services/revenue-service";
 import { TransactionSchema } from "@/lib/validations/revenue";
-import { logTransaction as insertTransaction, type TransactionInput } from "@/lib/services/revenue-service";
 
 export type { TransactionInput };
 
@@ -20,7 +23,10 @@ export async function logTransaction(data: TransactionInput) {
   });
 
   if (!validation.success) {
-    return { success: false, message: validation.error.issues[0]?.message || "Data tidak valid" };
+    return {
+      success: false,
+      message: validation.error.issues[0]?.message || "Data tidak valid",
+    };
   }
 
   // 2. Call service

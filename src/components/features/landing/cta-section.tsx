@@ -1,6 +1,6 @@
-import { FadeUp } from "@/components/ui/motion";
-import { Magnetic } from "@/components/ui/magnetic";
 import Link from "next/link";
+import { Magnetic } from "@/components/ui/magnetic";
+import { FadeUp } from "@/components/ui/motion";
 
 interface Props {
   data: Record<string, any> | null;
@@ -46,7 +46,9 @@ export const CtaSection = ({ data }: Props) => {
         </Magnetic>
       </FadeUp>
       <FadeUp delay={0.4} className="relative z-10 mt-16 md:mt-20">
-        <p className="font-serif text-[#8B5E56] text-xl md:text-2xl opacity-80 uppercase tracking-[0.5em] ml-[0.5em]">Hikara</p>
+        <p className="font-serif text-[#8B5E56] text-xl md:text-2xl opacity-80 uppercase tracking-[0.5em] ml-[0.5em]">
+          Hikara
+        </p>
       </FadeUp>
     </section>
   );

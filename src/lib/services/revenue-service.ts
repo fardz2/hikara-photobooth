@@ -1,7 +1,7 @@
+import { format } from "date-fns";
+import { getPricing } from "@/lib/services/site-content-service";
 import { createClient } from "@/lib/supabase/server";
 import { formatRevenueStats } from "@/lib/utils/revenue";
-import { getPricing } from "@/lib/services/site-content-service";
-import { format } from "date-fns";
 
 // ─── Read: admin, no cache ───
 
@@ -10,7 +10,9 @@ export async function getRevenueStats(from: string, to: string) {
 
   const { data, error } = await supabase
     .from("reservations")
-    .select("total_price, payment_method, date, extra_print_count, extra_people_count")
+    .select(
+      "total_price, payment_method, date, extra_print_count, extra_people_count",
+    )
     .gte("date", from)
     .lte("date", to)
     .eq("status", "confirmed");

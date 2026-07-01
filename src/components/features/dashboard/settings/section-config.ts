@@ -1,5 +1,14 @@
-export type SectionTab = "hero" | "marquee" | "about" | "gallery" | "themes" | "testimonials" | "pricing" | "location" | "cta"
-export type Tab = SectionTab | "password"
+export type SectionTab =
+  | "hero"
+  | "marquee"
+  | "about"
+  | "gallery"
+  | "themes"
+  | "testimonials"
+  | "pricing"
+  | "location"
+  | "cta";
+export type Tab = SectionTab | "password";
 
 export const CONTENT_SECTIONS: { id: SectionTab; label: string }[] = [
   { id: "hero", label: "Hero" },
@@ -11,45 +20,58 @@ export const CONTENT_SECTIONS: { id: SectionTab; label: string }[] = [
   { id: "pricing", label: "Harga" },
   { id: "location", label: "Lokasi" },
   { id: "cta", label: "CTA" },
-]
+];
 
 export const SETTINGS_TABS: { id: Tab; label: string }[] = [
   { id: "password", label: "Kata Sandi" },
-]
+];
 
-export const ALL_TABS: { id: Tab; label: string }[] = [...CONTENT_SECTIONS, ...SETTINGS_TABS]
+export const ALL_TABS: { id: Tab; label: string }[] = [
+  ...CONTENT_SECTIONS,
+  ...SETTINGS_TABS,
+];
 
 export interface PricingItem {
-  label: string
-  price: number
-  maxPeople?: number
-  note?: string
+  label: string;
+  price: number;
+  maxPeople?: number;
+  note?: string;
 }
 
 // ─── Field definition types ───
 
-export type FieldType = "text" | "textarea" | "image" | "gallery" | "tags" | "objects"
+export type FieldType =
+  | "text"
+  | "textarea"
+  | "image"
+  | "gallery"
+  | "tags"
+  | "objects";
 
 export interface ObjectFieldDef {
-  key: string
-  label: string
-  type?: "text" | "textarea" | "image"
+  key: string;
+  label: string;
+  type?: "text" | "textarea" | "image";
 }
 
 export interface FieldDef {
-  key: string
-  label: string
-  type: FieldType
-  max?: number
-  objectFields?: ObjectFieldDef[]
+  key: string;
+  label: string;
+  type: FieldType;
+  max?: number;
+  objectFields?: ObjectFieldDef[];
 }
 
-export type SectionConfig = Record<string, FieldDef[]>
+export type SectionConfig = Record<string, FieldDef[]>;
 
 // ─── Field name builder ───
 
-export function fieldPath(section: string, key: string, ...parts: (string | number)[]): string {
-  return [`s_${section}_${key}`, ...parts].join("_")
+export function fieldPath(
+  section: string,
+  key: string,
+  ...parts: (string | number)[]
+): string {
+  return [`s_${section}_${key}`, ...parts].join("_");
 }
 
 // ─── Declarative section layouts (Indonesian labels) ───
@@ -71,15 +93,13 @@ export const SECTION_CONFIG: SectionConfig = {
     { key: "image_url", label: "Gambar", type: "image" },
     { key: "description", label: "Deskripsi", type: "textarea" },
   ],
-  gallery: [
-    { key: "images", label: "Gambar Galeri", type: "gallery", max: 3 },
-  ],
-  marquee: [
-    { key: "text", label: "Teks Marquee", type: "tags" },
-  ],
+  gallery: [{ key: "images", label: "Gambar Galeri", type: "gallery", max: 3 }],
+  marquee: [{ key: "text", label: "Teks Marquee", type: "tags" }],
   themes: [
     {
-      key: "items", label: "Tema", type: "objects",
+      key: "items",
+      label: "Tema",
+      type: "objects",
       objectFields: [
         { key: "name", label: "Nama" },
         { key: "desc", label: "Deskripsi", type: "textarea" },
@@ -89,7 +109,9 @@ export const SECTION_CONFIG: SectionConfig = {
   ],
   testimonials: [
     {
-      key: "items", label: "Testimoni", type: "objects",
+      key: "items",
+      label: "Testimoni",
+      type: "objects",
       objectFields: [
         { key: "quote", label: "Kutipan", type: "textarea" },
         { key: "author", label: "Penulis" },
@@ -99,7 +121,9 @@ export const SECTION_CONFIG: SectionConfig = {
   ],
   pricing: [
     {
-      key: "items", label: "Paket", type: "objects",
+      key: "items",
+      label: "Paket",
+      type: "objects",
       objectFields: [
         { key: "label", label: "Nama Paket" },
         { key: "price", label: "Harga (Rp)" },
@@ -120,4 +144,4 @@ export const SECTION_CONFIG: SectionConfig = {
     { key: "title", label: "Judul", type: "text" },
     { key: "description", label: "Deskripsi", type: "textarea" },
   ],
-}
+};

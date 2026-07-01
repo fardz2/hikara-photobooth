@@ -1,29 +1,41 @@
-import { getSiteContent, getPricing } from "@/lib/services/site-content-service";
-import { HeroSection } from "@/components/features/landing/hero-section";
-import { Marquee } from "@/components/features/landing/marquee";
-import { AboutSection } from "@/components/features/landing/about-section";
-import { GallerySection } from "@/components/features/landing/gallery-section";
-import { ThemesSection } from "@/components/features/landing/themes-section";
-import { PackagesSection } from "@/components/features/landing/packages-section";
-import { LocationSection } from "@/components/features/landing/location-section";
-import { CtaSection } from "@/components/features/landing/cta-section";
-import { AnchorSection } from "@/components/features/landing/anchor-section";
-import { TestimonialSection } from "@/components/features/landing/testimonial-section";
 import { Suspense } from "react";
+import { AboutSection } from "@/components/features/landing/about-section";
+import { AnchorSection } from "@/components/features/landing/anchor-section";
+import { CtaSection } from "@/components/features/landing/cta-section";
+import { GallerySection } from "@/components/features/landing/gallery-section";
+import { HeroSection } from "@/components/features/landing/hero-section";
+import { LocationSection } from "@/components/features/landing/location-section";
+import { Marquee } from "@/components/features/landing/marquee";
+import { PackagesSection } from "@/components/features/landing/packages-section";
+import { TestimonialSection } from "@/components/features/landing/testimonial-section";
+import { ThemesSection } from "@/components/features/landing/themes-section";
+import {
+  getPricing,
+  getSiteContent,
+} from "@/lib/services/site-content-service";
 
 async function HomeContent() {
-  const [heroData, aboutData, galleryData, themesData, testimonialsData, locationData, ctaData, marqueeData, pricing] =
-    await Promise.all([
-      getSiteContent("hero"),
-      getSiteContent("about"),
-      getSiteContent("gallery"),
-      getSiteContent("themes"),
-      getSiteContent("testimonials"),
-      getSiteContent("location"),
-      getSiteContent("cta"),
-      getSiteContent("marquee"),
-      getPricing(),
-    ]);
+  const [
+    heroData,
+    aboutData,
+    galleryData,
+    themesData,
+    testimonialsData,
+    locationData,
+    ctaData,
+    marqueeData,
+    pricing,
+  ] = await Promise.all([
+    getSiteContent("hero"),
+    getSiteContent("about"),
+    getSiteContent("gallery"),
+    getSiteContent("themes"),
+    getSiteContent("testimonials"),
+    getSiteContent("location"),
+    getSiteContent("cta"),
+    getSiteContent("marquee"),
+    getPricing(),
+  ]);
 
   const marqueeText = (marqueeData?.text as string[]) || ["HIKARA", "PHOTOBOX"];
   const galleryImages = (galleryData?.images as string[]) || [];

@@ -1,6 +1,6 @@
+import { connection } from "next/server";
 import { getReservationStats } from "@/lib/services/reservation-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
-import { connection } from "next/server";
 
 interface Props {
   searchParams: Promise<{ range?: string; from?: string; to?: string }>;
@@ -55,16 +55,18 @@ export const DashboardStats = async ({ searchParams }: Props) => {
           className="relative bg-white p-6 border border-[#2C2A29]/10 overflow-hidden group transition-all duration-300 hover:border-[#2C2A29]/30"
         >
           <div className="absolute inset-0 bg-linear-to-br from-transparent to-[#2C2A29]/2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-          
+
           <div className="relative z-10 flex flex-col h-full justify-between">
             <div className="flex justify-between items-start mb-8">
               <span className="text-[10px] tracking-[0.25em] uppercase font-bold text-[#5A5550]">
                 {stat.label}
               </span>
             </div>
-            
+
             <div className="flex flex-col gap-1 items-start text-left">
-              <span className={`font-heading text-4xl tracking-tight ${stat.color}`}>
+              <span
+                className={`font-heading text-4xl tracking-tight ${stat.color}`}
+              >
                 {stat.format === "currency"
                   ? `Rp ${stat.value.toLocaleString("id-ID")}`
                   : stat.value}

@@ -17,14 +17,40 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "recommended": false,
+      "correctness": {
+        "noConstAssign": "error",
+        "noConstructorReturn": "error",
+        "noEmptyPattern": "error",
+        "noGlobalObjectCalls": "error",
+        "noInvalidBuiltinInstantiation": "error",
+        "noInvalidConstructorSuper": "error",
+        "noSetterReturn": "error",
+        "noSwitchDeclarations": "error",
+        "noUnreachable": "error",
+        "noUnusedFunctionParameters": "warn",
+        "noUnusedVariables": "warn"
+      },
       "suspicious": {
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "off",
         "noUnknownAtRules": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useButtonType": "off",
+        "useSemanticElements": "off",
+        "noLabelWithoutControl": "off"
+      },
+      "performance": {
+        "noImgElement": "off"
       }
-    },
-    "domains": {
-      "next": "recommended",
-      "react": "recommended"
     }
   },
   "assist": {

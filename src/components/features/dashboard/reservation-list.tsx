@@ -1,14 +1,28 @@
-import { getReservations, getReservationStats } from "@/lib/services/reservation-service";
-import { parseDateRangeParams } from "@/lib/utils/date-range";
-import { DataTable } from "./data-table";
-import { columns, type Reservation } from "./columns";
-import { connection } from "next/server";
+import {
+  Cancel01Icon,
+  Folder01Icon,
+  Tick02Icon,
+  Time02Icon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Folder01Icon, Tick02Icon, Time02Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { FadeIn } from "@/components/ui/fade-in";
+import {
+  getReservationStats,
+  getReservations,
+} from "@/lib/services/reservation-service";
+import { parseDateRangeParams } from "@/lib/utils/date-range";
+import { columns, type Reservation } from "./columns";
+import { DataTable } from "./data-table";
 
 interface Props {
-  searchParams: Promise<{ range?: string; from?: string; to?: string; status?: string; page?: string; q?: string }>;
+  searchParams: Promise<{
+    range?: string;
+    from?: string;
+    to?: string;
+    status?: string;
+    page?: string;
+    q?: string;
+  }>;
 }
 
 export const ReservationList = async ({ searchParams }: Props) => {
@@ -20,9 +34,9 @@ export const ReservationList = async ({ searchParams }: Props) => {
 
   const [{ data, count, error }, globalStats] = await Promise.all([
     getReservations(from, to, status, page, 10, q),
-    getReservationStats(from, to, q)
+    getReservationStats(from, to, q),
   ]);
-  
+
   const reservations = (data as any[] | null)?.map((item) => ({
     ...item,
     status: item.status as "pending" | "confirmed" | "cancelled",
@@ -110,13 +124,10 @@ export const ReservationList = async ({ searchParams }: Props) => {
         </div>
       </div>
 
-      <FadeIn 
-        direction="up"
-        className="bg-transparent"
-      >
-        <DataTable 
-          columns={columns} 
-          data={reservations || []} 
+      <FadeIn direction="up" className="bg-transparent">
+        <DataTable
+          columns={columns}
+          data={reservations || []}
           pageCount={Math.ceil(pageCountCount / 10)}
           currentPage={page}
         />

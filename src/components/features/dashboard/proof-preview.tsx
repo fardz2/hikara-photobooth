@@ -1,25 +1,24 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  ViewIcon,
   Add01Icon,
-  Remove01Icon,
   ArrowReloadHorizontalIcon,
   Cancel01Icon,
   Download01Icon,
+  Remove01Icon,
+  ViewIcon,
 } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, useAnimation, useMotionValue } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface ProofPreviewProps {
   url: string;
@@ -29,19 +28,12 @@ interface ProofPreviewProps {
 export const ProofPreview = ({ url, trigger }: ProofPreviewProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scale, setScale] = useState(1);
-  const [isDragging, setIsDragging] = useState(false);
+  const [_isDragging, _setIsDragging] = useState(false);
 
   const constraintsRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const controls = useAnimation();
-
-  // Reset zoom and position when modal closes/opens
-  useEffect(() => {
-    if (!isOpen) {
-      handleReset();
-    }
-  }, [isOpen]);
 
   const handleZoomIn = () => setScale((prev) => Math.min(prev + 0.5, 5));
   const handleZoomOut = () => setScale((prev) => Math.max(prev - 0.5, 1));
@@ -52,6 +44,13 @@ export const ProofPreview = ({ url, trigger }: ProofPreviewProps) => {
     y.set(0);
     controls.start({ x: 0, y: 0, scale: 1 });
   };
+
+  // Reset zoom and position when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      handleReset();
+    }
+  }, [isOpen, handleReset]);
 
   const handleWheel = (e: React.WheelEvent) => {
     if (e.deltaY < 0) {

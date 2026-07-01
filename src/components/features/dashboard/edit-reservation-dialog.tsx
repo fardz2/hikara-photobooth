@@ -1,7 +1,11 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
-import { format, parseISO } from "date-fns";
+import { Edit01Icon, Loading03Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useEffect, useState, useTransition } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -19,15 +22,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Reservation } from "./columns";
 import { editReservation } from "@/lib/actions/reservation-actions";
-import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Loading03Icon, Edit01Icon } from "@hugeicons/core-free-icons";
-import { normalizePhoneNumber } from "@/lib/utils/validation";
+import type { PricingItem } from "@/lib/services/site-content-service";
 import { generateTimeSlots } from "@/lib/utils/slots";
-import { type PricingItem } from "@/lib/services/site-content-service";
-import { Checkbox } from "@/components/ui/checkbox";
+import { normalizePhoneNumber } from "@/lib/utils/validation";
+import type { Reservation } from "./columns";
 
 interface Props {
   reservation: Reservation | null;
@@ -36,18 +35,42 @@ interface Props {
   pricing: PricingItem[];
 }
 
-export function EditReservationDialog({ reservation, open, onOpenChange, pricing }: Props) {
+export function EditReservationDialog({
+  reservation,
+  open,
+  onOpenChange,
+  pricing,
+}: Props) {
   const effectivePricing = (reservation as any)?.pricing_snapshot || pricing;
-  const packages = effectivePricing.filter((p: PricingItem) => p.category === "package");
-  const extraItems = effectivePricing.filter((p: PricingItem) => p.category === "extra");
-  const addonItems = effectivePricing.filter((p: PricingItem) => p.category === "addon");
+  const packages = effectivePricing.filter(
+    (p: PricingItem) => p.category === "package",
+  );
+  const extraItems = effectivePricing.filter(
+    (p: PricingItem) => p.category === "extra",
+  );
+  const addonItems = effectivePricing.filter(
+    (p: PricingItem) => p.category === "addon",
+  );
 
   const mainPkg = packages[0];
-  const extraPerson = extraItems.find((p: PricingItem) => p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
-  const extraPrint = extraItems.find((p: PricingItem) => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
+  const extraPerson = extraItems.find((p: PricingItem) =>
+    p.label.toLowerCase().includes("orang"),
+  ) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = extraItems.find((p: PricingItem) =>
+    p.label.toLowerCase().includes("print"),
+  ) || { label: "Extra Print", price: 10000 };
 
-  const PRICELIST = mainPkg ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }] : [];
-  const ADDONS = addonItems.map((a: PricingItem) => ({ id: a.label.toLowerCase().replace(/[^a-z]/g, "_").replace(/_+/g, "_"), label: a.label, price: a.price }));
+  const PRICELIST = mainPkg
+    ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }]
+    : [];
+  const ADDONS = addonItems.map((a: PricingItem) => ({
+    id: a.label
+      .toLowerCase()
+      .replace(/[^a-z]/g, "_")
+      .replace(/_+/g, "_"),
+    label: a.label,
+    price: a.price,
+  }));
   const EXTRA_PERSON_PRICE = extraPerson.price;
   const EXTRA_PRINT_PRICE = extraPrint.price;
 
@@ -59,10 +82,18 @@ export function EditReservationDialog({ reservation, open, onOpenChange, pricing
   const [date, setDate] = useState(reservation?.date || "");
   const [time, setTime] = useState(reservation?.time || "");
   const [pkg, setPkg] = useState(reservation?.package || "paket_utama");
-  const [selectedAddons, setSelectedAddons] = useState<string[]>(reservation?.addons || []);
-  const [extraPeopleCount, setExtraPeopleCount] = useState<number>(reservation?.extra_people_count || 0);
-  const [extraPrintCount, setExtraPrintCount] = useState<number>(reservation?.extra_print_count || 0);
-  const [paymentMethod, setPaymentMethod] = useState<"tunai" | "qris">(reservation?.payment_method || "tunai");
+  const [selectedAddons, setSelectedAddons] = useState<string[]>(
+    reservation?.addons || [],
+  );
+  const [extraPeopleCount, setExtraPeopleCount] = useState<number>(
+    reservation?.extra_people_count || 0,
+  );
+  const [extraPrintCount, setExtraPrintCount] = useState<number>(
+    reservation?.extra_print_count || 0,
+  );
+  const [paymentMethod, setPaymentMethod] = useState<"tunai" | "qris">(
+    reservation?.payment_method || "tunai",
+  );
 
   // Sync state when opening dialog with different reservation
   useEffect(() => {
@@ -105,7 +136,7 @@ export function EditReservationDialog({ reservation, open, onOpenChange, pricing
       };
 
       const result = await editReservation(reservation.id, payload);
-      
+
       if (result.success) {
         toast.success(result.message || "Reservasi berhasil diubah");
         onOpenChange(false);
@@ -130,7 +161,12 @@ export function EditReservationDialog({ reservation, open, onOpenChange, pricing
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Nama Pelanggan</Label>
+            <Label
+              htmlFor="name"
+              className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest"
+            >
+              Nama Pelanggan
+            </Label>
             <Input
               id="name"
               value={name}
@@ -141,7 +177,12 @@ export function EditReservationDialog({ reservation, open, onOpenChange, pricing
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">No. WhatsApp</Label>
+            <Label
+              htmlFor="phone"
+              className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest"
+            >
+              No. WhatsApp
+            </Label>
             <Input
               id="phone"
               value={phone}
@@ -154,7 +195,12 @@ export function EditReservationDialog({ reservation, open, onOpenChange, pricing
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="date" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Tanggal</Label>
+              <Label
+                htmlFor="date"
+                className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest"
+              >
+                Tanggal
+              </Label>
               <Input
                 id="date"
                 type="date"
@@ -165,7 +211,12 @@ export function EditReservationDialog({ reservation, open, onOpenChange, pricing
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="time" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Jam</Label>
+              <Label
+                htmlFor="time"
+                className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest"
+              >
+                Jam
+              </Label>
               <Select value={time} onValueChange={setTime}>
                 <SelectTrigger className="rounded-none border-[#2C2A29]/10 h-10 text-[10px] tracking-widest">
                   <SelectValue placeholder="Waktu" />
@@ -173,7 +224,11 @@ export function EditReservationDialog({ reservation, open, onOpenChange, pricing
                 <SelectContent className="rounded-none border-[#2C2A29]/10">
                   {/* Time slots with 30-minute intervals */}
                   {generateTimeSlots().map((timeSlot) => (
-                    <SelectItem key={timeSlot} value={timeSlot} className="text-[10px] tracking-widest rounded-none">
+                    <SelectItem
+                      key={timeSlot}
+                      value={timeSlot}
+                      className="text-[10px] tracking-widest rounded-none"
+                    >
                       {timeSlot}
                     </SelectItem>
                   ))}
@@ -183,14 +238,23 @@ export function EditReservationDialog({ reservation, open, onOpenChange, pricing
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="package" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Pilih Paket</Label>
+            <Label
+              htmlFor="package"
+              className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest"
+            >
+              Pilih Paket
+            </Label>
             <Select value={pkg} onValueChange={setPkg}>
               <SelectTrigger className="rounded-none border-[#2C2A29]/10 h-10 text-[10px] tracking-widest">
                 <SelectValue placeholder="Pilih Paket" />
               </SelectTrigger>
               <SelectContent className="rounded-none border-[#2C2A29]/10">
                 {PRICELIST.map((item) => (
-                  <SelectItem key={item.id} value={item.id} className="text-[10px] tracking-widest rounded-none">
+                  <SelectItem
+                    key={item.id}
+                    value={item.id}
+                    className="text-[10px] tracking-widest rounded-none"
+                  >
                     {item.label}
                   </SelectItem>
                 ))}
@@ -199,64 +263,102 @@ export function EditReservationDialog({ reservation, open, onOpenChange, pricing
           </div>
 
           <div className="space-y-2">
-            <Label className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Add-ons</Label>
+            <Label className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">
+              Add-ons
+            </Label>
             <div className="grid grid-cols-1 gap-2">
-              {ADDONS.map((addon: { id: string; label: string; price: number }) => (
-                <div key={addon.id} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={`edit-${addon.id}`}
-                    checked={selectedAddons.includes(addon.id)}
-                    onCheckedChange={(checked) => handleAddonToggle(addon.id, checked === true)}
-                    className="rounded-none border-[#2C2A29]/20 data-[state=checked]:bg-[#8B5E56] data-[state=checked]:border-[#8B5E56]"
-                  />
-                  <label
-                    htmlFor={`edit-${addon.id}`}
-                    className="text-[10px] font-bold tracking-tight text-[#2C2A29] cursor-pointer"
-                  >
-                    {addon.label} (+Rp {addon.price.toLocaleString('id-ID')})
-                  </label>
-                </div>
-              ))}
+              {ADDONS.map(
+                (addon: { id: string; label: string; price: number }) => (
+                  <div key={addon.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`edit-${addon.id}`}
+                      checked={selectedAddons.includes(addon.id)}
+                      onCheckedChange={(checked) =>
+                        handleAddonToggle(addon.id, checked === true)
+                      }
+                      className="rounded-none border-[#2C2A29]/20 data-[state=checked]:bg-[#8B5E56] data-[state=checked]:border-[#8B5E56]"
+                    />
+                    <label
+                      htmlFor={`edit-${addon.id}`}
+                      className="text-[10px] font-bold tracking-tight text-[#2C2A29] cursor-pointer"
+                    >
+                      {addon.label} (+Rp {addon.price.toLocaleString("id-ID")})
+                    </label>
+                  </div>
+                ),
+              )}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="extraPeople" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Extra Orang (+Rp {EXTRA_PERSON_PRICE.toLocaleString('id-ID')})</Label>
+              <Label
+                htmlFor="extraPeople"
+                className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest"
+              >
+                Extra Orang (+Rp {EXTRA_PERSON_PRICE.toLocaleString("id-ID")})
+              </Label>
               <Input
                 id="extraPeople"
                 type="number"
                 min={0}
                 max={5}
                 value={extraPeopleCount}
-                onChange={(e) => setExtraPeopleCount(parseInt(e.target.value) || 0)}
+                onChange={(e) =>
+                  setExtraPeopleCount(parseInt(e.target.value, 10) || 0)
+                }
                 className="rounded-none border-[#2C2A29]/10 h-10 w-full"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="extraPrint" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Extra Print (+Rp {EXTRA_PRINT_PRICE.toLocaleString('id-ID')})</Label>
+              <Label
+                htmlFor="extraPrint"
+                className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest"
+              >
+                Extra Print (+Rp {EXTRA_PRINT_PRICE.toLocaleString("id-ID")})
+              </Label>
               <Input
                 id="extraPrint"
                 type="number"
                 min={0}
                 max={10}
                 value={extraPrintCount}
-                onChange={(e) => setExtraPrintCount(parseInt(e.target.value) || 0)}
+                onChange={(e) =>
+                  setExtraPrintCount(parseInt(e.target.value, 10) || 0)
+                }
                 className="rounded-none border-[#2C2A29]/10 h-10 w-full"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="paymentMethod" className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Metode Pembayaran</Label>
-            <Select value={paymentMethod} onValueChange={(val) => setPaymentMethod(val as "tunai" | "qris")}>
+            <Label
+              htmlFor="paymentMethod"
+              className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest"
+            >
+              Metode Pembayaran
+            </Label>
+            <Select
+              value={paymentMethod}
+              onValueChange={(val) => setPaymentMethod(val as "tunai" | "qris")}
+            >
               <SelectTrigger className="rounded-none border-[#2C2A29]/10 h-10 text-[10px] tracking-widest uppercase font-bold">
                 <SelectValue placeholder="Pilih Metode" />
               </SelectTrigger>
               <SelectContent className="rounded-none border-[#2C2A29]/10">
-                <SelectItem value="tunai" className="text-[10px] uppercase font-bold tracking-widest rounded-none">Tunai</SelectItem>
-                <SelectItem value="qris" className="text-[10px] uppercase font-bold tracking-widest rounded-none">QRIS</SelectItem>
+                <SelectItem
+                  value="tunai"
+                  className="text-[10px] uppercase font-bold tracking-widest rounded-none"
+                >
+                  Tunai
+                </SelectItem>
+                <SelectItem
+                  value="qris"
+                  className="text-[10px] uppercase font-bold tracking-widest rounded-none"
+                >
+                  QRIS
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
