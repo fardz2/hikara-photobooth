@@ -19,8 +19,8 @@ interface Props {
 
 export const LogTransactionForm = ({ pricing }: Props) => {
   const mainPkg = pricing.find((p) => p.maxPeople) || pricing[0];
-  const extraPerson = pricing.find((p) => p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
-  const extraPrint = pricing.find((p) => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
+  const extraPerson = pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
 
   const EXTRA_PERSON_PRICE = extraPerson.price;
   const EXTRA_PRINT_PRICE = extraPrint.price;

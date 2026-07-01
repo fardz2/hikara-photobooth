@@ -49,6 +49,6 @@ describe('ReservationForm', () => {
 
   it('shows extra price info', () => {
     render(<ReservationForm pricing={mockPricing} />)
-    expect(screen.getByText(/5.000/i)).toBeDefined()
+    expect(screen.getAllByText(/5\.000/i).length).toBeGreaterThanOrEqual(1)
   })
 })

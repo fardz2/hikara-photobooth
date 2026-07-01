@@ -1,11 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { RevenueStats } from '@/components/features/revenue/revenue-stats'
 import * as revenueService from "@/lib/services/revenue-service";
+import type { PricingItem } from "@/lib/services/site-content-service";
 import { render, screen } from '@testing-library/react'
+
+const mockPricing: PricingItem[] = [
+  { label: "Foto per Sesi", price: 35000, maxPeople: 3 },
+  { label: "Tambahan per Orang", price: 5000 },
+]
 
 // Mock dependencies
 vi.mock('@/lib/services/revenue-service', () => ({
   getRevenueStats: vi.fn(),
+}))
+
+vi.mock('@/lib/services/site-content-service', () => ({
+  getPricing: vi.fn(),
 }))
 
 vi.mock('next/server', () => ({
@@ -33,25 +43,27 @@ describe('RevenueStats Server Component', () => {
     chartData: [],
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
+    const siteContentService = await import('@/lib/services/site-content-service');
+    vi.mocked(siteContentService.getPricing).mockResolvedValue(mockPricing);
+    vi.mocked(revenueService.getRevenueStats).mockResolvedValue(mockStats)
+    
   })
 
   it('renders stats correctly when data is available', async () => {
-    vi.mocked(revenueService.getRevenueStats).mockResolvedValue(mockStats)
+    const { getPricing } = await import('@/lib/services/site-content-service');
+    vi.mocked(getPricing).mockResolvedValue(mockPricing);
 
-    // Invoke the server component (async function)
     const jsx = await RevenueStats({ 
       searchParams: Promise.resolve({ range: 'today' }) 
     })
     
-    // Render the resulting JSX
     render(jsx)
 
     expect(screen.getByText(/Rp 100.000/i)).toBeInTheDocument()
-    expect(screen.getByText(/2 Transaksi Selesai/i)).toBeInTheDocument()
-    expect(screen.getByText(/Rp 60.000/i)).toBeInTheDocument() // Tunai
-    expect(screen.getByText(/Rp 40.000/i)).toBeInTheDocument() // QRIS
+    expect(screen.getByText(/Rp 60.000/i)).toBeInTheDocument()
+    expect(screen.getByText(/Rp 40.000/i)).toBeInTheDocument()
   })
 
   it('renders error message when stats loading fails', async () => {

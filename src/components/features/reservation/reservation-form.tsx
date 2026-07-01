@@ -74,13 +74,13 @@ interface Props {
 
 export const ReservationForm = ({ pricing }: Props) => {
   const mainPkg = pricing.find((p) => p.maxPeople) || pricing[0];
-  const extraPerson = pricing.find((p) => p.label.toLowerCase().includes("orang") || !p.maxPeople) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPerson = pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
   const extraPrint = pricing.find((p) => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
 
   const pricelist = mainPkg ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }] : [];
   const addons: { id: string; label: string; price: number }[] = [];
   for (const item of pricing) {
-    if (item !== mainPkg && !item.label.toLowerCase().includes("orang") && !item.label.toLowerCase().includes("print")) {
+    if (item !== mainPkg && item !== extraPerson && !item.label.toLowerCase().includes("print")) {
       addons.push({ id: item.label.toLowerCase().replace(/[^a-z]/g, "_"), label: item.label, price: item.price });
     }
   }

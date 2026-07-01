@@ -38,8 +38,8 @@ interface Props {
 
 export function EditReservationDialog({ reservation, open, onOpenChange, pricing }: Props) {
   const mainPkg = pricing.find((p) => p.maxPeople) || pricing[0];
-  const extraPerson = pricing.find((p) => p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
-  const extraPrint = pricing.find((p) => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
+  const extraPerson = pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
 
   const PRICELIST = mainPkg ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }] : [];
   const ADDONS = pricing

@@ -27,8 +27,10 @@ export interface RevenueStats {
 export function formatRevenueStats(data: RawRevenueRow[], pricing: PricingItem[]): RevenueStats {
   const total = data.reduce((acc, row) => acc + (row.total_price || 0), 0);
 
-  const extraPerson = pricing.find((p) => p.label.includes("Orang")) || { price: 5000 };
-  const extraPrint = pricing.find((p) => p.label.includes("Print")) || { price: 10000 };
+  const extraPerson = pricing.find((p) => p.label.toLowerCase().includes("tambahan") && p.label.toLowerCase().includes("orang")) ||
+    pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("orang")) || { price: 5000 };
+  const extraPrint = pricing.find((p) => p.label.toLowerCase().includes("extra") && p.label.toLowerCase().includes("print")) ||
+    pricing.find((p) => p.label.toLowerCase().includes("print") && !p.maxPeople) || { price: 10000 };
   const extraPersonPrice = extraPerson.price;
   const extraPrintPrice = extraPrint.price;
 
