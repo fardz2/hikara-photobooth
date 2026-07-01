@@ -12,8 +12,8 @@ import {
 } from "@/lib/services/reservation-service";
 import { getAllPricing } from "@/lib/services/pricing-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
-import { getColumns, type Reservation } from "./columns";
-import { DataTable } from "./data-table";
+import type { Reservation } from "./columns";
+import { ReservationTable } from "./reservation-table";
 
 interface Props {
   searchParams: Promise<{
@@ -127,8 +127,8 @@ export const ReservationList = async ({ searchParams }: Props) => {
       </div>
 
       <FadeIn direction="up" className="bg-transparent">
-        <DataTable
-          columns={getColumns(pricing)}
+        <ReservationTable
+          pricing={pricing}
           data={reservations || []}
           pageCount={Math.ceil(pageCountCount / 10)}
           currentPage={page}
