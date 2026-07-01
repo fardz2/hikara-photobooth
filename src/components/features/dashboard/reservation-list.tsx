@@ -10,8 +10,9 @@ import {
   getReservationStats,
   getReservations,
 } from "@/lib/services/reservation-service";
+import { getAllPricing } from "@/lib/services/pricing-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
-import { columns, type Reservation } from "./columns";
+import { getColumns, type Reservation } from "./columns";
 import { DataTable } from "./data-table";
 
 interface Props {
@@ -32,9 +33,10 @@ export const ReservationList = async ({ searchParams }: Props) => {
   const page = Number(params.page) || 1;
   const q = params.q;
 
-  const [{ data, count, error }, globalStats] = await Promise.all([
+  const [{ data, count, error }, globalStats, pricing] = await Promise.all([
     getReservations(from, to, status, page, 10, q),
     getReservationStats(from, to, q),
+    getAllPricing(),
   ]);
 
   const reservations = (data as any[] | null)?.map((item) => ({
@@ -126,7 +128,7 @@ export const ReservationList = async ({ searchParams }: Props) => {
 
       <FadeIn direction="up" className="bg-transparent">
         <DataTable
-          columns={columns}
+          columns={getColumns(pricing)}
           data={reservations || []}
           pageCount={Math.ceil(pageCountCount / 10)}
           currentPage={page}
