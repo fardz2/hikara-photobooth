@@ -123,6 +123,17 @@ export function ObjectListField({
                       </button>
                     )}
                   </div>
+                ) : f.type === "select" ? (
+                  <select
+                    value={String(item[f.key] ?? "")}
+                    onChange={(e) => update(idx, f.key, e.target.value)}
+                    className="mt-1 w-full border border-[#E8E2D9] rounded-none px-3 py-2 text-sm bg-white h-9"
+                  >
+                    <option value="">Pilih...</option>
+                    {f.options?.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
                 ) : f.type === "textarea" ? (
                   <textarea
                     value={String(item[f.key] ?? "")}
