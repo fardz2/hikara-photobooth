@@ -72,10 +72,15 @@ export const ReservationForm = ({ pricing }: Props) => {
 
   const extraPerson = extraItems.find((p) =>
     p.label.toLowerCase().includes("orang"),
-  ) || { label: "Tambahan per Orang", price: 5000 };
+  ) || { label: "Tambahan per Orang", price: 5000, maxQty: null as number | null, note: null as string | null };
   const extraPrint = extraItems.find((p) =>
     p.label.toLowerCase().includes("print"),
-  ) || { label: "Extra Print", price: 10000 };
+  ) || { label: "Extra Print", price: 10000, maxQty: null as number | null, note: null as string | null };
+
+  const EXTRA_PERSON_PRICE = extraPerson.price;
+  const EXTRA_PRINT_PRICE = extraPrint.price;
+  const EXTRA_PERSON_MAX = extraPerson.maxQty ?? Infinity;
+  const EXTRA_PRINT_MAX = extraPrint.maxQty ?? Infinity;
 
   const pricelist = packages.map((p, i) => ({
     id: p.id ?? `pkg_${i}`,
@@ -91,8 +96,6 @@ export const ReservationForm = ({ pricing }: Props) => {
     label: a.label,
     price: a.price,
   }));
-  const EXTRA_PERSON_PRICE = extraPerson.price;
-  const EXTRA_PRINT_PRICE = extraPrint.price;
 
   // WITA (Asia/Makassar) Today Calculation
   const nowWita = new Date(
@@ -592,10 +595,10 @@ export const ReservationForm = ({ pricing }: Props) => {
                   onClick={() =>
                     setValue(
                       "extraPeopleCount",
-                      Math.min(3, extraPeopleCount + 1),
+                      Math.min(EXTRA_PERSON_MAX, extraPeopleCount + 1),
                     )
                   }
-                  disabled={extraPeopleCount >= 3}
+                  disabled={extraPeopleCount >= EXTRA_PERSON_MAX}
                 >
                   <span className="text-lg font-bold" aria-hidden="true">
                     +
@@ -604,7 +607,7 @@ export const ReservationForm = ({ pricing }: Props) => {
               </div>
             </div>
             <div className="flex justify-between items-center text-[10px] tracking-wide text-[#5A5550]">
-              <span>Maksimal 5 orang tambahan</span>
+              <span>Maksimal {EXTRA_PERSON_MAX === Infinity ? "∞" : EXTRA_PERSON_MAX} {extraPerson.label.toLowerCase()}</span>
               <span className="font-bold text-[#8B5E56]">
                 Rp{" "}
                 {(extraPeopleCount * EXTRA_PERSON_PRICE).toLocaleString(
@@ -659,10 +662,10 @@ export const ReservationForm = ({ pricing }: Props) => {
                   onClick={() =>
                     setValue(
                       "extraPrintCount",
-                      Math.min(10, extraPrintCount + 1),
+                      Math.min(EXTRA_PRINT_MAX, extraPrintCount + 1),
                     )
                   }
-                  disabled={extraPrintCount >= 10}
+                  disabled={extraPrintCount >= EXTRA_PRINT_MAX}
                 >
                   <span className="text-lg font-bold" aria-hidden="true">
                     +
@@ -671,7 +674,7 @@ export const ReservationForm = ({ pricing }: Props) => {
               </div>
             </div>
             <div className="flex justify-between items-center text-[10px] tracking-wide text-[#5A5550]">
-              <span>Maksimal 10 lembar tambahan</span>
+              <span>Maksimal {EXTRA_PRINT_MAX === Infinity ? "∞" : EXTRA_PRINT_MAX} {extraPrint.label.toLowerCase()}</span>
               <span className="font-bold text-[#8B5E56]">
                 Rp{" "}
                 {(extraPrintCount * EXTRA_PRINT_PRICE).toLocaleString("id-ID")}

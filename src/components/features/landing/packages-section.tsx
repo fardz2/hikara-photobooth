@@ -74,9 +74,9 @@ export const PackagesSection = ({ pricing }: Props) => {
                   <h3 className="font-heading text-xl md:text-2xl text-[#2C2A29] mb-1 group-hover:text-[#8B5E56] transition-colors uppercase tracking-widest text-left">
                     {item.label}
                   </h3>
-                  {(item.note || item.maxPeople) && (
+                  {(item.note || item.maxQty) && (
                     <p className="font-light tracking-[0.2em] text-[#5A5550] text-[10px] md:text-xs text-left">
-                      ({item.note || `MAX. ${item.maxPeople} ORANG`})
+                      ({item.note || `MAX. ${item.maxQty} ORANG`})
                     </p>
                   )}
                 </div>

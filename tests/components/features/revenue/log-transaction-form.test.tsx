@@ -33,7 +33,7 @@ vi.mock('react', async (importOriginal) => {
 })
 
 const mockPricing: PricingItem[] = [
-  { id: "pkg1", label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG", category: "package" as const },
+  { id: "pkg1", label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxQty: 3, note: "MAX. 3 ORANG", category: "package" as const },
   { id: "ext1", label: "Tambahan per Orang", price: 5000, category: "extra" as const },
   { id: "ext2", label: "Extra Print", price: 10000, category: "extra" as const },
   { id: "addon1", label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" as const },

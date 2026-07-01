@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, updateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import {
   type PricingItem,
@@ -13,8 +13,6 @@ export async function savePricingItem(item: PricingItem) {
   if ("error" in result) return result;
 
   updateTag(CACHE_TAGS.pricing);
-  updateTag(CACHE_TAGS.siteContent);
-  revalidatePath("/dashboard/settings");
   return { success: true, data: result.data };
 }
 
@@ -23,7 +21,5 @@ export async function removePricingItem(id: string) {
   if ("error" in result) return result;
 
   updateTag(CACHE_TAGS.pricing);
-  updateTag(CACHE_TAGS.siteContent);
-  revalidatePath("/dashboard/settings");
   return { success: true };
 }

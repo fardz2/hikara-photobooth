@@ -11,20 +11,20 @@ export interface PricingItem {
   id?: string;
   label: string;
   price: number;
-  maxPeople?: number | null;
+  maxQty?: number | null;
   note?: string | null;
   category: PricingCategory;
   sortOrder?: number;
 }
 
-const COLUMNS = "id, label, price, max_people, note, category, sort_order";
+const COLUMNS = "id, label, price, max_qty, note, category, sort_order";
 
 function toItem(row: Record<string, unknown>): PricingItem {
   return {
     id: row.id as string,
     label: row.label as string,
     price: row.price as number,
-    maxPeople: (row.max_people as number) ?? null,
+    maxQty: (row.max_qty as number) ?? null,
     note: (row.note as string) ?? null,
     category: row.category as PricingCategory,
     sortOrder: row.sort_order as number,
@@ -66,7 +66,7 @@ export async function upsertPricingItem(item: PricingItem) {
   const payload: Record<string, unknown> = {
     label: item.label,
     price: item.price,
-    max_people: item.maxPeople ?? null,
+    max_qty: item.maxQty ?? null,
     note: item.note ?? null,
     category: item.category,
     sort_order: item.sortOrder ?? 0,

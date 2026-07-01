@@ -35,7 +35,7 @@ const TAB_COLORS: Record<TabId, string> = {
 const newItem = (category: PricingCategory): PricingItem => ({
   label: "",
   price: 0,
-  maxPeople: null,
+  maxQty: null,
   note: null,
   category,
   sortOrder: 99,
@@ -192,11 +192,11 @@ export function PricingAdmin({ initial }: Props) {
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
-                value={item.maxPeople ?? ""}
+                value={item.maxQty ?? ""}
                 onChange={(e) =>
                   update(
                     item.id,
-                    "maxPeople",
+                    "maxQty",
                     e.target.value ? Number(e.target.value.replace(/\D/g, "")) : null,
                   )
                 }

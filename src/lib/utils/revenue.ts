@@ -36,7 +36,7 @@ export function formatRevenueStats(
       p.label.toLowerCase().includes("orang"),
   ) ||
     pricing.find(
-      (p) => !p.maxPeople && p.label.toLowerCase().includes("orang"),
+      (p) => !p.maxQty && p.label.toLowerCase().includes("orang"),
     ) || { price: 5000 };
   const extraPrint = pricing.find(
     (p) =>
@@ -44,7 +44,7 @@ export function formatRevenueStats(
       p.label.toLowerCase().includes("print"),
   ) ||
     pricing.find(
-      (p) => p.label.toLowerCase().includes("print") && !p.maxPeople,
+      (p) => p.label.toLowerCase().includes("print") && !p.maxQty,
     ) || { price: 10000 };
   const extraPersonPrice = extraPerson.price;
   const extraPrintPrice = extraPrint.price;
