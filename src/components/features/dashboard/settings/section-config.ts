@@ -129,6 +129,11 @@ export const SECTION_CONFIG: SectionConfig = {
         { key: "price", label: "Harga (Rp)" },
         { key: "maxPeople", label: "Maks Orang" },
         { key: "note", label: "Catatan" },
+        { key: "category", label: "Kategori", type: "select", options: [
+          { value: "package", label: "Paket Utama" },
+          { value: "extra", label: "Tambahan" },
+          { value: "addon", label: "Add-on" },
+        ] },
       ],
     },
   ],

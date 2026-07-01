@@ -10,7 +10,8 @@ import { ImagePreview } from "./image-preview";
 interface ObjectFieldConfig {
   key: string;
   label: string;
-  type?: "text" | "textarea" | "image";
+  type?: "text" | "textarea" | "image" | "select";
+  options?: { value: string; label: string }[];
 }
 
 interface Props {
