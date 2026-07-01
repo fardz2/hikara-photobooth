@@ -1,4 +1,4 @@
-import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import { createPublicClient } from "@/lib/supabase/public";
 import { createClient } from "@/lib/supabase/server";
@@ -128,6 +128,6 @@ export async function upsertPricing(items: PricingItem[]) {
     );
 
   if (error) return { error: error.message };
-  revalidateTag(CACHE_TAGS.pricing, "hours");
+  updateTag(CACHE_TAGS.pricing);
   return { success: true };
 }

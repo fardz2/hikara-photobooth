@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import {
   type PricingItem,
@@ -17,8 +17,8 @@ export async function updateSiteContent(
   const result = await upsertSiteContent(section, key, value);
   if (result.error) return result;
 
-  revalidateTag(CACHE_TAGS.siteContent, "hours");
-  revalidateTag(CACHE_TAGS.siteContentSection(section), "hours");
+  updateTag(CACHE_TAGS.siteContent);
+  updateTag(CACHE_TAGS.siteContentSection(section));
   return { success: true };
 }
 
@@ -29,8 +29,8 @@ export async function updateSectionContent(
   const result = await upsertSectionContent(section, entries);
   if (result.error) return result;
 
-  revalidateTag(CACHE_TAGS.siteContent, "hours");
-  revalidateTag(CACHE_TAGS.siteContentSection(section), "hours");
+  updateTag(CACHE_TAGS.siteContent);
+  updateTag(CACHE_TAGS.siteContentSection(section));
   return { success: true };
 }
 
@@ -38,7 +38,7 @@ export async function updatePricing(items: PricingItem[]) {
   const result = await upsertPricing(items);
   if (result.error) return result;
 
-  revalidateTag(CACHE_TAGS.siteContent, "hours");
-  revalidateTag(CACHE_TAGS.pricing, "hours");
+  updateTag(CACHE_TAGS.siteContent);
+  updateTag(CACHE_TAGS.pricing);
   return { success: true };
 }

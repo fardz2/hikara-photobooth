@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import {
   logTransaction as insertTransaction,
@@ -34,7 +34,7 @@ export async function logTransaction(data: TransactionInput) {
   if (result.error) return { success: false, message: result.error };
 
   // 3. Revalidate
-  revalidateTag(CACHE_TAGS.reservations, "minutes");
+  updateTag(CACHE_TAGS.reservations);
   revalidatePath("/dashboard/pendapatan");
   revalidatePath("/dashboard/reservations");
   return { success: true };

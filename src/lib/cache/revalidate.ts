@@ -1,31 +1,31 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { CACHE_TAGS } from "./tags";
 
 export async function revalidateSiteContent(section: string) {
-  revalidateTag(CACHE_TAGS.siteContent, "hours");
-  revalidateTag(CACHE_TAGS.siteContentSection(section), "hours");
+  updateTag(CACHE_TAGS.siteContent);
+  updateTag(CACHE_TAGS.siteContentSection(section));
 }
 
 export async function revalidatePricing() {
-  revalidateTag(CACHE_TAGS.siteContent, "hours");
-  revalidateTag(CACHE_TAGS.pricing, "hours");
+  updateTag(CACHE_TAGS.siteContent);
+  updateTag(CACHE_TAGS.pricing);
 }
 
 export async function revalidateReservations() {
-  revalidateTag(CACHE_TAGS.reservations, "minutes");
+  updateTag(CACHE_TAGS.reservations);
 }
 
 export async function revalidateReservation(id: string | number) {
-  revalidateTag(CACHE_TAGS.reservations, "minutes");
-  revalidateTag(CACHE_TAGS.reservation(id), "minutes");
+  updateTag(CACHE_TAGS.reservations);
+  updateTag(CACHE_TAGS.reservation(id));
 }
 
 export async function revalidateBookedSlots(date: string) {
-  revalidateTag(CACHE_TAGS.bookedSlots(date), "seconds");
+  updateTag(CACHE_TAGS.bookedSlots(date));
 }
 
 export async function revalidateRevenue(from: string, to: string) {
-  revalidateTag(CACHE_TAGS.revenue(from, to), "hours");
+  updateTag(CACHE_TAGS.revenue(from, to));
 }

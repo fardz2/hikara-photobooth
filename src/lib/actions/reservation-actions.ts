@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import { fonnteService } from "@/lib/services/fonnte-service";
 import {
@@ -102,8 +102,8 @@ export async function submitReservation(data: ReservationInput) {
   ).catch((err) => console.error("[WA] Error sending notifications:", err));
 
   // 6. Revalidate
-  revalidateTag(CACHE_TAGS.reservations, "minutes");
-  revalidateTag(CACHE_TAGS.bookedSlots(dateStr), "seconds");
+  updateTag(CACHE_TAGS.reservations);
+  updateTag(CACHE_TAGS.bookedSlots(dateStr));
   revalidatePath("/reservasi");
   revalidatePath("/dashboard/reservations");
 
@@ -168,8 +168,8 @@ Terima kasih telah melakukan pembayaran. Sampai jumpa di studio! ✨`;
   }
 
   // 5. Revalidate
-  revalidateTag(CACHE_TAGS.reservations, "minutes");
-  revalidateTag(CACHE_TAGS.bookedSlots(reservation.date), "seconds");
+  updateTag(CACHE_TAGS.reservations);
+  updateTag(CACHE_TAGS.bookedSlots(reservation.date));
   revalidatePath("/dashboard/reservations");
   revalidatePath("/dashboard/pendapatan");
 
@@ -182,7 +182,7 @@ export async function deleteReservation(id: string) {
   const result = await deleteRes(id);
   if (result.error) return { success: false, message: result.error };
 
-  revalidateTag(CACHE_TAGS.reservations, "minutes");
+  updateTag(CACHE_TAGS.reservations);
   revalidatePath("/dashboard/reservations");
   revalidatePath("/dashboard/pendapatan");
   return { success: true };
@@ -269,8 +269,8 @@ export async function editReservation(
     return { success: false, message: "Gagal memperbarui reservasi." };
 
   // 7. Revalidate
-  revalidateTag(CACHE_TAGS.reservations, "minutes");
-  revalidateTag(CACHE_TAGS.bookedSlots(targetDate), "seconds");
+  updateTag(CACHE_TAGS.reservations);
+  updateTag(CACHE_TAGS.bookedSlots(targetDate));
   revalidatePath("/dashboard/reservations");
   revalidatePath("/dashboard/pendapatan");
 
