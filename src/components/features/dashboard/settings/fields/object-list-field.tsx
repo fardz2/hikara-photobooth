@@ -1,24 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useTransition } from "react";
+import { toast } from "sonner";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Add01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { Add01Icon, Cancel01Icon, Loading03Icon } from "@hugeicons/core-free-icons";
+import { replaceImage, uploadImage } from "@/lib/actions/upload-actions";
+import { ImagePreview } from "./image-preview";
 
-interface FieldConfig {
+interface ObjectFieldConfig {
   key: string;
   label: string;
-  type?: "text" | "textarea";
+  type?: "text" | "textarea" | "image";
 }
 
 interface Props {
   name: string;
   label: string;
   defaultValue?: Record<string, unknown>[];
-  fields: FieldConfig[];
+  fields: ObjectFieldConfig[];
 }
 
 export function ObjectListField({ name, label, defaultValue = [], fields }: Props) {
   const [items, setItems] = useState<Record<string, unknown>[]>(defaultValue);
+  const [uploading, startUpload] = useTransition();
+  const uploadRef = useRef<{ idx: number; key: string } | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const update = (idx: number, key: string, val: unknown) => {
     setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, [key]: val } : item)));
@@ -31,6 +37,29 @@ export function ObjectListField({ name, label, defaultValue = [], fields }: Prop
   };
 
   const remove = (idx: number) => setItems((prev) => prev.filter((_, i) => i !== idx));
+
+  const pickImage = (idx: number, key: string) => {
+    uploadRef.current = { idx, key };
+    fileRef.current?.click();
+  };
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const target = uploadRef.current;
+    if (!file || !target) return;
+    const { idx, key } = target;
+    const item = items[idx];
+    const old = item?.[key] as string || "";
+    startUpload(async () => {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("folder", `${name}_${key}`);
+      const r = old ? await replaceImage(old, fd) : await uploadImage(fd);
+      if ("error" in r) toast.error(r.error);
+      else { update(idx, key, r.url); toast.success("Gambar terunggah"); }
+      if (fileRef.current) fileRef.current.value = "";
+    });
+  };
 
   return (
     <div>
@@ -45,7 +74,28 @@ export function ObjectListField({ name, label, defaultValue = [], fields }: Prop
             {fields.map((f) => (
               <div key={f.key}>
                 <label className="text-[10px] uppercase tracking-wider text-[#5A5550]">{f.label}</label>
-                {f.type === "textarea" ? (
+                {f.type === "image" ? (
+                  <div className="mt-1">
+                    {item[f.key] ? (
+                      <ImagePreview
+                        src={item[f.key] as string}
+                        onDelete={() => update(idx, f.key, "")}
+                        onReplace={() => pickImage(idx, f.key)}
+                        uploading={uploading}
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={uploading}
+                        onClick={() => pickImage(idx, f.key)}
+                        className="w-full max-w-64 aspect-[3/2] border-2 border-dashed border-[#E8E2D9] flex flex-col items-center justify-center cursor-pointer hover:border-[#632626] transition-colors text-[#8B5E56] disabled:opacity-50"
+                      >
+                        <HugeiconsIcon icon={Add01Icon} size={20} />
+                        <span className="text-[9px] uppercase tracking-widest mt-1 font-bold">Pilih Gambar</span>
+                      </button>
+                    )}
+                  </div>
+                ) : f.type === "textarea" ? (
                   <textarea
                     value={String(item[f.key] ?? "")}
                     onChange={(e) => update(idx, f.key, e.target.value)}
@@ -72,6 +122,7 @@ export function ObjectListField({ name, label, defaultValue = [], fields }: Prop
         <HugeiconsIcon icon={Add01Icon} size={12} />
         Tambah Item
       </button>
+      <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFile} className="hidden" />
     </div>
   );
 }

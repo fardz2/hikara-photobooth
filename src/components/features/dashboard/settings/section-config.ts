@@ -33,7 +33,7 @@ export type FieldType = "text" | "textarea" | "image" | "gallery" | "tags" | "ob
 export interface ObjectFieldDef {
   key: string
   label: string
-  type?: "text" | "textarea"
+  type?: "text" | "textarea" | "image"
 }
 
 export interface FieldDef {
@@ -65,7 +65,6 @@ export const SECTION_CONFIG: SectionConfig = {
     { key: "vertical_text_right", label: "Teks Vertikal Kanan", type: "text" },
     { key: "vertical_text_left", label: "Teks Vertikal Kiri", type: "text" },
     { key: "cta_text", label: "Teks Tombol", type: "text" },
-    { key: "cta_link", label: "Link Tombol", type: "text" },
     { key: "polaroid_1", label: "Polaroid 1", type: "image" },
     { key: "polaroid_2", label: "Polaroid 2", type: "image" },
     { key: "polaroid_3", label: "Polaroid 3", type: "image" },
@@ -86,7 +85,7 @@ export const SECTION_CONFIG: SectionConfig = {
       objectFields: [
         { key: "name", label: "Nama" },
         { key: "desc", label: "Deskripsi", type: "textarea" },
-        { key: "img", label: "URL Gambar" },
+        { key: "img", label: "Gambar", type: "image" },
       ],
     },
   ],
@@ -110,6 +109,5 @@ export const SECTION_CONFIG: SectionConfig = {
     { key: "title", label: "Judul", type: "text" },
     { key: "description", label: "Deskripsi", type: "textarea" },
     { key: "button_text", label: "Teks Tombol", type: "text" },
-    { key: "button_link", label: "Link Tombol", type: "text" },
   ],
 }
