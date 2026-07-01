@@ -55,7 +55,7 @@ export function EditReservationDialog({
   const mainPkg = packages[0];
 
   const PRICELIST = mainPkg
-    ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }]
+    ? [{ id: mainPkg.id ?? "paket_utama", label: mainPkg.label, price: mainPkg.price }]
     : [];
   const ADDONS = addonItems.map((a: PricingItem) => ({
     id: a.label
@@ -98,22 +98,30 @@ export function EditReservationDialog({
       setPkg(reservation.package || "paket_utama");
       setSelectedAddons(reservation.addons || []);
       setPaymentMethod(reservation.payment_method || "tunai");
-      // Initialize extras from DB — distribute extra_people_count across extras
-      const totalExtraPeople = reservation.extra_people_count || 0;
+      // Initialize extras from DB
       const init: Record<string, number> = {};
       extraItems.forEach((item: PricingItem) => {
         if (item.id) init[item.id] = 0;
       });
-      // ponytail: backward compat — assign to first extra item with maxQty
-      if (totalExtraPeople > 0) {
-        const firstCounter = extraItems.find(
-          (e: PricingItem) => e.maxQty && e.maxQty > 0,
-        );
-        if (firstCounter?.id) init[firstCounter.id] = totalExtraPeople;
+      // Prefer per-item extras record if available
+      const savedExtras = (reservation as Record<string, unknown>).extras;
+      if (savedExtras && typeof savedExtras === "object") {
+        Object.entries(savedExtras as Record<string, number>).forEach(([k, v]) => {
+          if (k in init) init[k] = v;
+        });
+      } else {
+        // Legacy: distribute extra_people_count to first counter item
+        const totalExtraPeople = reservation.extra_people_count || 0;
+        if (totalExtraPeople > 0) {
+          const firstCounter = extraItems.find(
+            (e: PricingItem) => e.maxQty && e.maxQty > 0,
+          );
+          if (firstCounter?.id) init[firstCounter.id] = totalExtraPeople;
+        }
       }
       setExtras(init);
     }
-  }, [reservation, open]);
+  }, [reservation, open, extraItems]);
 
   if (!reservation) return null;
 

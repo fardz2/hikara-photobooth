@@ -240,6 +240,7 @@ export async function editReservation(
   const isPricingChanged =
     validatedData.package !== undefined ||
     validatedData.addons !== undefined ||
+    validatedData.extras !== undefined ||
     validatedData.extraPeopleCount !== undefined ||
     validatedData.extraPrintCount !== undefined;
 
