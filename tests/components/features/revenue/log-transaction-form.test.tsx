@@ -33,10 +33,10 @@ vi.mock('react', async (importOriginal) => {
 })
 
 const mockPricing: PricingItem[] = [
-  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG", category: "package" as const },
-  { label: "Tambahan per Orang", price: 5000, category: "extra" as const },
-  { label: "Extra Print", price: 10000, category: "extra" as const },
-  { label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" as const },
+  { id: "pkg1", label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG", category: "package" as const },
+  { id: "ext1", label: "Tambahan per Orang", price: 5000, category: "extra" as const },
+  { id: "ext2", label: "Extra Print", price: 10000, category: "extra" as const },
+  { id: "addon1", label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" as const },
 ]
 
 describe('LogTransactionForm', () => {
@@ -61,6 +61,11 @@ describe('LogTransactionForm', () => {
 
     await user.type(nameInput, 'Test Customer')
     await user.type(timeInput, '14:30')
+
+    // Select first package
+    const pkgBtn = screen.getByText(/Foto per Sesi/i).closest('button')!
+    await user.click(pkgBtn)
+
     await user.click(submitBtn)
 
     await waitFor(() => {
@@ -84,6 +89,11 @@ describe('LogTransactionForm', () => {
     // Test with a time formerly outside the range (e.g., 08:00)
     await user.type(nameInput, 'Anytime User')
     fireEvent.change(timeInput, { target: { value: '08:00' } })
+
+    // Select first package
+    const pkgBtn = screen.getByText(/Foto per Sesi/i).closest('button')!
+    await user.click(pkgBtn)
+
     await user.click(submitBtn)
     
     await waitFor(() => {

@@ -7,20 +7,15 @@ import {
   CreditCardIcon,
   Loading03Icon,
   Money01Icon,
+  Tick02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { logTransaction } from "@/lib/actions/revenue-actions";
 import type { PricingItem } from "@/lib/services/pricing-service";
 import {
@@ -37,7 +32,6 @@ export const LogTransactionForm = ({ pricing }: Props) => {
   const extraItems = pricing.filter((p) => p.category === "extra");
   const addonItems = pricing.filter((p) => p.category === "addon");
 
-  const mainPkg = packages[0];
   const extraPerson = extraItems.find((p) =>
     p.label.toLowerCase().includes("orang"),
   ) || { label: "Tambahan per Orang", price: 5000 };
@@ -49,7 +43,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
   const EXTRA_PRINT_PRICE = extraPrint.price;
 
   const ADDONS = addonItems.map((a) => ({
-    id: a.label
+    id: a.id ?? a.label
       .toLowerCase()
       .replace(/[^a-z]/g, "_")
       .replace(/_+/g, "_"),
@@ -58,13 +52,14 @@ export const LogTransactionForm = ({ pricing }: Props) => {
   }));
 
   const [isPending, startTransition] = useTransition();
+  const [selectedPkgId, setSelectedPkgId] = useState<string>("");
 
   const form = useForm<TransactionValues>({
     resolver: zodResolver(TransactionSchema),
     defaultValues: {
       customerName: "",
       sessionTime: "",
-      package: mainPkg?.label || "Sesi Foto + 2 Strip",
+      package: "",
       addons: [],
       extraPeopleCount: 0,
       extraPrintCount: 0,
@@ -81,14 +76,14 @@ export const LogTransactionForm = ({ pricing }: Props) => {
     formState: { errors },
   } = form;
 
-  const pkg = watch("package");
   const _sessionTime = watch("sessionTime");
   const selectedAddons = watch("addons");
   const extraPeopleCount = watch("extraPeopleCount");
   const extraPrintCount = watch("extraPrintCount");
   const paymentMethod = watch("paymentMethod");
 
-  const basePrice = mainPkg?.price || 35000;
+  const selectedPkg = packages.find((p) => p.id === selectedPkgId) ?? packages[0];
+  const basePrice = selectedPkg?.price || 0;
   const addonsPrice = (selectedAddons || []).reduce((acc, id) => {
     const addon = ADDONS.find((a) => a.id === id);
     return acc + (addon?.price || 0);
@@ -97,6 +92,12 @@ export const LogTransactionForm = ({ pricing }: Props) => {
   const extraPrintPrice = extraPrintCount * EXTRA_PRINT_PRICE;
   const totalPrice =
     basePrice + addonsPrice + extraPeoplePrice + extraPrintPrice;
+
+  const handlePackageSelect = (id: string) => {
+    setSelectedPkgId(id);
+    const pkg = packages.find((p) => p.id === id);
+    setValue("package", pkg?.label || id);
+  };
 
   const handleAddonToggle = (id: string, checked: boolean) => {
     const current = selectedAddons || [];
@@ -113,7 +114,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
   const onSubmit: SubmitHandler<TransactionValues> = (data) => {
     startTransition(async () => {
       const result = await logTransaction({
-        package: data.package,
+        package: selectedPkg?.label || data.package,
         payment_method: data.paymentMethod,
         amount: totalPrice,
         addons: data.addons,
@@ -126,6 +127,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
       if (result.success) {
         toast.success("Transaksi berhasil dicatat");
         reset();
+        setSelectedPkgId("");
       } else {
         toast.error(`Gagal mencatat transaksi: ${result.message}`);
       }
@@ -195,6 +197,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
           )}
         </div>
 
+        {/* Package Selection — radio-style cards */}
         <div className="space-y-3">
           <label className="text-[10px] tracking-[0.4em] uppercase font-bold text-[#5A5550]/60 flex items-center gap-2">
             <HugeiconsIcon
@@ -202,18 +205,56 @@ export const LogTransactionForm = ({ pricing }: Props) => {
               size={14}
               className="text-[#8B5E56]"
             />
-            Entry Transaksi
+            Pilih Paket
           </label>
-          <Select value={pkg} onValueChange={(val) => setValue("package", val)}>
-            <SelectTrigger className="rounded-none border-[#2C2A29]/10 focus:ring-[#8B5E56] h-12">
-              <SelectValue placeholder="Pilih Paket" />
-            </SelectTrigger>
-            <SelectContent className="rounded-none">
-              <SelectItem value={mainPkg?.label || ""}>
-                {mainPkg?.label} ({mainPkg ? mainPkg.price / 1000 : 35}k)
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-col gap-3">
+            {packages.map((p) => {
+              const isSelected = selectedPkgId === p.id;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => handlePackageSelect(p.id!)}
+                  className={`p-4 border rounded-xl flex justify-between items-center group transition-all duration-300 shadow-sm ${
+                    isSelected
+                      ? "border-[#8B5E56] bg-[#8B5E56]/5"
+                      : "border-[#2C2A29]/10 bg-white hover:border-[#8B5E56]/40 hover:bg-[#8B5E56]/[0.02]"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`size-5 rounded-full flex items-center justify-center shadow-md transition-colors ${
+                        isSelected
+                          ? "bg-[#8B5E56]"
+                          : "bg-[#2C2A29]/10"
+                      }`}
+                    >
+                      {isSelected && (
+                        <HugeiconsIcon
+                          icon={Tick02Icon}
+                          strokeWidth={3}
+                          className="size-3 text-white"
+                        />
+                      )}
+                    </div>
+                    <div className="flex flex-col text-left">
+                      <span className="text-sm font-semibold text-[#2C2A29] tracking-tight">
+                        {p.label}
+                      </span>
+                      {p.note && (
+                        <span className="text-[10px] text-[#5A5550] font-light tracking-widest uppercase">
+                          {p.note}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-[#8B5E56]">
+                    Rp {p.price.toLocaleString("id-ID")}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -393,8 +434,8 @@ export const LogTransactionForm = ({ pricing }: Props) => {
         </div>
         <Button
           type="submit"
-          disabled={isPending}
-          className="w-full bg-[#2C2A29] text-[#F6F4F0] rounded-none py-8 uppercase tracking-[0.3em] text-[11px] font-bold hover:bg-[#8B5E56] transition-all relative overflow-hidden group shadow-lg"
+          disabled={isPending || !selectedPkgId}
+          className="w-full bg-[#2C2A29] text-[#F6F4F0] rounded-none py-8 uppercase tracking-[0.3em] text-[11px] font-bold hover:bg-[#8B5E56] transition-all relative overflow-hidden group shadow-lg disabled:opacity-40"
         >
           <span className="relative z-10 flex items-center justify-center gap-3">
             {isPending ? (
