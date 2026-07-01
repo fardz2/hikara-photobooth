@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-import { ReservationForm } from "@/components/features/reservation/reservation-form";
 import { ReservationFormSkeleton } from "@/components/skeletons/reservation-form-skeleton";
 import { getPricing } from "@/lib/services/pricing-service";
 import { escapeJsonForHtml } from "@/lib/utils/escape";
+
+const ReservationForm = dynamic(
+  () => import("@/components/features/reservation/reservation-form").then((m) => m.ReservationForm),
+  { loading: () => <ReservationFormSkeleton /> },
+);
 
 export const metadata: Metadata = {
   title: "Reservasi Photobox Premium - Hikara Photobox Kotabaru",

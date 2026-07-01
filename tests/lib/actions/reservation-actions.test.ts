@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { submitReservation, updateReservationStatus } from '@/lib/actions/reservation-actions'
+import { submitReservation, updateReservationStatus, editReservation, deleteReservation } from '@/lib/actions/reservation-actions'
 import * as reservationService from "@/lib/services/reservation-service";
 import { fonnteService } from '@/lib/services/fonnte-service'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, updateTag } from 'next/cache'
 
 // Hoisted mock fns — referenced inside vi.mock factories
 const {
@@ -153,6 +153,76 @@ describe('Reservation Actions', () => {
       })
       expect(result.success).toBe(false)
       expect(result.message).toContain('Gagal menyimpan')
+    })
+  })
+
+  describe('editReservation', () => {
+    const editPayload = {
+      name: 'Jane Doe',
+      date: new Date('2024-03-02'),
+      time: '15:00',
+    }
+
+    beforeEach(() => {
+      // Default: slot free, reservation found
+      mockCheckSlot.mockResolvedValue(false)
+      mockGetById.mockResolvedValue({
+        id: '1', name: 'John', phone: '62812', total_price: 35000,
+        date: '2024-03-01', time: '14:00', payment_method: 'qris', status: 'pending',
+        package: 'basic', addons: [], extra_people_count: 0, extra_print_count: 0,
+      })
+      mockUpdateReservation.mockResolvedValue({ success: true })
+    })
+
+    it('updates reservation and revalidates cache on success', async () => {
+      const result = await editReservation('1', editPayload)
+
+      expect(result.success).toBe(true)
+      expect(result.message).toContain('berhasil diperbarui')
+      expect(mockGetById).toHaveBeenCalledWith('1')
+      expect(mockUpdateReservation).toHaveBeenCalled()
+      expect(updateTag).toHaveBeenCalled()
+      expect(revalidatePath).toHaveBeenCalledWith('/dashboard/reservations')
+    })
+
+    it('returns error if slot is already booked', async () => {
+      mockCheckSlot.mockResolvedValue(true)
+
+      const result = await editReservation('1', editPayload)
+
+      expect(result.success).toBe(false)
+      expect(result.message).toContain('sudah terisi')
+    })
+
+    it('returns error if reservation is not found', async () => {
+      mockGetById.mockResolvedValueOnce(null)
+
+      const result = await editReservation('non-existent', editPayload)
+
+      expect(result.success).toBe(false)
+      expect(result.message).toContain('tidak ditemukan')
+    })
+  })
+
+  describe('deleteReservation', () => {
+    it('deletes reservation and revalidates cache on success', async () => {
+      mockDeleteRes.mockResolvedValue({ success: true })
+
+      const result = await deleteReservation('1')
+
+      expect(result.success).toBe(true)
+      expect(mockDeleteRes).toHaveBeenCalledWith('1')
+      expect(updateTag).toHaveBeenCalled()
+      expect(revalidatePath).toHaveBeenCalledWith('/dashboard/reservations')
+    })
+
+    it('returns error if reservation not found', async () => {
+      mockDeleteRes.mockResolvedValue({ error: 'Reservasi tidak ditemukan.' })
+
+      const result = await deleteReservation('non-existent')
+
+      expect(result.success).toBe(false)
+      expect(result.message).toContain('tidak ditemukan')
     })
   })
 })

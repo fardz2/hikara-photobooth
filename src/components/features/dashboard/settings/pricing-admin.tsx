@@ -97,21 +97,25 @@ export function PricingAdmin({ initial }: Props) {
 
   const saveAll = () => {
     startSave(async () => {
-      for (const item of filtered) {
-        if (!item.id) {
-          const res = await savePricingItem(item);
-          if ("error" in res) { toast.error(res.error); return; }
-          // update local id
-          setItems((prev) =>
-            prev.map((i) => (i === item ? { ...i, id: res.data?.id } : i)),
-          );
-        }
+      // Insert new items first (sequential — need ids for local state)
+      const newItems = filtered.filter((i) => !i.id);
+      for (const item of newItems) {
+        const res = await savePricingItem(item);
+        if ("error" in res) { toast.error(res.error); return; }
+        setItems((prev) =>
+          prev.map((i) => (i === item ? { ...i, id: res.data?.id } : i)),
+        );
       }
-      // Save existing items
-      for (const item of filtered) {
-        if (item.id) {
-          const res = await savePricingItem(item);
-          if ("error" in res) { toast.error(res.error); return; }
+      // Update existing items in parallel
+      const existingItems = filtered.filter((i) => i.id);
+      if (existingItems.length > 0) {
+        const results = await Promise.all(
+          existingItems.map((item) => savePricingItem(item)),
+        );
+        const firstError = results.find((r) => "error" in r);
+        if (firstError && "error" in firstError) {
+          toast.error(firstError.error);
+          return;
         }
       }
       toast.success("Harga tersimpan");
