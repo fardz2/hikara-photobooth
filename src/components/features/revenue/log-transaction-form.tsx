@@ -32,15 +32,11 @@ export const LogTransactionForm = ({ pricing }: Props) => {
   const extraItems = pricing.filter((p) => p.category === "extra");
   const addonItems = pricing.filter((p) => p.category === "addon");
 
-  const extraPerson = extraItems.find((p) =>
-    p.label.toLowerCase().includes("orang"),
-  ) || { label: "Tambahan per Orang", price: 5000 };
-  const extraPrint = extraItems.find((p) =>
-    p.label.toLowerCase().includes("print"),
-  ) || { label: "Extra Print", price: 10000 };
-
-  const EXTRA_PERSON_PRICE = extraPerson.price;
-  const EXTRA_PRINT_PRICE = extraPrint.price;
+  const [extras, setExtras] = useState<Record<string, number>>(() => {
+    const init: Record<string, number> = {};
+    extraItems.forEach((item) => { if (item.id) init[item.id] = 0; });
+    return init;
+  });
 
   const ADDONS = addonItems.map((a) => ({
     id: a.id ?? a.label
@@ -54,15 +50,14 @@ export const LogTransactionForm = ({ pricing }: Props) => {
   const [isPending, startTransition] = useTransition();
   const [selectedPkgId, setSelectedPkgId] = useState<string>("");
 
-  const form = useForm<TransactionValues>({
+  const form = useForm({
     resolver: zodResolver(TransactionSchema),
     defaultValues: {
       customerName: "",
       sessionTime: "",
       package: "",
       addons: [],
-      extraPeopleCount: 0,
-      extraPrintCount: 0,
+      extras: {},
       paymentMethod: "tunai",
     },
   });
@@ -78,8 +73,6 @@ export const LogTransactionForm = ({ pricing }: Props) => {
 
   const _sessionTime = watch("sessionTime");
   const selectedAddons = watch("addons");
-  const extraPeopleCount = watch("extraPeopleCount");
-  const extraPrintCount = watch("extraPrintCount");
   const paymentMethod = watch("paymentMethod");
 
   const selectedPkg = packages.find((p) => p.id === selectedPkgId) ?? packages[0];
@@ -88,10 +81,11 @@ export const LogTransactionForm = ({ pricing }: Props) => {
     const addon = ADDONS.find((a) => a.id === id);
     return acc + (addon?.price || 0);
   }, 0);
-  const extraPeoplePrice = extraPeopleCount * EXTRA_PERSON_PRICE;
-  const extraPrintPrice = extraPrintCount * EXTRA_PRINT_PRICE;
-  const totalPrice =
-    basePrice + addonsPrice + extraPeoplePrice + extraPrintPrice;
+  const extrasPrice = Object.entries(extras).reduce((acc, [id, qty]) => {
+    const item = extraItems.find((e) => e.id === id);
+    return acc + (item?.price || 0) * qty;
+  }, 0);
+  const totalPrice = basePrice + addonsPrice + extrasPrice;
 
   const handlePackageSelect = (id: string) => {
     setSelectedPkgId(id);
@@ -119,8 +113,8 @@ export const LogTransactionForm = ({ pricing }: Props) => {
         amount: totalPrice,
         addons: data.addons,
         session_time: data.sessionTime,
-        extra_people_count: data.extraPeopleCount,
-        extra_print_count: data.extraPrintCount,
+        extra_people_count: Object.values(extras).reduce((a, b) => a + b, 0),
+        extra_print_count: 0,
         customer_name: data.customerName,
       });
 
@@ -263,93 +257,88 @@ export const LogTransactionForm = ({ pricing }: Props) => {
           </label>
 
           <div className="grid grid-cols-1 gap-3">
-            {/* Extra People Counter */}
-            <div className="flex items-center justify-between p-3 bg-[#F6F4F0]/30 border border-[#8B5E56]/10 flex-wrap gap-2">
-              <div className="flex flex-col min-w-[80px]">
-                <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">
-                  {extraPerson.label}
-                </span>
-                <span className="text-[8px] text-[#5A5550]/60 italic font-medium uppercase tracking-wider">
-                  Maks 3
-                </span>
-              </div>
+            {/* Dynamic extras */}
+            {extraItems.map((item) => {
+              const maxQty = item.maxQty ?? Infinity;
+              const isCounter = item.maxQty !== null && item.maxQty !== undefined;
+              const qty = extras[item.id!] ?? 0;
 
-              <div className="flex items-center gap-3 bg-white/50 p-1 border border-[#2C2A29]/5 ml-auto">
-                <button
-                  type="button"
-                  className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
-                  onClick={() =>
-                    setValue(
-                      "extraPeopleCount",
-                      Math.max(0, extraPeopleCount - 1),
-                    )
-                  }
-                  disabled={extraPeopleCount <= 0}
-                >
-                  −
-                </button>
-                <span className="text-xs font-bold text-[#2C2A29] w-4 text-center">
-                  {extraPeopleCount}
-                </span>
-                <button
-                  type="button"
-                  className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
-                  onClick={() =>
-                    setValue(
-                      "extraPeopleCount",
-                      Math.min(3, (extraPeopleCount || 0) + 1),
-                    )
-                  }
-                  disabled={extraPeopleCount >= 3}
-                >
-                  +
-                </button>
-              </div>
-            </div>
+              if (isCounter) {
+                return (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between p-3 bg-[#F6F4F0]/30 border border-[#8B5E56]/10 flex-wrap gap-2"
+                  >
+                    <div className="flex flex-col min-w-[80px]">
+                      <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">
+                        {item.label}
+                      </span>
+                      <span className="text-[8px] text-[#5A5550]/60 italic font-medium uppercase tracking-wider">
+                        Maks {maxQty === Infinity ? "∞" : maxQty}
+                      </span>
+                    </div>
 
-            {/* Extra Print Counter */}
-            <div className="flex items-center justify-between p-3 bg-[#F6F4F0]/30 border border-[#8B5E56]/10 flex-wrap gap-2">
-              <div className="flex flex-col min-w-[80px]">
-                <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">
-                  {extraPrint.label}
-                </span>
-                <span className="text-[8px] text-[#5A5550]/60 italic font-medium uppercase tracking-wider">
-                  Maks 10
-                </span>
-              </div>
+                    <div className="flex items-center gap-3 bg-white/50 p-1 border border-[#2C2A29]/5 ml-auto">
+                      <button
+                        type="button"
+                        className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
+                        onClick={() =>
+                          setExtras((prev) => ({
+                            ...prev,
+                            [item.id!]: Math.max(0, qty - 1),
+                          }))
+                        }
+                        disabled={qty <= 0}
+                      >
+                        −
+                      </button>
+                      <span className="text-xs font-bold text-[#2C2A29] w-4 text-center">
+                        {qty}
+                      </span>
+                      <button
+                        type="button"
+                        className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
+                        onClick={() =>
+                          setExtras((prev) => ({
+                            ...prev,
+                            [item.id!]: Math.min(maxQty, qty + 1),
+                          }))
+                        }
+                        disabled={qty >= maxQty}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                );
+              }
 
-              <div className="flex items-center gap-3 bg-white/50 p-1 border border-[#2C2A29]/5 ml-auto">
-                <button
-                  type="button"
-                  className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
-                  onClick={() =>
-                    setValue(
-                      "extraPrintCount",
-                      Math.max(0, extraPrintCount - 1),
-                    )
-                  }
-                  disabled={extraPrintCount <= 0}
+              // Checkbox (once-off)
+              return (
+                <div
+                  key={item.id}
+                  className="flex items-center space-x-2 p-3 bg-[#F6F4F0]/30 hover:bg-[#F6F4F0]/60 transition-colors border border-transparent hover:border-[#8B5E56]/10"
                 >
-                  −
-                </button>
-                <span className="text-xs font-bold text-[#2C2A29] w-4 text-center">
-                  {extraPrintCount}
-                </span>
-                <button
-                  type="button"
-                  className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 disabled:hover:bg-white transition-all text-[#2C2A29] font-bold text-sm"
-                  onClick={() =>
-                    setValue(
-                      "extraPrintCount",
-                      Math.min(10, (extraPrintCount || 0) + 1),
-                    )
-                  }
-                  disabled={extraPrintCount >= 10}
-                >
-                  +
-                </button>
-              </div>
-            </div>
+                  <Checkbox
+                    id={`pos-extras-${item.id}`}
+                    checked={qty > 0}
+                    onCheckedChange={(checked) =>
+                      setExtras((prev) => ({
+                        ...prev,
+                        [item.id!]: checked ? 1 : 0,
+                      }))
+                    }
+                    className="rounded-none border-[#2C2A29]/20 data-[state=checked]:bg-[#8B5E56] data-[state=checked]:border-[#8B5E56]"
+                  />
+                  <label
+                    htmlFor={`pos-extras-${item.id}`}
+                    className="text-[10px] font-bold tracking-tight text-[#2C2A29] cursor-pointer"
+                  >
+                    {item.label} (+{item.price / 1000}k)
+                  </label>
+                </div>
+              );
+            })}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

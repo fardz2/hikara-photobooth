@@ -31,6 +31,7 @@ export const ReservationSchema = z.object({
     }, "Jam sesi harus antara 14:00 - 23:00 (Interval 30 menit)"),
   package: z.string().min(1, "Pilih paket"),
   addons: z.array(z.string()).default([]),
+  extras: z.record(z.string(), z.number().min(0)).optional().default({}),
   extraPeopleCount: z.number().min(0).max(10).default(0),
   extraPrintCount: z.number().min(0).max(10).default(0),
   paymentMethod: z.enum(["tunai", "qris"]),

@@ -20,9 +20,8 @@ export async function logTransaction(data: TransactionInput) {
     sessionTime: data.session_time,
     package: data.package,
     addons: data.addons || [],
+    extras: {},
     paymentMethod: data.payment_method,
-    extraPeopleCount: data.extra_people_count || 0,
-    extraPrintCount: data.extra_print_count || 0,
   });
 
   if (!validation.success) {

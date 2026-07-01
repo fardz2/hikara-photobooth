@@ -19,16 +19,16 @@ describe('calculateTotalPriceSync', () => {
     expect(calculateTotalPriceSync({}, MOCK_PRICING)).toBe(BASE_PRICE)
   })
 
-  it('calculates total with extra people', () => {
-    const extraPeopleCount = 2
-    const expected = BASE_PRICE + (extraPeopleCount * EXTRA_PERSON_PRICE)
-    expect(calculateTotalPriceSync({ extraPeopleCount }, MOCK_PRICING)).toBe(expected)
+  it('calculates total with extra people via extras map', () => {
+    const extras = { ext1: 2 }
+    const expected = BASE_PRICE + (2 * EXTRA_PERSON_PRICE)
+    expect(calculateTotalPriceSync({ extras }, MOCK_PRICING)).toBe(expected)
   })
 
-  it('calculates total with extra prints', () => {
-    const extraPrintCount = 3
-    const expected = BASE_PRICE + (extraPrintCount * EXTRA_PRINT_PRICE)
-    expect(calculateTotalPriceSync({ extraPrintCount }, MOCK_PRICING)).toBe(expected)
+  it('calculates total with extra prints via extras map', () => {
+    const extras = { ext2: 3 }
+    const expected = BASE_PRICE + (3 * EXTRA_PRINT_PRICE)
+    expect(calculateTotalPriceSync({ extras }, MOCK_PRICING)).toBe(expected)
   })
 
   it('calculates total with addons', () => {
@@ -39,26 +39,28 @@ describe('calculateTotalPriceSync', () => {
 
   it('handles multiple extras and addons together', () => {
     const input: PriceInput = {
-      extraPeopleCount: 2,
-      extraPrintCount: 1,
-      addons: ['addon1']
+      extras: { ext1: 2, ext2: 1 },
+      addons: ['addon1'],
     }
-    const expected = BASE_PRICE + 
-                     (2 * EXTRA_PERSON_PRICE) + 
-                     (1 * EXTRA_PRINT_PRICE) + 
+    const expected = BASE_PRICE +
+                     (2 * EXTRA_PERSON_PRICE) +
+                     (1 * EXTRA_PRINT_PRICE) +
                      CUSTOM_FRAME_PRICE
     expect(calculateTotalPriceSync(input, MOCK_PRICING)).toBe(expected)
   })
 
-  it('falls back to default prices when pricing is incomplete', () => {
-    const partialPricing: PricingItem[] = [
-      { label: "Test", price: 10000, maxQty: 1, category: "package" as const },
-    ]
-    // Missing extra_person -> fallback to 5000, missing extra_print -> 10000
-    const expected = 10000 + (1 * 5000) + (2 * 10000)
-    expect(calculateTotalPriceSync({
-      extraPeopleCount: 1,
-      extraPrintCount: 2,
-    }, partialPricing)).toBe(expected)
+  it('ignores unknown extra IDs gracefully', () => {
+    const input: PriceInput = { extras: { nonexistent: 5 } }
+    expect(calculateTotalPriceSync(input, MOCK_PRICING)).toBe(BASE_PRICE)
+  })
+
+  it('returns 0 when pricing array is empty', () => {
+    expect(calculateTotalPriceSync({}, [])).toBe(0)
+  })
+
+  it('uses first package as base when no packageId given', () => {
+    const input: PriceInput = { extras: { ext1: 1 } }
+    const expected = BASE_PRICE + (1 * EXTRA_PERSON_PRICE)
+    expect(calculateTotalPriceSync(input, MOCK_PRICING)).toBe(expected)
   })
 })

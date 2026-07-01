@@ -26,6 +26,7 @@ type ReservationInput = {
   time: string;
   package: string;
   addons: string[];
+  extras?: Record<string, number>;
   extraPeopleCount?: number;
   extraPrintCount?: number;
   paymentMethod: "tunai" | "qris";
@@ -62,8 +63,7 @@ export async function submitReservation(data: ReservationInput) {
   // 2. Price
   const totalPrice = await calculateTotalPrice({
     packageId: validatedData.package,
-    extraPeopleCount: validatedData.extraPeopleCount,
-    extraPrintCount: validatedData.extraPrintCount,
+    extras: validatedData.extras,
     addons: validatedData.addons,
   });
 
@@ -81,8 +81,8 @@ export async function submitReservation(data: ReservationInput) {
     time: validatedData.time,
     package: validatedData.package,
     addons: validatedData.addons,
-    extra_people_count: validatedData.extraPeopleCount || 0,
-    extra_print_count: validatedData.extraPrintCount || 0,
+    extra_people_count: Object.values(validatedData.extras || {}).reduce((a, b) => a + b, 0),
+    extra_print_count: 0,
     payment_method: validatedData.paymentMethod,
     payment_proof_url: data.paymentProofUrl || null,
     total_price: totalPrice,
@@ -237,11 +237,8 @@ export async function editReservation(
   if (isPricingChanged) {
     updatedTotalPrice = await calculateTotalPrice({
       packageId: validatedData.package ?? current.package,
-      extraPeopleCount:
-        validatedData.extraPeopleCount ?? current.extra_people_count,
-      extraPrintCount:
-        validatedData.extraPrintCount ?? current.extra_print_count,
-      addons: validatedData.addons ?? (current.addons || []),
+      extras: validatedData.extras ?? {},
+      addons: validatedData.addons ?? [],
     });
   }
 
@@ -260,6 +257,8 @@ export async function editReservation(
     payload.extra_people_count = validatedData.extraPeopleCount;
   if (validatedData.extraPrintCount !== undefined)
     payload.extra_print_count = validatedData.extraPrintCount;
+  if (validatedData.extras !== undefined)
+    payload.extras = validatedData.extras;
   if (validatedData.paymentMethod !== undefined)
     payload.payment_method = validatedData.paymentMethod;
 

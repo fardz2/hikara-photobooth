@@ -2,8 +2,7 @@ import { getPricing, type PricingItem } from "../services/pricing-service";
 
 export interface PriceInput {
   packageId?: string;
-  extraPeopleCount?: number;
-  extraPrintCount?: number;
+  extras?: Record<string, number>; // item ID → qty
   addons?: string[];
 }
 
@@ -24,17 +23,15 @@ export function calculateTotalPriceSync(
     pricing.find((p) => p.category === "package")?.price ?? 0
   );
 
-  const extras = pricing.filter((p) => p.category === "extra");
-  const extraPerson = extras.find((p) =>
-    p.label.toLowerCase().includes("orang"),
-  ) || { label: "Tambahan per Orang", price: 5000 };
-  const extraPrint = extras.find((p) =>
-    p.label.toLowerCase().includes("print"),
-  ) || { label: "Extra Print", price: 10000 };
+  const extraItems = pricing.filter((p) => p.category === "extra");
 
   let total = basePrice;
-  total += (input.extraPeopleCount || 0) * (extraPerson?.price || 5000);
-  total += (input.extraPrintCount || 0) * (extraPrint?.price || 10000);
+  if (input.extras) {
+    for (const [id, qty] of Object.entries(input.extras)) {
+      const item = extraItems.find((e) => e.id === id);
+      if (item) total += item.price * qty;
+    }
+  }
 
   if (input.addons) {
     const addonItems = pricing.filter((p) => p.category === "addon");
