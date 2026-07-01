@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { LogTransactionForm } from '@/components/features/revenue/log-transaction-form'
 import { logTransaction } from '@/lib/actions/revenue-actions'
+import type { PricingItem } from '@/lib/services/site-content-service'
 
 // Mock the server action
 vi.mock('@/lib/actions/revenue-actions', () => ({
@@ -31,6 +32,13 @@ vi.mock('react', async (importOriginal) => {
   }
 })
 
+const mockPricing: PricingItem[] = [
+  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG" },
+  { label: "Tambahan per Orang", price: 5000 },
+  { label: "Extra Print", price: 10000 },
+  { label: "Custom Frame Birthday, Dll", price: 15000 },
+]
+
 describe('LogTransactionForm', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -38,14 +46,14 @@ describe('LogTransactionForm', () => {
   })
 
   it('renders correctly', () => {
-    render(<LogTransactionForm pricing={{}} />)
+    render(<LogTransactionForm pricing={mockPricing} />)
     expect(screen.getByTestId('session-time-input')).toBeInTheDocument()
     expect(screen.getByText(/Nama Pelanggan/i)).toBeInTheDocument()
   })
 
   it('calls logTransaction with correct data on submit', async () => {
     const user = userEvent.setup()
-    render(<LogTransactionForm pricing={{}} />)
+    render(<LogTransactionForm pricing={mockPricing} />)
 
     const nameInput = screen.getByTestId('customer-name-input')
     const timeInput = screen.getByTestId('session-time-input')
@@ -67,7 +75,7 @@ describe('LogTransactionForm', () => {
 
   it('allows any time to be submitted', async () => {
     const user = userEvent.setup()
-    render(<LogTransactionForm pricing={{}} />)
+    render(<LogTransactionForm pricing={mockPricing} />)
 
     const nameInput = screen.getByTestId('customer-name-input')
     const timeInput = screen.getByTestId('session-time-input')

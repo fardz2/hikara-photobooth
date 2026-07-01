@@ -11,26 +11,27 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { CreditCardIcon, Money01Icon, Loading03Icon, Add01Icon, Clock01Icon } from "@hugeicons/core-free-icons";
-
-// Slot jam operasional: 14:00 - 23:00 WIB
+import type { PricingItem } from "@/lib/services/site-content-service";
 
 interface Props {
-  pricing: Record<string, any>;
+  pricing: PricingItem[];
 }
 
-const DEFAULTS = {
-  extra_person: { price: 5000 },
-  extra_print: { price: 10000 },
-  custom_frame: { label: "Custom Frame", price: 15000 },
-};
-
 export const LogTransactionForm = ({ pricing }: Props) => {
-  const p = { ...DEFAULTS, ...pricing };
-  const EXTRA_PERSON_PRICE = p.extra_person.price;
-  const EXTRA_PRINT_PRICE = p.extra_print.price;
-  const ADDONS = [
-    { id: "custom_frame", label: p.custom_frame?.label || "Custom Frame", price: p.custom_frame?.price || 15000 },
-  ];
+  const mainPkg = pricing.find((p) => p.maxPeople) || pricing[0];
+  const extraPerson = pricing.find((p) => p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = pricing.find((p) => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
+
+  const EXTRA_PERSON_PRICE = extraPerson.price;
+  const EXTRA_PRINT_PRICE = extraPrint.price;
+
+  const ADDONS = pricing
+    .filter((p) => p !== mainPkg && p !== extraPerson && p !== extraPrint)
+    .map((p) => ({
+      id: p.label.toLowerCase().replace(/[^a-z]/g, "_").replace(/_+/g, "_"),
+      label: p.label,
+      price: p.price,
+    }));
 
   const [isPending, startTransition] = useTransition();
 
@@ -39,7 +40,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
     defaultValues: {
       customerName: "",
       sessionTime: "",
-      package: "Sesi Foto + 2 Strip",
+      package: mainPkg?.label || "Sesi Foto + 2 Strip",
       addons: [],
       extraPeopleCount: 0,
       extraPrintCount: 0,
@@ -56,8 +57,6 @@ export const LogTransactionForm = ({ pricing }: Props) => {
     formState: { errors },
   } = form;
 
-
-
   const pkg = watch("package");
   const sessionTime = watch("sessionTime");
   const selectedAddons = watch("addons");
@@ -65,7 +64,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
   const extraPrintCount = watch("extraPrintCount");
   const paymentMethod = watch("paymentMethod");
 
-  const basePrice = pkg === "Sesi Foto + 2 Strip" ? 35000 : 35000;
+  const basePrice = mainPkg?.price || 35000;
   const addonsPrice = (selectedAddons || []).reduce((acc, id) => {
     const addon = ADDONS.find(a => a.id === id);
     return acc + (addon?.price || 0);
@@ -111,7 +110,6 @@ export const LogTransactionForm = ({ pricing }: Props) => {
       className="bg-white p-10 border border-[#2C2A29]/10 shadow-sm space-y-8 flex flex-col justify-between h-full min-h-[400px]"
     >
       <div className="space-y-6">
-        {/* Customer Name Input */}
         <div className="space-y-3">
           <label htmlFor="customerName" className="text-[10px] tracking-[0.4em] uppercase font-bold text-[#5A5550]/60 flex items-center gap-2">
             Nama Pelanggan
@@ -169,7 +167,9 @@ export const LogTransactionForm = ({ pricing }: Props) => {
               <SelectValue placeholder="Pilih Paket" />
             </SelectTrigger>
             <SelectContent className="rounded-none">
-              <SelectItem value="Sesi Foto + 2 Strip">Sesi Foto + 2 Strip (35k)</SelectItem>
+              <SelectItem value={mainPkg?.label || ""}>
+                {mainPkg?.label} ({mainPkg ? (mainPkg.price / 1000) : 35}k)
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -181,8 +181,8 @@ export const LogTransactionForm = ({ pricing }: Props) => {
             {/* Extra People Counter */}
             <div className="flex items-center justify-between p-3 bg-[#F6F4F0]/30 border border-[#8B5E56]/10 flex-wrap gap-2">
               <div className="flex flex-col min-w-[80px]">
-                <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">Tambahan Orang</span>
-                <span className="text-[8px] text-[#5A5550]/60 italic font-medium uppercase tracking-wider">Maks 5</span>
+                <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">{extraPerson.label}</span>
+                <span className="text-[8px] text-[#5A5550]/60 italic font-medium uppercase tracking-wider">Maks 3</span>
               </div>
               
               <div className="flex items-center gap-3 bg-white/50 p-1 border border-[#2C2A29]/5 ml-auto">
@@ -209,7 +209,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
             {/* Extra Print Counter */}
             <div className="flex items-center justify-between p-3 bg-[#F6F4F0]/30 border border-[#8B5E56]/10 flex-wrap gap-2">
               <div className="flex flex-col min-w-[80px]">
-                <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">Extra Print</span>
+                <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">{extraPrint.label}</span>
                 <span className="text-[8px] text-[#5A5550]/60 italic font-medium uppercase tracking-wider">Maks 10</span>
               </div>
               
