@@ -53,12 +53,6 @@ export function EditReservationDialog({
   );
 
   const mainPkg = packages[0];
-  const extraPerson = extraItems.find((p: PricingItem) =>
-    p.label.toLowerCase().includes("orang"),
-  ) || { label: "Tambahan per Orang", price: 5000 };
-  const extraPrint = extraItems.find((p: PricingItem) =>
-    p.label.toLowerCase().includes("print"),
-  ) || { label: "Extra Print", price: 10000 };
 
   const PRICELIST = mainPkg
     ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }]
@@ -71,8 +65,6 @@ export function EditReservationDialog({
     label: a.label,
     price: a.price,
   }));
-  const EXTRA_PERSON_PRICE = extraPerson.price;
-  const EXTRA_PRINT_PRICE = extraPrint.price;
 
   const [isPending, startTransition] = useTransition();
 
@@ -85,12 +77,13 @@ export function EditReservationDialog({
   const [selectedAddons, setSelectedAddons] = useState<string[]>(
     reservation?.addons || [],
   );
-  const [extraPeopleCount, setExtraPeopleCount] = useState<number>(
-    reservation?.extra_people_count || 0,
-  );
-  const [extraPrintCount, setExtraPrintCount] = useState<number>(
-    reservation?.extra_print_count || 0,
-  );
+  const [extras, setExtras] = useState<Record<string, number>>(() => {
+    const init: Record<string, number> = {};
+    extraItems.forEach((item: PricingItem) => {
+      if (item.id) init[item.id] = 0;
+    });
+    return init;
+  });
   const [paymentMethod, setPaymentMethod] = useState<"tunai" | "qris">(
     reservation?.payment_method || "tunai",
   );
@@ -104,9 +97,21 @@ export function EditReservationDialog({
       setTime(reservation.time);
       setPkg(reservation.package || "paket_utama");
       setSelectedAddons(reservation.addons || []);
-      setExtraPeopleCount(reservation.extra_people_count || 0);
-      setExtraPrintCount(reservation.extra_print_count || 0);
       setPaymentMethod(reservation.payment_method || "tunai");
+      // Initialize extras from DB — distribute extra_people_count across extras
+      const totalExtraPeople = reservation.extra_people_count || 0;
+      const init: Record<string, number> = {};
+      extraItems.forEach((item: PricingItem) => {
+        if (item.id) init[item.id] = 0;
+      });
+      // ponytail: backward compat — assign to first extra item with maxQty
+      if (totalExtraPeople > 0) {
+        const firstCounter = extraItems.find(
+          (e: PricingItem) => e.maxQty && e.maxQty > 0,
+        );
+        if (firstCounter?.id) init[firstCounter.id] = totalExtraPeople;
+      }
+      setExtras(init);
     }
   }, [reservation, open]);
 
@@ -130,8 +135,7 @@ export function EditReservationDialog({
         time,
         package: pkg,
         addons: selectedAddons,
-        extraPeopleCount,
-        extraPrintCount,
+        extras,
         paymentMethod,
       };
 
@@ -222,7 +226,6 @@ export function EditReservationDialog({
                   <SelectValue placeholder="Waktu" />
                 </SelectTrigger>
                 <SelectContent className="rounded-none border-[#2C2A29]/10">
-                  {/* Time slots with 30-minute intervals */}
                   {generateTimeSlots().map((timeSlot) => (
                     <SelectItem
                       key={timeSlot}
@@ -290,45 +293,92 @@ export function EditReservationDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label
-                htmlFor="extraPeople"
-                className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest"
-              >
-                Extra Orang (+Rp {EXTRA_PERSON_PRICE.toLocaleString("id-ID")})
-              </Label>
-              <Input
-                id="extraPeople"
-                type="number"
-                min={0}
-                max={5}
-                value={extraPeopleCount}
-                onChange={(e) =>
-                  setExtraPeopleCount(parseInt(e.target.value, 10) || 0)
-                }
-                className="rounded-none border-[#2C2A29]/10 h-10 w-full"
-              />
-            </div>
+          {/* Dynamic extras */}
+          <div className="space-y-2">
+            <Label className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">
+              Tambahan
+            </Label>
+            <div className="grid grid-cols-1 gap-2">
+              {extraItems.map((item: PricingItem) => {
+                const maxQty = item.maxQty ?? Infinity;
+                const isCounter = item.maxQty !== null && item.maxQty !== undefined;
+                const qty = extras[item.id!] ?? 0;
 
-            <div className="space-y-2">
-              <Label
-                htmlFor="extraPrint"
-                className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest"
-              >
-                Extra Print (+Rp {EXTRA_PRINT_PRICE.toLocaleString("id-ID")})
-              </Label>
-              <Input
-                id="extraPrint"
-                type="number"
-                min={0}
-                max={10}
-                value={extraPrintCount}
-                onChange={(e) =>
-                  setExtraPrintCount(parseInt(e.target.value, 10) || 0)
+                if (isCounter) {
+                  return (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between p-2 bg-[#F6F4F0]/30 border border-[#8B5E56]/10"
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-bold tracking-tight text-[#2C2A29]">
+                          {item.label}
+                        </span>
+                        <span className="text-[8px] text-[#5A5550]/60 italic">
+                          Maks {maxQty === Infinity ? "∞" : maxQty} | +Rp {item.price.toLocaleString("id-ID")}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 ml-auto">
+                        <button
+                          type="button"
+                          className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 transition-all text-[#2C2A29] font-bold text-sm"
+                          onClick={() =>
+                            setExtras((prev) => ({
+                              ...prev,
+                              [item.id!]: Math.max(0, qty - 1),
+                            }))
+                          }
+                          disabled={qty <= 0}
+                        >
+                          −
+                        </button>
+                        <span className="text-xs font-bold text-[#2C2A29] w-4 text-center">
+                          {qty}
+                        </span>
+                        <button
+                          type="button"
+                          className="size-6 flex items-center justify-center bg-white shadow-sm hover:bg-[#8B5E56] hover:text-white disabled:opacity-30 transition-all text-[#2C2A29] font-bold text-sm"
+                          onClick={() =>
+                            setExtras((prev) => ({
+                              ...prev,
+                              [item.id!]: Math.min(maxQty, qty + 1),
+                            }))
+                          }
+                          disabled={qty >= maxQty}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  );
                 }
-                className="rounded-none border-[#2C2A29]/10 h-10 w-full"
-              />
+
+                // Checkbox (once-off)
+                return (
+                  <div
+                    key={item.id}
+                    className="flex items-center space-x-2"
+                  >
+                    <Checkbox
+                      id={`edit-extra-${item.id}`}
+                      checked={qty > 0}
+                      onCheckedChange={(checked) =>
+                        setExtras((prev) => ({
+                          ...prev,
+                          [item.id!]: checked ? 1 : 0,
+                        }))
+                      }
+                      className="rounded-none border-[#2C2A29]/20 data-[state=checked]:bg-[#8B5E56] data-[state=checked]:border-[#8B5E56]"
+                    />
+                    <label
+                      htmlFor={`edit-extra-${item.id}`}
+                      className="text-[10px] font-bold tracking-tight text-[#2C2A29] cursor-pointer"
+                    >
+                      {item.label} (+Rp {item.price.toLocaleString("id-ID")})
+                    </label>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
