@@ -73,17 +73,16 @@ interface Props {
 }
 
 export const ReservationForm = ({ pricing }: Props) => {
-  const mainPkg = pricing.find((p) => p.maxPeople) || pricing[0];
-  const extraPerson = pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
-  const extraPrint = pricing.find((p) => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
+  const packages = pricing.filter(p => p.category === "package");
+  const extraItems = pricing.filter(p => p.category === "extra");
+  const addonItems = pricing.filter(p => p.category === "addon");
+
+  const mainPkg = packages[0];
+  const extraPerson = extraItems.find(p => p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = extraItems.find(p => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
 
   const pricelist = mainPkg ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }] : [];
-  const addons: { id: string; label: string; price: number }[] = [];
-  for (const item of pricing) {
-    if (item !== mainPkg && item !== extraPerson && !item.label.toLowerCase().includes("print")) {
-      addons.push({ id: item.label.toLowerCase().replace(/[^a-z]/g, "_"), label: item.label, price: item.price });
-    }
-  }
+  const addons = addonItems.map(a => ({ id: a.label.toLowerCase().replace(/[^a-z]/g, "_").replace(/_+/g, "_"), label: a.label, price: a.price }));
   const EXTRA_PERSON_PRICE = extraPerson.price;
   const EXTRA_PRINT_PRICE = extraPrint.price;
 

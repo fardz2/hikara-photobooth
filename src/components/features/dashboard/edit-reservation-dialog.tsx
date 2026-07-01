@@ -37,14 +37,17 @@ interface Props {
 }
 
 export function EditReservationDialog({ reservation, open, onOpenChange, pricing }: Props) {
-  const mainPkg = pricing.find((p) => p.maxPeople) || pricing[0];
-  const extraPerson = pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
-  const extraPrint = pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
+  const effectivePricing = (reservation as any)?.pricing_snapshot || pricing;
+  const packages = effectivePricing.filter((p: PricingItem) => p.category === "package");
+  const extraItems = effectivePricing.filter((p: PricingItem) => p.category === "extra");
+  const addonItems = effectivePricing.filter((p: PricingItem) => p.category === "addon");
+
+  const mainPkg = packages[0];
+  const extraPerson = extraItems.find((p: PricingItem) => p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = extraItems.find((p: PricingItem) => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
 
   const PRICELIST = mainPkg ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }] : [];
-  const ADDONS = pricing
-    .filter((p) => p !== mainPkg && p !== extraPerson && p !== extraPrint)
-    .map((p) => ({ id: p.label.toLowerCase().replace(/[^a-z]/g, "_").replace(/_+/g, "_"), label: p.label, price: p.price }));
+  const ADDONS = addonItems.map((a: PricingItem) => ({ id: a.label.toLowerCase().replace(/[^a-z]/g, "_").replace(/_+/g, "_"), label: a.label, price: a.price }));
   const EXTRA_PERSON_PRICE = extraPerson.price;
   const EXTRA_PRINT_PRICE = extraPrint.price;
 
@@ -198,7 +201,7 @@ export function EditReservationDialog({ reservation, open, onOpenChange, pricing
           <div className="space-y-2">
             <Label className="text-[10px] uppercase font-bold text-[#2C2A29] tracking-widest">Add-ons</Label>
             <div className="grid grid-cols-1 gap-2">
-              {ADDONS.map((addon) => (
+              {ADDONS.map((addon: { id: string; label: string; price: number }) => (
                 <div key={addon.id} className="flex items-center space-x-2">
                   <Checkbox 
                     id={`edit-${addon.id}`}

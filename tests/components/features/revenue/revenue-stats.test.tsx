@@ -5,8 +5,8 @@ import type { PricingItem } from "@/lib/services/site-content-service";
 import { render, screen } from '@testing-library/react'
 
 const mockPricing: PricingItem[] = [
-  { label: "Foto per Sesi", price: 35000, maxPeople: 3 },
-  { label: "Tambahan per Orang", price: 5000 },
+  { label: "Foto per Sesi", price: 35000, maxPeople: 3, category: "package" as const },
+  { label: "Tambahan per Orang", price: 5000, category: "extra" as const },
 ]
 
 // Mock dependencies

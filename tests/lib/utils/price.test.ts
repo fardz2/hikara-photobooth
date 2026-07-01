@@ -3,10 +3,10 @@ import { calculateTotalPriceSync, type PriceInput } from '@/lib/utils/price'
 import { type PricingItem } from "@/lib/services/site-content-service";
 
 const MOCK_PRICING: PricingItem[] = [
-  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG" },
-  { label: "Tambahan per Orang", price: 5000 },
-  { label: "Extra Print", price: 10000 },
-  { label: "Custom Frame Birthday, Dll", price: 15000 },
+  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG", category: "package" as const },
+  { label: "Tambahan per Orang", price: 5000, category: "extra" as const },
+  { label: "Extra Print", price: 10000, category: "extra" as const },
+  { label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" as const },
 ]
 
 const BASE_PRICE = MOCK_PRICING[0].price
@@ -52,7 +52,7 @@ describe('calculateTotalPriceSync', () => {
 
   it('falls back to default prices when pricing is incomplete', () => {
     const partialPricing: PricingItem[] = [
-      { label: "Test", price: 10000, maxPeople: 1 },
+      { label: "Test", price: 10000, maxPeople: 1, category: "package" as const },
     ]
     // Missing extra_person -> fallback to 5000, missing extra_print -> 10000
     const expected = 10000 + (1 * 5000) + (2 * 10000)

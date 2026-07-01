@@ -27,10 +27,10 @@ vi.mock('@/lib/actions/reservation-actions', () => ({
 }))
 
 const mockPricing = [
-  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG" },
-  { label: "Tambahan per Orang", price: 5000 },
-  { label: "Extra Print", price: 10000 },
-  { label: "Custom Frame Birthday, Dll", price: 15000 },
+  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG", category: "package" as const },
+  { label: "Tambahan per Orang", price: 5000, category: "extra" as const },
+  { label: "Extra Print", price: 10000, category: "extra" as const },
+  { label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" as const },
 ]
 
 describe('ReservationForm', () => {

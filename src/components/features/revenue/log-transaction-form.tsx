@@ -18,20 +18,22 @@ interface Props {
 }
 
 export const LogTransactionForm = ({ pricing }: Props) => {
-  const mainPkg = pricing.find((p) => p.maxPeople) || pricing[0];
-  const extraPerson = pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
-  const extraPrint = pricing.find((p) => !p.maxPeople && p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
+  const packages = pricing.filter(p => p.category === "package");
+  const extraItems = pricing.filter(p => p.category === "extra");
+  const addonItems = pricing.filter(p => p.category === "addon");
+
+  const mainPkg = packages[0];
+  const extraPerson = extraItems.find(p => p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = extraItems.find(p => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
 
   const EXTRA_PERSON_PRICE = extraPerson.price;
   const EXTRA_PRINT_PRICE = extraPrint.price;
 
-  const ADDONS = pricing
-    .filter((p) => p !== mainPkg && p !== extraPerson && p !== extraPrint)
-    .map((p) => ({
-      id: p.label.toLowerCase().replace(/[^a-z]/g, "_").replace(/_+/g, "_"),
-      label: p.label,
-      price: p.price,
-    }));
+  const ADDONS = addonItems.map(a => ({
+    id: a.label.toLowerCase().replace(/[^a-z]/g, "_").replace(/_+/g, "_"),
+    label: a.label,
+    price: a.price,
+  }));
 
   const [isPending, startTransition] = useTransition();
 

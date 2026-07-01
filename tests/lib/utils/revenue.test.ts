@@ -3,10 +3,10 @@ import { formatRevenueStats, type RawRevenueRow } from '@/lib/utils/revenue'
 import { type PricingItem } from "@/lib/services/site-content-service";
 
 const mockPricing: PricingItem[] = [
-  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3 },
-  { label: "Tambahan per Orang", price: 5000 },
-  { label: "Extra Print", price: 10000 },
-  { label: "Custom Frame Birthday, Dll", price: 15000 },
+  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, category: "package" as const },
+  { label: "Tambahan per Orang", price: 5000, category: "extra" as const },
+  { label: "Extra Print", price: 10000, category: "extra" as const },
+  { label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" as const },
 ]
 
 describe('formatRevenueStats', () => {
@@ -71,7 +71,7 @@ describe('formatRevenueStats', () => {
 
   it('falls back to defaults when pricing is incomplete', () => {
     const partialPricing: PricingItem[] = [
-      { label: "Paket", price: 35000, maxPeople: 3 },
+      { label: "Paket", price: 35000, maxPeople: 3, category: "package" as const },
     ]
     const stats = formatRevenueStats(mockData, partialPricing)
     // Falls back to 5000 for extra_person, 10000 for extra_print

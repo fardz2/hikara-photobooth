@@ -26,19 +26,22 @@ export async function getSiteContent(section: string) {
   return map;
 }
 
+export type PricingCategory = "package" | "extra" | "addon"
+
 export interface PricingItem {
   label: string;
   price: number;
   maxPeople?: number;
   note?: string;
+  category: PricingCategory;
 }
 
 function defaultPricing(): PricingItem[] {
   return [
-    { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG" },
-    { label: "Tambahan per Orang", price: 5000 },
-    { label: "Extra Print", price: 10000 },
-    { label: "Custom Frame Birthday, Dll", price: 15000 },
+    { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG", category: "package" },
+    { label: "Tambahan per Orang", price: 5000, category: "extra" },
+    { label: "Extra Print", price: 10000, category: "extra" },
+    { label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" },
   ];
 }
 
