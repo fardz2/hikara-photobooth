@@ -16,9 +16,11 @@ export function SectionFormSkeleton() {
   return (
     <div className="space-y-4">
       <Skeleton className="h-7 w-48 rounded-none bg-[#2C2A29]/5" />
-      {[1, 2, 3].map((i) => (
-        <Skeleton key={i} className="h-10 w-full rounded-none bg-[#2C2A29]/5" />
-      ))}
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+        {[1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-10 w-full rounded-none bg-[#2C2A29]/5" />
+        ))}
+      </div>
       <Skeleton className="h-9 w-28 rounded-none bg-[#2C2A29]/5" />
     </div>
   );
@@ -29,28 +31,36 @@ function renderField(section: string, def: FieldDef, value: unknown) {
   const strVal = String(value ?? "");
   const arrVal = Array.isArray(value) ? value : [];
 
-  switch (def.type) {
-    case "image":
-      return <ImageField key={def.key} name={name} label={def.label} defaultValue={strVal} />;
-    case "gallery":
-      return <GalleryField key={def.key} name={name} label={def.label} defaultValue={arrVal as string[]} max={def.max} />;
-    case "tags":
-      return <TagField key={def.key} name={name} label={def.label} defaultValue={arrVal as string[]} />;
-    case "objects":
-      return (
-        <ObjectListField
-          key={def.key}
-          name={name}
-          label={def.label}
-          defaultValue={arrVal as Record<string, unknown>[]}
-          fields={def.objectFields || []}
-        />
-      );
-    case "textarea":
-      return <TextField key={def.key} name={name} label={def.label} defaultValue={strVal} multiline />;
-    default:
-      return <TextField key={def.key} name={name} label={def.label} defaultValue={strVal} />;
+  const el = (() => {
+    switch (def.type) {
+      case "image":
+        return <ImageField key={def.key} name={name} label={def.label} defaultValue={strVal} />;
+      case "gallery":
+        return <GalleryField key={def.key} name={name} label={def.label} defaultValue={arrVal as string[]} max={def.max} />;
+      case "tags":
+        return <TagField key={def.key} name={name} label={def.label} defaultValue={arrVal as string[]} />;
+      case "objects":
+        return (
+          <ObjectListField
+            key={def.key}
+            name={name}
+            label={def.label}
+            defaultValue={arrVal as Record<string, unknown>[]}
+            fields={def.objectFields || []}
+          />
+        );
+      case "textarea":
+        return <TextField key={def.key} name={name} label={def.label} defaultValue={strVal} multiline />;
+      default:
+        return <TextField key={def.key} name={name} label={def.label} defaultValue={strVal} />;
+    }
+  })();
+
+  // gallery + objects + textarea span full width
+  if (def.type === "gallery" || def.type === "objects" || def.type === "tags" || (def.type === "textarea" && strVal.length > 120)) {
+    return <div key={def.key} className="col-span-1 md:col-span-2">{el}</div>;
   }
+  return el;
 }
 
 function reconstructFormValue(section: string, def: FieldDef, fd: FormData): unknown {
@@ -68,25 +78,11 @@ function reconstructFormValue(section: string, def: FieldDef, fd: FormData): unk
       }
       return items;
     }
-    case "tags": {
-      const raw = fd.get(base);
-      if (typeof raw === "string") {
-        try {
-          return JSON.parse(raw);
-        } catch {
-          return [];
-        }
-      }
-      return [];
-    }
+    case "tags":
     case "objects": {
       const raw = fd.get(base);
       if (typeof raw === "string") {
-        try {
-          return JSON.parse(raw);
-        } catch {
-          return [];
-        }
+        try { return JSON.parse(raw); } catch { return []; }
       }
       return [];
     }
@@ -117,7 +113,9 @@ export function SectionForm({ section, data }: Props) {
   return (
     <form action={action} className="space-y-6">
       <h2 className="text-lg font-heading uppercase tracking-wider text-[#2C2A29] capitalize">{section}</h2>
-      {config.map((def) => renderField(section, def, data[def.key]))}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {config.map((def) => renderField(section, def, data[def.key]))}
+      </div>
       <Button type="submit" className="rounded-none bg-[#632626] text-white px-6 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#4a1c1c]">
         Simpan
       </Button>

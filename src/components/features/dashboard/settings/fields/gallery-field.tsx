@@ -17,7 +17,7 @@ export function GalleryField({ name, label, defaultValue = [], max = 3 }: Props)
   const [items, setItems] = useState<string[]>(defaultValue);
   const [uploading, startUpload] = useTransition();
   const ref = useRef<HTMLInputElement>(null);
-  const filled = items.filter((u) => u.trim()).length;
+  const filled = items.filter(Boolean).length;
   const canAdd = filled < max;
 
   const remove = (idx: number) => {
@@ -35,8 +35,8 @@ export function GalleryField({ name, label, defaultValue = [], max = 3 }: Props)
       if ("error" in result) {
         toast.error(result.error);
       } else {
+        const emptyIdx = items.findIndex((u) => !u);
         const next = [...items];
-        const emptyIdx = items.findIndex((u) => !u.trim());
         if (emptyIdx >= 0) next[emptyIdx] = result.url;
         else next.push(result.url);
         setItems(next);
@@ -52,19 +52,19 @@ export function GalleryField({ name, label, defaultValue = [], max = 3 }: Props)
         {label}
         <span className="text-[#8B5E56] ml-1">({filled}/{max})</span>
       </label>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {items.filter(Boolean).map((item, idx) => (
           <div key={idx} className="relative group">
             <input type="hidden" name={`${name}_${idx}`} value={item} />
-            <div className="relative aspect-square overflow-hidden border border-[#E8E2D9] bg-[#EBE6DF]">
+            <div className="relative aspect-[3/2] overflow-hidden border border-[#E8E2D9] bg-[#EBE6DF]">
               <img src={item} alt="" className="w-full h-full object-cover" />
             </div>
             <button
               type="button"
               onClick={() => remove(idx)}
-              className="absolute -top-1.5 -right-1.5 size-5 bg-red-500 text-white flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute -top-2 -right-2 size-6 bg-red-500 text-white flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
             >
-              <HugeiconsIcon icon={Cancel01Icon} size={10} />
+              <HugeiconsIcon icon={Cancel01Icon} size={12} />
             </button>
           </div>
         ))}
@@ -73,14 +73,14 @@ export function GalleryField({ name, label, defaultValue = [], max = 3 }: Props)
             type="button"
             disabled={uploading}
             onClick={() => ref.current?.click()}
-            className="border-2 border-dashed border-[#E8E2D9] flex flex-col items-center justify-center aspect-square hover:border-[#632626] transition-colors text-[#8B5E56] disabled:opacity-50"
+            className="aspect-[3/2] border-2 border-dashed border-[#E8E2D9] flex flex-col items-center justify-center hover:border-[#632626] transition-colors text-[#8B5E56] disabled:opacity-50"
           >
             {uploading ? (
-              <HugeiconsIcon icon={Loading03Icon} className="animate-spin" size={20} />
+              <HugeiconsIcon icon={Loading03Icon} className="animate-spin" size={24} />
             ) : (
               <>
-                <HugeiconsIcon icon={Add01Icon} size={20} />
-                <span className="text-[9px] uppercase tracking-widest mt-1 font-bold">Upload</span>
+                <HugeiconsIcon icon={Add01Icon} size={24} />
+                <span className="text-[10px] uppercase tracking-widest mt-1 font-bold">Upload Gambar</span>
               </>
             )}
           </button>

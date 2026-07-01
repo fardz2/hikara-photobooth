@@ -2,7 +2,6 @@
 
 import { useState, useRef, useTransition } from "react";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -47,20 +46,14 @@ export function ImageField({ name, label, defaultValue }: Props) {
     });
   };
 
-  const handleRemove = () => {
-    setCurrentUrl("");
-    setLoaded(false);
-    setError(false);
-  };
-
   return (
     <div>
       <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">{label}</label>
-      <div className="mt-1 flex items-center gap-2">
-        <input type="hidden" name={name} value={currentUrl} />
+      <input type="hidden" name={name} value={currentUrl} />
+      <div className="flex items-start gap-3">
         {currentUrl ? (
           <>
-            <div className="relative w-32 h-20 overflow-hidden border border-[#E8E2D9] bg-[#EBE6DF]">
+            <div className="relative w-full max-w-64 aspect-[3/2] overflow-hidden border border-[#E8E2D9] bg-[#EBE6DF]">
               {!loaded && !error && <Skeleton className="absolute inset-0 w-full h-full rounded-none" />}
               {error && <div className="absolute inset-0 flex items-center justify-center text-[10px] text-[#5A5550] bg-white/80">Gagal</div>}
               <img
@@ -71,11 +64,11 @@ export function ImageField({ name, label, defaultValue }: Props) {
                 onError={() => { setError(true); setLoaded(true); }}
               />
             </div>
-            <div className="flex flex-col gap-1">
+            <div className="flex gap-1 shrink-0">
               <Button type="button" size="xs" variant="outline" disabled={uploading} onClick={() => ref.current?.click()} className="rounded-none border-[#E8E2D9] text-[10px]">
                 {uploading ? "..." : "Ganti"}
               </Button>
-              <Button type="button" size="xs" variant="destructive" onClick={handleRemove} className="rounded-none text-[10px]">
+              <Button type="button" size="xs" variant="destructive" onClick={() => setCurrentUrl("")} className="rounded-none text-[10px]">
                 Hapus
               </Button>
             </div>
@@ -83,14 +76,14 @@ export function ImageField({ name, label, defaultValue }: Props) {
         ) : (
           <div
             onClick={() => ref.current?.click()}
-            className="w-32 h-20 border-2 border-dashed border-[#E8E2D9] flex flex-col items-center justify-center cursor-pointer hover:border-[#632626] transition-colors text-[#8B5E56]"
+            className="w-full max-w-64 aspect-[3/2] border-2 border-dashed border-[#E8E2D9] flex flex-col items-center justify-center cursor-pointer hover:border-[#632626] transition-colors text-[#8B5E56]"
           >
             {uploading ? (
-              <HugeiconsIcon icon={Loading03Icon} className="animate-spin" size={20} />
+              <HugeiconsIcon icon={Loading03Icon} className="animate-spin" size={24} />
             ) : (
               <>
-                <HugeiconsIcon icon={Image01Icon} size={20} />
-                <span className="text-[9px] uppercase tracking-widest mt-1 font-bold">Upload</span>
+                <HugeiconsIcon icon={Image01Icon} size={24} />
+                <span className="text-[10px] uppercase tracking-widest mt-1 font-bold">Pilih Gambar</span>
               </>
             )}
           </div>
