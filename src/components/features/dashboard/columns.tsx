@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { type PricingItem } from "@/lib/services/site-content-service";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -49,7 +50,7 @@ export type Reservation = {
   payment_proof_url?: string | null;
 };
 
-export function getColumns(pricing: Record<string, any> = {}): ColumnDef<Reservation>[] {
+export function getColumns(pricing: PricingItem[] = []): ColumnDef<Reservation>[] {
   return [
     {
       accessorKey: "name",
@@ -197,9 +198,9 @@ export function getColumns(pricing: Record<string, any> = {}): ColumnDef<Reserva
 }
 
 /** @deprecated Use getColumns(pricing) instead */
-export const columns: ColumnDef<Reservation>[] = getColumns({});
+export const columns: ColumnDef<Reservation>[] = getColumns([]);
 
-const ActionCell = ({ reservation, pricing }: { reservation: Reservation; pricing: Record<string, any> }) => {
+const ActionCell = ({ reservation, pricing }: { reservation: Reservation; pricing: PricingItem[] }) => {
   const [isPending, startTransition] = useTransition();
   const [isEditOpen, setIsEditOpen] = useState(false);
 

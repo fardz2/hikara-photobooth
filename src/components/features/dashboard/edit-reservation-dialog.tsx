@@ -26,28 +26,27 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Loading03Icon, Edit01Icon } from "@hugeicons/core-free-icons";
 import { normalizePhoneNumber } from "@/lib/utils/validation";
 import { generateTimeSlots } from "@/lib/utils/slots";
+import { type PricingItem } from "@/lib/services/site-content-service";
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface Props {
   reservation: Reservation | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  pricing: Record<string, any>;
+  pricing: PricingItem[];
 }
 
 export function EditReservationDialog({ reservation, open, onOpenChange, pricing }: Props) {
-  const p = {
-    paket_utama: { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000 },
-    extra_person: { label: "Tambahan per Orang", price: 5000 },
-    extra_print: { label: "Extra Print", price: 10000 },
-    custom_frame: { label: "Custom Frame Birthday, Dll", price: 15000 },
-    ...pricing,
-  };
+  const mainPkg = pricing.find((p) => p.maxPeople) || pricing[0];
+  const extraPerson = pricing.find((p) => p.label.toLowerCase().includes("orang")) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = pricing.find((p) => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
 
-  const PRICELIST = [{ id: "paket_utama", label: p.paket_utama.label, price: p.paket_utama.price }];
-  const ADDONS = [{ id: "custom_frame", label: p.custom_frame.label, price: p.custom_frame.price }];
-  const EXTRA_PERSON_PRICE = p.extra_person.price;
-  const EXTRA_PRINT_PRICE = p.extra_print.price;
+  const PRICELIST = mainPkg ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }] : [];
+  const ADDONS = pricing
+    .filter((p) => p !== mainPkg && p !== extraPerson && p !== extraPrint)
+    .map((p) => ({ id: p.label.toLowerCase().replace(/[^a-z]/g, "_").replace(/_+/g, "_"), label: p.label, price: p.price }));
+  const EXTRA_PERSON_PRICE = extraPerson.price;
+  const EXTRA_PRINT_PRICE = extraPrint.price;
 
   const [isPending, startTransition] = useTransition();
 
