@@ -7,8 +7,12 @@ import {
   deletePricingItem,
   upsertPricingItem,
 } from "@/lib/services/pricing-service";
+import { getCurrentUser } from "@/lib/services/auth-service";
 
 export async function savePricingItem(item: PricingItem) {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
   const result = await upsertPricingItem(item);
   if ("error" in result) return result;
 
@@ -17,6 +21,9 @@ export async function savePricingItem(item: PricingItem) {
 }
 
 export async function removePricingItem(id: string) {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
   const result = await deletePricingItem(id);
   if ("error" in result) return result;
 

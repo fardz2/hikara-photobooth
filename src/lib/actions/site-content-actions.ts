@@ -6,6 +6,7 @@ import {
   upsertSectionContent,
   upsertSiteContent,
 } from "@/lib/services/site-content-service";
+import { getCurrentUser } from "@/lib/services/auth-service";
 
 function invalidateSection(section: string) {
   updateTag(CACHE_TAGS.siteContent);
@@ -17,6 +18,9 @@ export async function updateSiteContent(
   key: string,
   value: unknown,
 ) {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
   const result = await upsertSiteContent(section, key, value);
   if (result.error) return result;
 
@@ -29,6 +33,9 @@ export async function updateSectionContent(
   section: string,
   entries: { key: string; value: unknown }[],
 ) {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Unauthorized" };
+
   const result = await upsertSectionContent(section, entries);
   if (result.error) return result;
 

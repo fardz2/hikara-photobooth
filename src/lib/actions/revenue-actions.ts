@@ -7,10 +7,13 @@ import {
   type TransactionInput,
 } from "@/lib/services/revenue-service";
 import { TransactionSchema } from "@/lib/validations/revenue";
+import { getCurrentUser } from "@/lib/services/auth-service";
 
 export type { TransactionInput };
 
 export async function logTransaction(data: TransactionInput) {
+  const user = await getCurrentUser();
+  if (!user) return { success: false, message: "Unauthorized" };
   // 1. Validate
   const validation = TransactionSchema.safeParse({
     customerName: data.customer_name || "Walk-in Customer",

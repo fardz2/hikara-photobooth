@@ -14,6 +14,10 @@ vi.mock('next/cache', () => ({
   updateTag: vi.fn(),
 }))
 
+vi.mock('@/lib/services/auth-service', () => ({
+  getCurrentUser: vi.fn().mockResolvedValue({ id: 'test-user' }),
+}))
+
 describe('Revenue Actions', () => {
   beforeEach(() => {
     vi.clearAllMocks()

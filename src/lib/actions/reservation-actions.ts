@@ -16,6 +16,7 @@ import {
 } from "@/lib/services/reservation-service";
 import { calculateTotalPrice } from "@/lib/utils/price";
 import { isValidWhatsApp } from "@/lib/utils/validation";
+import { getCurrentUser } from "@/lib/services/auth-service";
 import { ReservationSchema as FormSchema } from "@/lib/validations/reservation";
 
 type ReservationInput = {

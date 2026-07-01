@@ -55,6 +55,10 @@ vi.mock('next/cache', async (importOriginal) => {
   }
 })
 
+vi.mock('@/lib/services/auth-service', () => ({
+  getCurrentUser: vi.fn().mockResolvedValue({ id: 'test-user' }),
+}))
+
 describe('Reservation Actions', () => {
   beforeEach(() => {
     vi.clearAllMocks()
