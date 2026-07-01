@@ -56,7 +56,6 @@ function renderField(section: string, def: FieldDef, value: unknown) {
     }
   })();
 
-  // gallery + objects + textarea span full width
   if (def.type === "gallery" || def.type === "objects" || def.type === "tags" || (def.type === "textarea" && strVal.length > 120)) {
     return <div key={def.key} className="col-span-1 md:col-span-2">{el}</div>;
   }
@@ -111,14 +110,18 @@ export function SectionForm({ section, data }: Props) {
   };
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-6 pb-20">
       <h2 className="text-lg font-heading uppercase tracking-wider text-[#2C2A29] capitalize">{section}</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {config.map((def) => renderField(section, def, data[def.key]))}
       </div>
-      <Button type="submit" className="rounded-none bg-[#632626] text-white px-6 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#4a1c1c]">
-        Simpan
-      </Button>
+
+      {/* Sticky save button */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8E2D9] p-4 flex justify-end z-50">
+        <Button type="submit" className="rounded-none bg-[#632626] text-white px-6 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#4a1c1c]">
+          Simpan
+        </Button>
+      </div>
     </form>
   );
 }
