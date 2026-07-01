@@ -51,7 +51,8 @@ export type FieldType =
 export interface ObjectFieldDef {
   key: string;
   label: string;
-  type?: "text" | "textarea" | "image";
+  type?: "text" | "textarea" | "image" | "select";
+  options?: { value: string; label: string }[];
 }
 
 export interface FieldDef {
@@ -60,6 +61,8 @@ export interface FieldDef {
   type: FieldType;
   max?: number;
   objectFields?: ObjectFieldDef[];
+  /** If set, ObjectListField groups items by this field's value */
+  categoryKey?: string;
 }
 
 export type SectionConfig = Record<string, FieldDef[]>;
@@ -124,6 +127,7 @@ export const SECTION_CONFIG: SectionConfig = {
       key: "items",
       label: "Paket",
       type: "objects",
+      categoryKey: "category",
       objectFields: [
         { key: "label", label: "Nama Paket" },
         { key: "price", label: "Harga (Rp)" },

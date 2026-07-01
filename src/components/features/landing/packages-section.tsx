@@ -10,6 +10,7 @@ interface PricingItem {
   price: number;
   maxPeople?: number;
   note?: string;
+  category: string;
 }
 
 interface Props {
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export const PackagesSection = ({ pricing }: Props) => {
+  const packages = pricing.filter(p => p.category === "package");
   return (
     <section
       id="packages"
@@ -69,7 +71,7 @@ export const PackagesSection = ({ pricing }: Props) => {
             delayOrder={0.3}
             className="flex flex-col gap-10 w-full relative"
           >
-            {pricing.map((item, idx) => (
+            {packages.map((item, idx) => (
               <StaggerItem
                 key={idx}
                 className="flex flex-col md:flex-row justify-between items-center md:items-end border-b border-[#2C2A29]/20 pb-6 text-center md:text-left gap-2 md:gap-0 group hover:border-[#8B5E56] transition-colors duration-500 relative"

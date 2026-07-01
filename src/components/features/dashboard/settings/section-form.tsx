@@ -29,6 +29,18 @@ export function SectionFormSkeleton() {
   );
 }
 
+const SECTION_LABELS: Record<string, string> = {
+  hero: "Hero",
+  marquee: "Marquee",
+  about: "Tentang Kami",
+  gallery: "Galeri",
+  themes: "Tema",
+  testimonials: "Testimoni",
+  pricing: "Pengaturan Harga",
+  location: "Lokasi",
+  cta: "Call to Action",
+};
+
 function renderField(section: string, def: FieldDef, value: unknown) {
   const name = fieldPath(section, def.key);
   const strVal = String(value ?? "");
@@ -72,6 +84,7 @@ function renderField(section: string, def: FieldDef, value: unknown) {
             label={def.label}
             defaultValue={arrVal as Record<string, unknown>[]}
             fields={def.objectFields || []}
+            categoryKey={def.categoryKey}
           />
         );
       case "textarea":
@@ -173,7 +186,7 @@ export function SectionForm({ section, data }: Props) {
   return (
     <form action={action} className="space-y-6 pb-20">
       <h2 className="text-lg font-heading uppercase tracking-wider text-[#2C2A29] capitalize">
-        {section}
+        {SECTION_LABELS[section] || section}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {config.map((def) => renderField(section, def, data[def.key]))}
