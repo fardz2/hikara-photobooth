@@ -790,6 +790,7 @@ export const ReservationForm = ({ pricing }: Props) => {
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&qzone=4&data=${encodeURIComponent(generateDynamicQRIS(totalPrice))}`}
                     alt="HIKARA DYNAMIC QRIS"
                     fill
+                    sizes="192px"
                     className="object-contain"
                     unoptimized
                   />

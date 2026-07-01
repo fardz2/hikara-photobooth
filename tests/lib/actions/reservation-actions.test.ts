@@ -103,7 +103,7 @@ describe('Reservation Actions', () => {
       expect(result.success).toBe(true)
       expect(mockInsertReservation).toHaveBeenCalled()
       expect(fonnteService.sendMessage).toHaveBeenCalledTimes(2)
-      expect(revalidatePath).toHaveBeenCalledWith('/reservasi')
+      expect(revalidatePath).toHaveBeenCalledWith('/dashboard/reservations')
     })
   })
 

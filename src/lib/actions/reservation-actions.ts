@@ -104,7 +104,6 @@ export async function submitReservation(data: ReservationInput) {
   // 6. Revalidate
   updateTag(CACHE_TAGS.reservations);
   updateTag(CACHE_TAGS.bookedSlots(dateStr));
-  revalidatePath("/reservasi");
   revalidatePath("/dashboard/reservations");
 
   return {

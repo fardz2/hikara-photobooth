@@ -1,4 +1,4 @@
-import { cacheLife, cacheTag, updateTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import { createPublicClient } from "@/lib/supabase/public";
 import { createClient } from "@/lib/supabase/server";

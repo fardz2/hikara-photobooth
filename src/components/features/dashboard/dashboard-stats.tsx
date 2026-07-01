@@ -14,8 +14,6 @@ export const DashboardStats = async ({ searchParams }: Props) => {
 
   const stats = await getReservationStats(from, to);
 
-  const totalRevenue = 0; // ponytail: revenue calc moved to revenue-service if needed
-
   const displayStats = [
     {
       label: "Total Reservasi",
@@ -37,13 +35,6 @@ export const DashboardStats = async ({ searchParams }: Props) => {
       value: stats.pending,
       color: "text-amber-600",
       format: "number",
-    },
-    {
-      label: "Total Pendapatan",
-      sublabel: label,
-      value: totalRevenue,
-      color: "text-[#8B5E56]",
-      format: "currency",
     },
   ];
 
