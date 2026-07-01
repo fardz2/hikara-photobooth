@@ -19,6 +19,7 @@ export function ImageField({ name, label, defaultValue = "" }: Props) {
   const [error, setError] = useState(false);
   const [uploading, startUpload] = useTransition();
   const ref = useRef<HTMLInputElement>(null);
+  const isUrl = /^https?:\/\//.test(url);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -33,68 +34,41 @@ export function ImageField({ name, label, defaultValue = "" }: Props) {
         setUrl(result.url!);
         setLoaded(false);
         setError(false);
-        toast.success("Uploaded");
+        toast.success("Terunggah");
       }
       if (ref.current) ref.current.value = "";
     });
   };
 
-  const isUrl = /^https?:\/\//.test(url);
-
   return (
     <div>
-      <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">
-        {label}
-      </label>
+      <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">{label}</label>
       <div className="mt-1 flex items-center gap-2">
         <input
           name={name}
           value={url}
-          onChange={(e) => {
-            setUrl(e.target.value);
-            setLoaded(false);
-            setError(false);
-          }}
+          onChange={(e) => { setUrl(e.target.value); setLoaded(false); setError(false); }}
           className="flex-1 border border-[#E8E2D9] rounded-none px-3 py-2 text-sm bg-white"
           placeholder="https://..."
         />
-        <input
-          ref={ref}
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          onChange={handleUpload}
-          className="hidden"
-        />
+        <input ref={ref} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleUpload} className="hidden" />
         <button
           type="button"
           disabled={uploading}
           onClick={() => ref.current?.click()}
           className="shrink-0 bg-[#632626] text-white px-3 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#4a1c1c] transition-colors disabled:opacity-50 flex items-center gap-1"
         >
-          {uploading ? (
-            <HugeiconsIcon icon={Loading03Icon} className="animate-spin" size={12} />
-          ) : (
-            <HugeiconsIcon icon={Image01Icon} size={12} />
-          )}
-          Upload
+          {uploading ? <HugeiconsIcon icon={Loading03Icon} className="animate-spin" size={12} /> : <HugeiconsIcon icon={Image01Icon} size={12} />}
+          Unggah
         </button>
       </div>
       {isUrl && (
         <div className="mt-2 relative w-32 h-20 overflow-hidden border border-[#E8E2D9] bg-[#EBE6DF]">
-          {!loaded && !error && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Skeleton className="w-full h-full rounded-none" />
-            </div>
-          )}
-          {error && (
-            <div className="absolute inset-0 flex items-center justify-center text-[10px] text-[#5A5550] bg-white/80">
-              Invalid URL
-            </div>
-          )}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {!loaded && !error && <Skeleton className="absolute inset-0 w-full h-full rounded-none" />}
+          {error && <div className="absolute inset-0 flex items-center justify-center text-[10px] text-[#5A5550] bg-white/80">URL tidak valid</div>}
           <img
             src={url}
-            alt={label}
+            alt=""
             className={`w-full h-full object-cover ${loaded && !error ? "opacity-100" : "opacity-0"} transition-opacity`}
             onLoad={() => setLoaded(true)}
             onError={() => { setError(true); setLoaded(true); }}

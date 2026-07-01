@@ -6,7 +6,6 @@ import { updatePricing } from "@/lib/actions/site-content-actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import type { PricingItem } from "./section-config";
 
 interface Props {
@@ -32,12 +31,12 @@ export function PricingForm({ pricing }: Props) {
     const res = await updatePricing(entries);
     setLoading(false);
     if ("error" in res && res.error) toast.error(res.error);
-    else toast.success("Pricing updated");
+    else toast.success("Harga diperbarui");
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-lg font-heading uppercase tracking-wider text-[#2C2A29]">Pricing</h2>
+      <h2 className="text-lg font-heading uppercase tracking-wider text-[#2C2A29]">Harga</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {Object.entries(pricing).map(([key, p]) => (
           <div key={key} className="border border-[#2C2A29]/10 p-4 space-y-3 bg-white">
@@ -47,22 +46,22 @@ export function PricingForm({ pricing }: Props) {
               <Input name={`pricing_${key}_label`} defaultValue={p.label} className="rounded-none border-[#E8E2D9] bg-white" />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] uppercase tracking-wider text-[#5A5550]">Price</Label>
+              <Label className="text-[10px] uppercase tracking-wider text-[#5A5550]">Harga (Rp)</Label>
               <Input name={`pricing_${key}_price`} type="number" defaultValue={p.price} className="rounded-none border-[#E8E2D9] bg-white" />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] uppercase tracking-wider text-[#5A5550]">Max People</Label>
+              <Label className="text-[10px] uppercase tracking-wider text-[#5A5550]">Maks Orang</Label>
               <Input name={`pricing_${key}_maxPeople`} type="number" defaultValue={p.maxPeople} className="rounded-none border-[#E8E2D9] bg-white" />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] uppercase tracking-wider text-[#5A5550]">Note</Label>
+              <Label className="text-[10px] uppercase tracking-wider text-[#5A5550]">Catatan</Label>
               <Input name={`pricing_${key}_note`} defaultValue={p.note} className="rounded-none border-[#E8E2D9] bg-white" />
             </div>
           </div>
         ))}
       </div>
       <Button type="submit" disabled={loading} className="rounded-none bg-[#632626] text-white px-6 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#4a1c1c]">
-        {loading ? "Saving..." : "Simpan"}
+        {loading ? "Menyimpan..." : "Simpan"}
       </Button>
     </form>
   );

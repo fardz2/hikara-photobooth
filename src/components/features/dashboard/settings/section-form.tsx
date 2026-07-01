@@ -1,8 +1,6 @@
 "use client";
 
 import { toast } from "sonner";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { updateSectionContent } from "@/lib/actions/site-content-actions";
@@ -13,8 +11,6 @@ import { ImageField } from "./fields/image-field";
 import { GalleryField } from "./fields/gallery-field";
 import { TagField } from "./fields/tag-field";
 import { ObjectListField } from "./fields/object-list-field";
-
-// ─── Skeleton ───
 
 export function SectionFormSkeleton() {
   return (
@@ -27,8 +23,6 @@ export function SectionFormSkeleton() {
     </div>
   );
 }
-
-// ─── Render field from FieldDef ───
 
 function renderField(section: string, def: FieldDef, value: unknown) {
   const name = fieldPath(section, def.key);
@@ -58,8 +52,6 @@ function renderField(section: string, def: FieldDef, value: unknown) {
       return <TextField key={def.key} name={name} label={def.label} defaultValue={strVal} />;
   }
 }
-
-// ─── Reconstruct FormData → structured value ───
 
 function reconstructFormValue(section: string, def: FieldDef, fd: FormData): unknown {
   const base = fieldPath(section, def.key);
@@ -98,8 +90,6 @@ function reconstructFormValue(section: string, def: FieldDef, fd: FormData): unk
   }
 }
 
-// ─── Generic section form ───
-
 interface Props {
   section: string;
   data: Record<string, unknown>;
@@ -107,7 +97,7 @@ interface Props {
 
 export function SectionForm({ section, data }: Props) {
   const config = SECTION_CONFIG[section];
-  if (!config) return <p className="text-sm text-[#5A5550]">No data yet for this section.</p>;
+  if (!config) return <p className="text-sm text-[#5A5550]">Belum ada data untuk bagian ini.</p>;
 
   const action = async (fd: FormData) => {
     const entries = config.map((def) => ({
@@ -116,7 +106,7 @@ export function SectionForm({ section, data }: Props) {
     }));
     const res = await updateSectionContent(section, entries);
     if ("error" in res && res.error) toast.error(res.error);
-    else toast.success(`${section} updated`);
+    else toast.success(`${section} berhasil disimpan`);
   };
 
   return (

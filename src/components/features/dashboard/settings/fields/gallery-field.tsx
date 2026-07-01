@@ -17,7 +17,6 @@ export function GalleryField({ name, label, defaultValue = [], max = 3 }: Props)
   const [items, setItems] = useState<string[]>(defaultValue);
   const [uploading, startUpload] = useTransition();
   const ref = useRef<HTMLInputElement>(null);
-
   const filled = items.filter((u) => u.trim()).length;
   const canAdd = filled < max;
 
@@ -32,8 +31,6 @@ export function GalleryField({ name, label, defaultValue = [], max = 3 }: Props)
     setItems(items.filter((_, i) => i !== idx));
   };
 
-  const add = () => setItems([...items, ""]);
-
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !canAdd) return;
@@ -44,15 +41,12 @@ export function GalleryField({ name, label, defaultValue = [], max = 3 }: Props)
       if ("error" in result) {
         toast.error(result.error);
       } else {
-        const emptyIdx = items.findIndex((u) => !u.trim());
         const next = [...items];
-        if (emptyIdx >= 0) {
-          next[emptyIdx] = result.url!;
-        } else {
-          next.push(result.url!);
-        }
+        const emptyIdx = items.findIndex((u) => !u.trim());
+        if (emptyIdx >= 0) next[emptyIdx] = result.url!;
+        else next.push(result.url!);
         setItems(next);
-        toast.success("Uploaded");
+        toast.success("Terunggah");
       }
       if (ref.current) ref.current.value = "";
     });
@@ -76,21 +70,11 @@ export function GalleryField({ name, label, defaultValue = [], max = 3 }: Props)
             />
             {item && /^https?:\/\//.test(item) && (
               <div className="relative aspect-square overflow-hidden border border-[#E8E2D9] bg-[#EBE6DF]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item}
-                  alt={`${label} ${idx + 1}`}
-                  className="w-full h-full object-cover"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                />
+                <img src={item} alt="" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
               </div>
             )}
             {items.length > 1 && (
-              <button
-                type="button"
-                onClick={() => remove(idx)}
-                className="absolute -top-1.5 -right-1.5 size-5 bg-red-500 text-white flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
-              >
+              <button type="button" onClick={() => remove(idx)} className="absolute -top-1.5 -right-1.5 size-5 bg-red-500 text-white flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">
                 <HugeiconsIcon icon={Cancel01Icon} size={10} />
               </button>
             )}
@@ -109,7 +93,7 @@ export function GalleryField({ name, label, defaultValue = [], max = 3 }: Props)
             ) : (
               <>
                 <HugeiconsIcon icon={Add01Icon} size={20} />
-                <span className="text-[9px] uppercase tracking-widest mt-1 font-bold">Upload</span>
+                <span className="text-[9px] uppercase tracking-widest mt-1 font-bold">Upload Gambar</span>
               </>
             )}
           </button>

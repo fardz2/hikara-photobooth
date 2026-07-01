@@ -21,15 +21,11 @@ export function TagField({ name, label, defaultValue = [] }: Props) {
     setInput("");
   };
 
-  const remove = (idx: number) => {
-    setTags((prev) => prev.filter((_, i) => i !== idx));
-  };
+  const remove = (idx: number) => setTags((prev) => prev.filter((_, i) => i !== idx));
 
   return (
     <div>
-      <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">
-        {label}
-      </label>
+      <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">{label}</label>
       <input type="hidden" name={name} value={JSON.stringify(tags)} />
       <div className="flex flex-wrap gap-2 mb-2">
         {tags.map((tag, i) => (
@@ -55,7 +51,7 @@ export function TagField({ name, label, defaultValue = [] }: Props) {
           className="bg-[#632626] text-white px-3 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#4a1c1c] transition-colors flex items-center gap-1"
         >
           <HugeiconsIcon icon={Add01Icon} size={12} />
-          Add
+          Tambah
         </button>
       </div>
     </div>

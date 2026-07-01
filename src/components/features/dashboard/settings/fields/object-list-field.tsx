@@ -30,24 +30,16 @@ export function ObjectListField({ name, label, defaultValue = [], fields }: Prop
     setItems((prev) => [...prev, blank]);
   };
 
-  const remove = (idx: number) => {
-    setItems((prev) => prev.filter((_, i) => i !== idx));
-  };
+  const remove = (idx: number) => setItems((prev) => prev.filter((_, i) => i !== idx));
 
   return (
     <div>
-      <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">
-        {label}
-      </label>
+      <label className="text-xs uppercase tracking-wider text-[#5A5550] font-medium block mb-1">{label}</label>
       <input type="hidden" name={name} value={JSON.stringify(items)} />
       <div className="space-y-3">
         {items.map((item, idx) => (
           <div key={idx} className="border border-[#2C2A29]/10 p-4 space-y-3 bg-white relative group">
-            <button
-              type="button"
-              onClick={() => remove(idx)}
-              className="absolute top-2 right-2 text-[#8B5E56] hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
-            >
+            <button type="button" onClick={() => remove(idx)} className="absolute top-2 right-2 text-[#8B5E56] hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
               <HugeiconsIcon icon={Cancel01Icon} size={14} />
             </button>
             {fields.map((f) => (
@@ -58,7 +50,7 @@ export function ObjectListField({ name, label, defaultValue = [], fields }: Prop
                     value={String(item[f.key] ?? "")}
                     onChange={(e) => update(idx, f.key, e.target.value)}
                     rows={3}
-                    className="mt-1 w-full border border-[#E8E2D9] rounded-none px-3 py-2 text-sm bg-white"
+                    className="mt-1 w-full border border-[#E8E2D9] rounded-none px-3 py-2 text-sm bg-white resize-y"
                   />
                 ) : (
                   <input

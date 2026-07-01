@@ -4,13 +4,20 @@ export type Tab = SectionTab | "pricing" | "password"
 export const CONTENT_SECTIONS: { id: SectionTab; label: string }[] = [
   { id: "hero", label: "Hero" },
   { id: "marquee", label: "Marquee" },
-  { id: "about", label: "About" },
-  { id: "gallery", label: "Gallery" },
-  { id: "themes", label: "Themes" },
-  { id: "testimonials", label: "Testimonials" },
-  { id: "location", label: "Location" },
+  { id: "about", label: "Tentang" },
+  { id: "gallery", label: "Galeri" },
+  { id: "themes", label: "Tema" },
+  { id: "testimonials", label: "Testimoni" },
+  { id: "location", label: "Lokasi" },
   { id: "cta", label: "CTA" },
 ]
+
+export const SETTINGS_TABS: { id: Tab; label: string }[] = [
+  { id: "pricing", label: "Harga" },
+  { id: "password", label: "Kata Sandi" },
+]
+
+export const ALL_TABS: { id: Tab; label: string }[] = [...CONTENT_SECTIONS, ...SETTINGS_TABS]
 
 export interface PricingItem {
   label: string
@@ -39,70 +46,70 @@ export interface FieldDef {
 
 export type SectionConfig = Record<string, FieldDef[]>
 
-// ─── Field name builder (shared with FormData reconstruction) ───
+// ─── Field name builder ───
 
 export function fieldPath(section: string, key: string, ...parts: (string | number)[]): string {
   return [`s_${section}_${key}`, ...parts].join("_")
 }
 
-// ─── Declarative section layouts ───
+// ─── Declarative section layouts (Indonesian labels) ───
 
 export const SECTION_CONFIG: SectionConfig = {
   hero: [
     { key: "tagline", label: "Tagline", type: "text" },
-    { key: "title_line1", label: "Title Line 1", type: "text" },
-    { key: "title_highlight", label: "Title Highlight", type: "text" },
-    { key: "title_line2", label: "Title Line 2", type: "text" },
-    { key: "subtitle", label: "Subtitle", type: "textarea" },
-    { key: "brand_name", label: "Brand Name", type: "text" },
-    { key: "vertical_text_right", label: "Vertical Text Right", type: "text" },
-    { key: "vertical_text_left", label: "Vertical Text Left", type: "text" },
-    { key: "cta_text", label: "CTA Text", type: "text" },
-    { key: "cta_link", label: "CTA Link", type: "text" },
+    { key: "title_line1", label: "Judul Baris 1", type: "text" },
+    { key: "title_highlight", label: "Judul Highlight", type: "text" },
+    { key: "title_line2", label: "Judul Baris 2", type: "text" },
+    { key: "subtitle", label: "Subjudul", type: "textarea" },
+    { key: "brand_name", label: "Nama Brand", type: "text" },
+    { key: "vertical_text_right", label: "Teks Vertikal Kanan", type: "text" },
+    { key: "vertical_text_left", label: "Teks Vertikal Kiri", type: "text" },
+    { key: "cta_text", label: "Teks Tombol", type: "text" },
+    { key: "cta_link", label: "Link Tombol", type: "text" },
     { key: "polaroid_1", label: "Polaroid 1", type: "image" },
     { key: "polaroid_2", label: "Polaroid 2", type: "image" },
     { key: "polaroid_3", label: "Polaroid 3", type: "image" },
   ],
   about: [
-    { key: "image_url", label: "Image", type: "image" },
-    { key: "description", label: "Description", type: "textarea" },
+    { key: "image_url", label: "Gambar", type: "image" },
+    { key: "description", label: "Deskripsi", type: "textarea" },
   ],
   gallery: [
-    { key: "images", label: "Gallery Images", type: "gallery", max: 3 },
+    { key: "images", label: "Gambar Galeri", type: "gallery", max: 3 },
   ],
   marquee: [
-    { key: "text", label: "Marquee Text", type: "tags" },
+    { key: "text", label: "Teks Marquee", type: "tags" },
   ],
   themes: [
     {
-      key: "items", label: "Themes", type: "objects",
+      key: "items", label: "Tema", type: "objects",
       objectFields: [
-        { key: "name", label: "Name" },
-        { key: "desc", label: "Description", type: "textarea" },
-        { key: "img", label: "Image URL" },
+        { key: "name", label: "Nama" },
+        { key: "desc", label: "Deskripsi", type: "textarea" },
+        { key: "img", label: "URL Gambar" },
       ],
     },
   ],
   testimonials: [
     {
-      key: "items", label: "Testimonials", type: "objects",
+      key: "items", label: "Testimoni", type: "objects",
       objectFields: [
-        { key: "quote", label: "Quote", type: "textarea" },
-        { key: "author", label: "Author" },
-        { key: "context", label: "Context" },
+        { key: "quote", label: "Kutipan", type: "textarea" },
+        { key: "author", label: "Penulis" },
+        { key: "context", label: "Konteks" },
       ],
     },
   ],
   location: [
-    { key: "address", label: "Address", type: "text" },
-    { key: "phone", label: "Phone", type: "text" },
-    { key: "hours", label: "Hours", type: "text" },
-    { key: "map_embed_url", label: "Map Embed URL", type: "text" },
+    { key: "address", label: "Alamat", type: "text" },
+    { key: "phone", label: "Telepon", type: "text" },
+    { key: "hours", label: "Jam Operasional", type: "text" },
+    { key: "map_embed_url", label: "URL Peta", type: "text" },
   ],
   cta: [
-    { key: "title", label: "Title", type: "text" },
-    { key: "description", label: "Description", type: "textarea" },
-    { key: "button_text", label: "Button Text", type: "text" },
-    { key: "button_link", label: "Button Link", type: "text" },
+    { key: "title", label: "Judul", type: "text" },
+    { key: "description", label: "Deskripsi", type: "textarea" },
+    { key: "button_text", label: "Teks Tombol", type: "text" },
+    { key: "button_link", label: "Link Tombol", type: "text" },
   ],
 }
