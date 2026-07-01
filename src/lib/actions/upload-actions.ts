@@ -1,34 +1,23 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { uploadSiteImage, deleteSiteImage, replaceSiteImage } from "@/lib/services/site-storage-service";
 
-export async function uploadSiteImage(formData: FormData) {
+export async function uploadImage(formData: FormData) {
   const file = formData.get("file") as File;
-  if (!file || file.size === 0) return { error: "No file" };
+  if (!file || file.size === 0) return { error: "Tidak ada file" };
 
-  if (file.size > 2 * 1024 * 1024) return { error: "Max 2MB" };
-  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type))
-    return { error: "JPEG/PNG/WebP only" };
-
-  const supabase = await createClient();
-  const ext = file.name.split(".").pop();
-  const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-
-  const { error } = await supabase.storage
-    .from("site-images")
-    .upload(path, file, { contentType: file.type, upsert: false });
-
-  if (error) return { error: error.message };
-
-  const { data: urlData } = supabase.storage.from("site-images").getPublicUrl(path);
-  return { url: urlData.publicUrl };
+  const folder = (formData.get("folder") as string) || "general";
+  return uploadSiteImage(file, folder);
 }
 
-export async function deleteSiteImage(url: string) {
-  const supabase = await createClient();
-  const parts = url.split("/");
-  const path = decodeURIComponent(parts.pop() || "");
+export async function deleteImage(url: string) {
+  return deleteSiteImage(url);
+}
 
-  const { error } = await supabase.storage.from("site-images").remove([path]);
-  return error ? { error: error.message } : { success: true };
+export async function replaceImage(oldUrl: string | null | undefined, formData: FormData) {
+  const file = formData.get("file") as File;
+  if (!file || file.size === 0) return { error: "Tidak ada file" };
+
+  const folder = (formData.get("folder") as string) || "general";
+  return replaceSiteImage(oldUrl, file, folder);
 }

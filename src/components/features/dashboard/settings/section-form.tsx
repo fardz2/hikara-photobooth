@@ -57,33 +57,38 @@ function reconstructFormValue(section: string, def: FieldDef, fd: FormData): unk
   const base = fieldPath(section, def.key);
 
   switch (def.type) {
-    case "gallery":
-    case "tags": {
+    case "image":
+      return fd.get(base) ?? "";
+    case "gallery": {
+      const count = Number(fd.get(`${base}_count`)) || 0;
       const items: string[] = [];
-      let idx = 0;
-      while (true) {
-        const val = fd.get(`${base}_${idx}`);
-        if (val === null) break;
-        const s = typeof val === "string" ? val.trim() : String(val);
-        if (s) items.push(s);
-        idx++;
+      for (let i = 0; i < count; i++) {
+        const val = fd.get(`${base}_${i}`);
+        if (val && typeof val === "string" && val.trim()) items.push(val.trim());
       }
       return items;
     }
-    case "objects": {
-      const items: Record<string, unknown>[] = [];
-      const keys = def.objectFields?.map((f) => f.key) || [];
-      let idx = 0;
-      while (true) {
-        if (keys.length === 0) break;
-        const first = fd.get(`${base}_${idx}_${keys[0]}`);
-        if (first === null || (typeof first === "string" && !first.trim())) break;
-        const item: Record<string, unknown> = {};
-        for (const k of keys) item[k] = fd.get(`${base}_${idx}_${k}`) ?? "";
-        items.push(item);
-        idx++;
+    case "tags": {
+      const raw = fd.get(base);
+      if (typeof raw === "string") {
+        try {
+          return JSON.parse(raw);
+        } catch {
+          return [];
+        }
       }
-      return items;
+      return [];
+    }
+    case "objects": {
+      const raw = fd.get(base);
+      if (typeof raw === "string") {
+        try {
+          return JSON.parse(raw);
+        } catch {
+          return [];
+        }
+      }
+      return [];
     }
     default:
       return fd.get(base) ?? "";
