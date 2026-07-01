@@ -2,7 +2,7 @@
 
 import { Add01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { replaceImage, uploadImage } from "@/lib/actions/upload-actions";
 import { ImagePreview } from "./image-preview";
@@ -113,6 +113,11 @@ export function ObjectListField({
   const [uploading, startUpload] = useTransition();
   const uploadRef = useRef<{ idx: number; key: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Sync state when server data changes (e.g. after save)
+  useEffect(() => {
+    setItems(defaultValue);
+  }, [defaultValue]);
 
   const update = (idx: number, key: string, val: unknown) => {
     setItems((prev) =>

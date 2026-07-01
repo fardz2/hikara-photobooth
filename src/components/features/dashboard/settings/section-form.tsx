@@ -1,6 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
+import { useRef, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { updateSectionContent } from "@/lib/actions/site-content-actions";
@@ -168,23 +169,30 @@ interface Props {
 
 export function SectionForm({ section, data }: Props) {
   const config = SECTION_CONFIG[section];
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isPending, startTransition] = useTransition();
+
   if (!config)
     return (
       <p className="text-sm text-[#5A5550]">Belum ada data untuk bagian ini.</p>
     );
 
-  const action = async (fd: FormData) => {
-    const entries = config.map((def) => ({
-      key: def.key,
-      value: reconstructFormValue(section, def, fd),
-    }));
-    const res = await updateSectionContent(section, entries);
-    if ("error" in res && res.error) toast.error(res.error);
-    else toast.success(`${section} berhasil disimpan`);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(formRef.current!);
+    startTransition(async () => {
+      const entries = config.map((def) => ({
+        key: def.key,
+        value: reconstructFormValue(section, def, fd),
+      }));
+      const res = await updateSectionContent(section, entries);
+      if ("error" in res && res.error) toast.error(res.error);
+      else toast.success(`${section} berhasil disimpan`);
+    });
   };
 
   return (
-    <form action={action} className="space-y-6 pb-20">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6 pb-20">
       <h2 className="text-lg font-heading uppercase tracking-wider text-[#2C2A29] capitalize">
         {SECTION_LABELS[section] || section}
       </h2>
@@ -196,9 +204,10 @@ export function SectionForm({ section, data }: Props) {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8E2D9] p-4 flex justify-end z-50">
         <Button
           type="submit"
-          className="rounded-none bg-[#632626] text-white px-6 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#4a1c1c]"
+          disabled={isPending}
+          className="rounded-none bg-[#632626] text-white px-6 py-2 text-[10px] uppercase tracking-widest font-bold hover:bg-[#4a1c1c] disabled:opacity-50 transition-opacity"
         >
-          Simpan
+          {isPending ? "Menyimpan..." : "Simpan"}
         </Button>
       </div>
     </form>

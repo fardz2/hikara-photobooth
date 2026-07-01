@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import {
   type PricingItem,
@@ -19,6 +19,7 @@ export async function updateSiteContent(
 
   updateTag(CACHE_TAGS.siteContent);
   updateTag(CACHE_TAGS.siteContentSection(section));
+  revalidatePath("/dashboard/settings");
   return { success: true };
 }
 
@@ -31,6 +32,7 @@ export async function updateSectionContent(
 
   updateTag(CACHE_TAGS.siteContent);
   updateTag(CACHE_TAGS.siteContentSection(section));
+  revalidatePath("/dashboard/settings");
   return { success: true };
 }
 
@@ -40,5 +42,6 @@ export async function updatePricing(items: PricingItem[]) {
 
   updateTag(CACHE_TAGS.siteContent);
   updateTag(CACHE_TAGS.pricing);
+  revalidatePath("/dashboard/settings");
   return { success: true };
 }
