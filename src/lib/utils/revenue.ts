@@ -1,4 +1,4 @@
-import type { PricingItem } from "../services/site-content-service";
+import type { PricingItem } from "../services/pricing-service";
 
 export interface RawRevenueRow {
   total_price: number | null;

@@ -3,11 +3,14 @@
 import { revalidatePath, updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import {
-  type PricingItem,
-  upsertPricing,
   upsertSectionContent,
   upsertSiteContent,
 } from "@/lib/services/site-content-service";
+
+function invalidateSection(section: string) {
+  updateTag(CACHE_TAGS.siteContent);
+  updateTag(CACHE_TAGS.siteContentSection(section));
+}
 
 export async function updateSiteContent(
   section: string,
@@ -17,8 +20,7 @@ export async function updateSiteContent(
   const result = await upsertSiteContent(section, key, value);
   if (result.error) return result;
 
-  updateTag(CACHE_TAGS.siteContent);
-  updateTag(CACHE_TAGS.siteContentSection(section));
+  invalidateSection(section);
   revalidatePath("/dashboard/settings");
   return { success: true };
 }
@@ -30,18 +32,7 @@ export async function updateSectionContent(
   const result = await upsertSectionContent(section, entries);
   if (result.error) return result;
 
-  updateTag(CACHE_TAGS.siteContent);
-  updateTag(CACHE_TAGS.siteContentSection(section));
-  revalidatePath("/dashboard/settings");
-  return { success: true };
-}
-
-export async function updatePricing(items: PricingItem[]) {
-  const result = await upsertPricing(items);
-  if (result.error) return result;
-
-  updateTag(CACHE_TAGS.siteContent);
-  updateTag(CACHE_TAGS.pricing);
+  invalidateSection(section);
   revalidatePath("/dashboard/settings");
   return { success: true };
 }

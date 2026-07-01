@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import * as revenueService from "@/lib/services/revenue-service";
 import { createClient } from '@/lib/supabase/server'
-import type { PricingItem } from "@/lib/services/site-content-service";
+import type { PricingItem } from "@/lib/services/pricing-service";
 
 const mockPricing: PricingItem[] = [
   { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, category: "package" as const },
@@ -25,7 +25,7 @@ vi.mock('next/cache', () => ({
   revalidateTag: vi.fn(),
 }))
 
-vi.mock('@/lib/services/site-content-service', () => ({
+vi.mock('@/lib/services/pricing-service', () => ({
   getPricing: mockGetPricing,
 }))
 

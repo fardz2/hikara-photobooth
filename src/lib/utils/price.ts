@@ -1,4 +1,4 @@
-import { getPricing, type PricingItem } from "../services/site-content-service";
+import { getPricing, type PricingItem } from "../services/pricing-service";
 
 export interface PriceInput {
   packageId?: string;

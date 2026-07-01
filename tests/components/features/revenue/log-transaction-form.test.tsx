@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { LogTransactionForm } from '@/components/features/revenue/log-transaction-form'
 import { logTransaction } from '@/lib/actions/revenue-actions'
-import type { PricingItem } from '@/lib/services/site-content-service'
+import type { PricingItem } from '@/lib/services/pricing-service'
 
 // Mock the server action
 vi.mock('@/lib/actions/revenue-actions', () => ({

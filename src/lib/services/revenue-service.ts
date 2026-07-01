@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { getPricing } from "@/lib/services/site-content-service";
+import { getPricing } from "@/lib/services/pricing-service";
 import { createClient } from "@/lib/supabase/server";
 import { formatRevenueStats } from "@/lib/utils/revenue";
 

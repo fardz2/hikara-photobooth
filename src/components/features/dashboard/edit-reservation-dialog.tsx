@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { editReservation } from "@/lib/actions/reservation-actions";
-import type { PricingItem } from "@/lib/services/site-content-service";
+import type { PricingItem } from "@/lib/services/pricing-service";
 import { generateTimeSlots } from "@/lib/utils/slots";
 import { normalizePhoneNumber } from "@/lib/utils/validation";
 import type { Reservation } from "./columns";

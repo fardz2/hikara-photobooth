@@ -9,10 +9,8 @@ import { Marquee } from "@/components/features/landing/marquee";
 import { PackagesSection } from "@/components/features/landing/packages-section";
 import { TestimonialSection } from "@/components/features/landing/testimonial-section";
 import { ThemesSection } from "@/components/features/landing/themes-section";
-import {
-  getPricing,
-  getSiteContent,
-} from "@/lib/services/site-content-service";
+import { getPricing } from "@/lib/services/pricing-service";
+import { getSiteContent } from "@/lib/services/site-content-service";
 
 async function HomeContent() {
   const [

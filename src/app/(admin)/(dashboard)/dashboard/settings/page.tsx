@@ -2,13 +2,17 @@ import { Suspense } from "react";
 import { CONTENT_SECTIONS } from "@/components/features/dashboard/settings/section-config";
 import { SettingsClient } from "@/components/features/dashboard/settings/settings-client";
 import { SettingsSkeleton } from "@/components/skeletons/settings-skeleton";
+import { getAllPricing } from "@/lib/services/pricing-service";
 import { getAllSiteContent } from "@/lib/services/site-content-service";
 
 const sectionKeys = CONTENT_SECTIONS.map((s) => s.id);
 
 async function SettingsContent() {
-  const sectionData = await getAllSiteContent(sectionKeys);
-  return <SettingsClient sectionData={sectionData} />;
+  const [sectionData, pricingData] = await Promise.all([
+    getAllSiteContent(sectionKeys),
+    getAllPricing(),
+  ]);
+  return <SettingsClient sectionData={sectionData} pricingData={pricingData} />;
 }
 
 export default function SettingsPage() {

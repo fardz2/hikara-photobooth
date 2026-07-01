@@ -35,7 +35,7 @@ import {
   deleteReservation,
   updateReservationStatus,
 } from "@/lib/actions/reservation-actions";
-import type { PricingItem } from "@/lib/services/site-content-service";
+import type { PricingItem } from "@/lib/services/pricing-service";
 import { cn } from "@/lib/utils";
 import { EditReservationDialog } from "./edit-reservation-dialog";
 import { ProofPreview } from "./proof-preview";

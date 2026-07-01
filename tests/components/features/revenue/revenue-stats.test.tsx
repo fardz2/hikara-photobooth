@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { RevenueStats } from '@/components/features/revenue/revenue-stats'
 import * as revenueService from "@/lib/services/revenue-service";
-import type { PricingItem } from "@/lib/services/site-content-service";
+import type { PricingItem } from "@/lib/services/pricing-service";
 import { render, screen } from '@testing-library/react'
 
 const mockPricing: PricingItem[] = [
@@ -14,7 +14,7 @@ vi.mock('@/lib/services/revenue-service', () => ({
   getRevenueStats: vi.fn(),
 }))
 
-vi.mock('@/lib/services/site-content-service', () => ({
+vi.mock('@/lib/services/pricing-service', () => ({
   getPricing: vi.fn(),
 }))
 
@@ -45,14 +45,14 @@ describe('RevenueStats Server Component', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    const siteContentService = await import('@/lib/services/site-content-service');
+    const siteContentService = await import('@/lib/services/pricing-service');
     vi.mocked(siteContentService.getPricing).mockResolvedValue(mockPricing);
     vi.mocked(revenueService.getRevenueStats).mockResolvedValue(mockStats)
     
   })
 
   it('renders stats correctly when data is available', async () => {
-    const { getPricing } = await import('@/lib/services/site-content-service');
+    const { getPricing } = await import('@/lib/services/pricing-service');
     vi.mocked(getPricing).mockResolvedValue(mockPricing);
 
     const jsx = await RevenueStats({ 

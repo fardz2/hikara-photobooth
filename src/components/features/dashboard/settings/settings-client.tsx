@@ -3,14 +3,17 @@
 import { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PasswordForm } from "./password-form";
+import { PricingAdmin, PricingFormSkeleton } from "./pricing-admin";
 import { CONTENT_SECTIONS, SETTINGS_TABS } from "./section-config";
 import { SectionForm, SectionFormSkeleton } from "./section-form";
+import type { PricingItem } from "@/lib/services/pricing-service";
 
 interface Props {
   sectionData: Record<string, unknown>;
+  pricingData: PricingItem[];
 }
 
-export function SettingsClient({ sectionData }: Props) {
+export function SettingsClient({ sectionData, pricingData }: Props) {
   return (
     <Tabs defaultValue="hero">
       <TabsList className="w-full overflow-x-auto justify-start gap-1 bg-transparent p-0 border-b border-[#E8E2D9] h-auto rounded-none">
@@ -28,6 +31,9 @@ export function SettingsClient({ sectionData }: Props) {
       <div className="pt-6">
         <TabsContent value="password" className="mt-0">
           <PasswordForm />
+        </TabsContent>
+        <TabsContent value="pricing" className="mt-0">
+          <PricingAdmin initial={pricingData} />
         </TabsContent>
         {CONTENT_SECTIONS.map((s) => (
           <TabsContent key={s.id} value={s.id} className="mt-0">

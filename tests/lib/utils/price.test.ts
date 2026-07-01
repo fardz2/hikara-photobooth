@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { calculateTotalPriceSync, type PriceInput } from '@/lib/utils/price'
-import { type PricingItem } from "@/lib/services/site-content-service";
+import { type PricingItem } from "@/lib/services/pricing-service";
 
 const MOCK_PRICING: PricingItem[] = [
   { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG", category: "package" as const },

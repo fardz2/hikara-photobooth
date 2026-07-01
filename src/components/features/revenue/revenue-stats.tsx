@@ -15,7 +15,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { getRevenueStats } from "@/lib/services/revenue-service";
-import { getPricing } from "@/lib/services/site-content-service";
+import { getPricing } from "@/lib/services/pricing-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
 import { RevenueChart } from "./revenue-chart";
 

@@ -5,13 +5,7 @@ import {
   StaggerItem,
 } from "@/components/ui/motion";
 
-interface PricingItem {
-  label: string;
-  price: number;
-  maxPeople?: number;
-  note?: string;
-  category: string;
-}
+import type { PricingItem } from "@/lib/services/pricing-service";
 
 interface Props {
   pricing: PricingItem[];

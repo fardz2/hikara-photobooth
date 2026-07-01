@@ -3,7 +3,7 @@ import { Suspense } from "react";
 
 import { ReservationForm } from "@/components/features/reservation/reservation-form";
 import { ReservationFormSkeleton } from "@/components/skeletons/reservation-form-skeleton";
-import { getPricing } from "@/lib/services/site-content-service";
+import { getPricing } from "@/lib/services/pricing-service";
 import { escapeJsonForHtml } from "@/lib/utils/escape";
 
 export const metadata: Metadata = {

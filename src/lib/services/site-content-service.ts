@@ -25,48 +25,6 @@ export async function getSiteContent(section: string) {
   return map;
 }
 
-export type PricingCategory = "package" | "extra" | "addon";
-
-export interface PricingItem {
-  label: string;
-  price: number;
-  maxPeople?: number;
-  note?: string;
-  category: PricingCategory;
-}
-
-function defaultPricing(): PricingItem[] {
-  return [
-    {
-      label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)",
-      price: 35000,
-      maxPeople: 3,
-      note: "MAX. 3 ORANG",
-      category: "package",
-    },
-    { label: "Tambahan per Orang", price: 5000, category: "extra" },
-    { label: "Extra Print", price: 10000, category: "extra" },
-    { label: "Custom Frame Birthday, Dll", price: 15000, category: "addon" },
-  ];
-}
-
-export async function getPricing(): Promise<PricingItem[]> {
-  "use cache";
-  cacheLife("hours");
-  cacheTag(CACHE_TAGS.pricing, CACHE_TAGS.siteContentSection("pricing"));
-
-  const supabase = createPublicClient();
-  const { data } = await supabase
-    .from("site_content")
-    .select("value")
-    .eq("section", "pricing")
-    .eq("key", "items")
-    .single();
-
-  if (!data) return defaultPricing();
-  return (data.value as PricingItem[]) || defaultPricing();
-}
-
 // ─── Read: admin, no cache ───
 
 export async function getAllSiteContent(sections: string[]) {
@@ -115,19 +73,5 @@ export async function upsertSectionContent(
     onConflict: "section, key",
   });
   if (error) return { error: error.message };
-  return { success: true };
-}
-
-export async function upsertPricing(items: PricingItem[]) {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("site_content")
-    .upsert(
-      { section: "pricing", key: "items", value: items },
-      { onConflict: "section, key" },
-    );
-
-  if (error) return { error: error.message };
-  updateTag(CACHE_TAGS.pricing);
   return { success: true };
 }

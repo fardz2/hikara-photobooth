@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { logTransaction } from "@/lib/actions/revenue-actions";
-import type { PricingItem } from "@/lib/services/site-content-service";
+import type { PricingItem } from "@/lib/services/pricing-service";
 import {
   TransactionSchema,
   type TransactionValues,

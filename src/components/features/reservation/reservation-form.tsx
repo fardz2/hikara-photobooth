@@ -59,7 +59,7 @@ const timeSlots = generateTimeSlots();
 
 // Schema moved to @/lib/validations/reservation
 
-import type { PricingItem } from "@/lib/services/site-content-service";
+import type { PricingItem } from "@/lib/services/pricing-service";
 
 interface Props {
   pricing: PricingItem[];

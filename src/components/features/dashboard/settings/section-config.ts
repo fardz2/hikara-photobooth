@@ -5,10 +5,9 @@ export type SectionTab =
   | "gallery"
   | "themes"
   | "testimonials"
-  | "pricing"
   | "location"
   | "cta";
-export type Tab = SectionTab | "password";
+export type Tab = SectionTab | "password" | "pricing";
 
 export const CONTENT_SECTIONS: { id: SectionTab; label: string }[] = [
   { id: "hero", label: "Hero" },
@@ -17,12 +16,12 @@ export const CONTENT_SECTIONS: { id: SectionTab; label: string }[] = [
   { id: "gallery", label: "Galeri" },
   { id: "themes", label: "Background" },
   { id: "testimonials", label: "Testimoni" },
-  { id: "pricing", label: "Harga" },
   { id: "location", label: "Lokasi" },
   { id: "cta", label: "CTA" },
 ];
 
 export const SETTINGS_TABS: { id: Tab; label: string }[] = [
+  { id: "pricing", label: "Harga" },
   { id: "password", label: "Kata Sandi" },
 ];
 
@@ -30,13 +29,6 @@ export const ALL_TABS: { id: Tab; label: string }[] = [
   ...CONTENT_SECTIONS,
   ...SETTINGS_TABS,
 ];
-
-export interface PricingItem {
-  label: string;
-  price: number;
-  maxPeople?: number;
-  note?: string;
-}
 
 // ─── Field definition types ───
 
@@ -119,25 +111,6 @@ export const SECTION_CONFIG: SectionConfig = {
         { key: "quote", label: "Kutipan", type: "textarea" },
         { key: "author", label: "Penulis" },
         { key: "context", label: "Konteks" },
-      ],
-    },
-  ],
-  pricing: [
-    {
-      key: "items",
-      label: "Paket",
-      type: "objects",
-      categoryKey: "category",
-      objectFields: [
-        { key: "label", label: "Nama Paket" },
-        { key: "price", label: "Harga (Rp)" },
-        { key: "maxPeople", label: "Maks Orang" },
-        { key: "note", label: "Catatan" },
-        { key: "category", label: "Kategori", type: "select", options: [
-          { value: "package", label: "Paket Utama" },
-          { value: "extra", label: "Tambahan" },
-          { value: "addon", label: "Add-on" },
-        ] },
       ],
     },
   ],
