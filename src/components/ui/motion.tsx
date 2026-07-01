@@ -221,7 +221,7 @@ export const ImageMaskReveal = ({
         whileInView={{ scale: 1, filter: "grayscale(30%) opacity(1)" }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 2.2, delay: delay + 0.2, ease: slowEase }}
-        className="w-full h-full relative group-hover:scale-105 group-hover:filter-none group-hover:opacity-100 transition-all duration-1000 ease-out"
+        className="w-full h-full relative group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 ease-out"
       >
         <Image
           src={src}
