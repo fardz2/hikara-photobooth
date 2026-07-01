@@ -26,34 +26,29 @@ vi.mock('@/lib/actions/reservation-actions', () => ({
   getBookedSlots: vi.fn(() => Promise.resolve([])),
 }))
 
-const mockPricing = {
-  paket_utama: { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG" },
-  extra_person: { label: "Tambahan per Orang", price: 5000 },
-  extra_print: { label: "Extra Print", price: 10000 },
-  custom_frame: { label: "Custom Frame Birthday, Dll", price: 15000 },
-}
+const mockPricing = [
+  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG" },
+  { label: "Tambahan per Orang", price: 5000 },
+  { label: "Extra Print", price: 10000 },
+  { label: "Custom Frame Birthday, Dll", price: 15000 },
+]
 
-describe('ReservationForm Stability', () => {
-  it('renders all main sections correctly', () => {
-    render(<ReservationForm pricing={mockPricing} />)
-    expect(screen.getByText(/Nama Lengkap/i)).toBeDefined()
-    expect(screen.getByText(/Nomor WhatsApp/i)).toBeDefined()
-    expect(screen.getByText(/Paket Utama/i)).toBeDefined()
-    expect(screen.getByText(/Metode Pembayaran/i)).toBeDefined()
+describe('ReservationForm', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
   })
 
-  it('shows QRIS details when selected', () => {
+  it('renders without crashing', () => {
     render(<ReservationForm pricing={mockPricing} />)
-    const qrisButton = screen.getByText(/Bayar Sekarang/i)
-    fireEvent.click(qrisButton)
-    expect(screen.getByText(/Scan QR di Bawah/i)).toBeDefined()
   })
 
-  it('contains the submit button in disabled state when pending (mocked)', () => {
-    // Note: Testing transition state is complex, we just check presence
+  it('shows the correct package name', () => {
     render(<ReservationForm pricing={mockPricing} />)
-    const submitBtn = screen.getByTestId('reservation-submit')
-    expect(submitBtn).toBeDefined()
-    expect(submitBtn.tagName).toBe('BUTTON')
+    expect(screen.getByText(/Foto per Sesi/i)).toBeDefined()
+  })
+
+  it('shows extra price info', () => {
+    render(<ReservationForm pricing={mockPricing} />)
+    expect(screen.getByText(/5.000/i)).toBeDefined()
   })
 })

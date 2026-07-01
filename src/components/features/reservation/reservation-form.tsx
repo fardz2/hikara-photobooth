@@ -66,23 +66,26 @@ const timeSlots = generateTimeSlots();
 
 // Schema moved to @/lib/validations/reservation
 
+import { type PricingItem } from "@/lib/services/site-content-service";
+
 interface Props {
-  pricing: Record<string, any>;
+  pricing: PricingItem[];
 }
 
 export const ReservationForm = ({ pricing }: Props) => {
-  const p = {
-    paket_utama: { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000 },
-    extra_person: { label: "Tambahan per Orang", price: 5000 },
-    extra_print: { label: "Extra Print", price: 10000 },
-    custom_frame: { label: "Custom Frame Birthday, Dll", price: 15000 },
-    ...pricing,
-  };
+  const mainPkg = pricing.find((p) => p.maxPeople) || pricing[0];
+  const extraPerson = pricing.find((p) => p.label.toLowerCase().includes("orang") || !p.maxPeople) || { label: "Tambahan per Orang", price: 5000 };
+  const extraPrint = pricing.find((p) => p.label.toLowerCase().includes("print")) || { label: "Extra Print", price: 10000 };
 
-  const pricelist = [{ id: "paket_utama", label: p.paket_utama.label, price: p.paket_utama.price }];
-  const addons = [{ id: "custom_frame", label: p.custom_frame.label, price: p.custom_frame.price }];
-  const EXTRA_PERSON_PRICE = p.extra_person.price;
-  const EXTRA_PRINT_PRICE = p.extra_print.price;
+  const pricelist = mainPkg ? [{ id: "paket_utama", label: mainPkg.label, price: mainPkg.price }] : [];
+  const addons: { id: string; label: string; price: number }[] = [];
+  for (const item of pricing) {
+    if (item !== mainPkg && !item.label.toLowerCase().includes("orang") && !item.label.toLowerCase().includes("print")) {
+      addons.push({ id: item.label.toLowerCase().replace(/[^a-z]/g, "_"), label: item.label, price: item.price });
+    }
+  }
+  const EXTRA_PERSON_PRICE = extraPerson.price;
+  const EXTRA_PRINT_PRICE = extraPrint.price;
 
   // WITA (Asia/Makassar) Today Calculation
   const nowWita = new Date(
