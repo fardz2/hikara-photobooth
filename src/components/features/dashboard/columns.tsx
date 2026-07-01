@@ -48,12 +48,14 @@ export type Reservation = {
   time: string;
   package: string;
   addons: string[] | null;
+  extras?: Record<string, number> | null;
   status: "pending" | "confirmed" | "cancelled";
   extra_people_count?: number;
   extra_print_count?: number;
   total_price?: number;
   payment_method?: "tunai" | "qris";
   payment_proof_url?: string | null;
+  pricing_snapshot?: PricingItem[] | null;
 };
 
 export function getColumns(

@@ -20,7 +20,7 @@ export async function logTransaction(data: TransactionInput) {
     sessionTime: data.session_time,
     package: data.package,
     addons: data.addons || [],
-    extras: {},
+    extras: data.extras || {},
     paymentMethod: data.payment_method,
   });
 

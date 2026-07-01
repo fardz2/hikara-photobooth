@@ -115,6 +115,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
         session_time: data.sessionTime,
         extra_people_count: Object.values(extras).reduce((a, b) => a + b, 0),
         extra_print_count: 0,
+        extras,
         customer_name: data.customerName,
       });
 

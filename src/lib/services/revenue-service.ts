@@ -30,6 +30,7 @@ export type TransactionInput = {
   payment_method: "tunai" | "qris";
   amount: number;
   addons?: string[];
+  extras?: Record<string, number>;
   customer_name?: string;
   session_time?: string;
   extra_people_count?: number;
@@ -45,6 +46,7 @@ export async function logTransaction(data: TransactionInput) {
     time: data.session_time ?? format(new Date(), "HH:mm"),
     package: data.package,
     addons: data.addons || [],
+    extras: data.extras || {},
     payment_method: data.payment_method,
     total_price: data.amount,
     extra_people_count: data.extra_people_count || 0,

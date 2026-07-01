@@ -41,7 +41,7 @@ export function EditReservationDialog({
   onOpenChange,
   pricing,
 }: Props) {
-  const effectivePricing = (reservation as any)?.pricing_snapshot || pricing;
+  const effectivePricing = reservation?.pricing_snapshot || pricing;
   const packages = effectivePricing.filter(
     (p: PricingItem) => p.category === "package",
   );
