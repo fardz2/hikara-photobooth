@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { formatRevenueStats, type RawRevenueRow } from '@/lib/utils/revenue'
-import { type PricingDict } from "@/lib/services/site-content-service";
+import { type PricingItem } from "@/lib/services/site-content-service";
 
-const mockPricing: PricingDict = {
-  paket_utama: { label: "Paket", price: 35000, maxPeople: 3 },
-  extra_person: { label: "Extra Person", price: 5000 },
-  extra_print: { label: "Extra Print", price: 10000 },
-  custom_frame: { label: "Frame", price: 15000 },
-}
+const mockPricing: PricingItem[] = [
+  { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3 },
+  { label: "Tambahan per Orang", price: 5000 },
+  { label: "Extra Print", price: 10000 },
+  { label: "Custom Frame Birthday, Dll", price: 15000 },
+]
 
 describe('formatRevenueStats', () => {
   const mockData: RawRevenueRow[] = [
@@ -70,9 +70,9 @@ describe('formatRevenueStats', () => {
   })
 
   it('falls back to defaults when pricing is incomplete', () => {
-    const partialPricing: PricingDict = {
-      paket_utama: { label: "Paket", price: 35000, maxPeople: 3 },
-    }
+    const partialPricing: PricingItem[] = [
+      { label: "Paket", price: 35000, maxPeople: 3 },
+    ]
     const stats = formatRevenueStats(mockData, partialPricing)
     // Falls back to 5000 for extra_person, 10000 for extra_print
     expect(stats.breakdown.extraPrint).toBe(10000)

@@ -1,24 +1,22 @@
 import {
   FadeUp,
-  FadeRight,
   StaggerContainer,
   StaggerItem,
   ParallaxElement,
 } from "@/components/ui/motion";
 
+interface PricingItem {
+  label: string;
+  price: number;
+  maxPeople?: number;
+  note?: string;
+}
+
 interface Props {
-  pricing: Record<string, {label: string, price: number, maxPeople?: number, note?: string}>;
+  pricing: PricingItem[];
 }
 
 export const PackagesSection = ({ pricing }: Props) => {
-  const p = {
-    paket_utama: { label: "Foto per Sesi + Print 2 Photostrip", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG" },
-    extra_person: { label: "Tambahan per Orang", price: 5000 },
-    extra_print: { label: "Extra Print", price: 10000 },
-    custom_frame: { label: "Custom Frame Birthday, Dll", price: 15000 },
-    ...pricing,
-  };
-
   return (
     <section
       id="packages"
@@ -61,52 +59,23 @@ export const PackagesSection = ({ pricing }: Props) => {
             delayOrder={0.3}
             className="flex flex-col gap-10 w-full relative"
           >
-            <StaggerItem className="flex flex-col md:flex-row justify-between items-center md:items-end border-b border-[#2C2A29]/20 pb-6 text-center md:text-left gap-2 md:gap-0 group hover:border-[#8B5E56] transition-colors duration-500 relative">
-              <div className="relative z-10 w-full md:w-auto">
-                <h3 className="font-heading text-xl md:text-2xl text-[#2C2A29] mb-1 group-hover:text-[#8B5E56] transition-colors uppercase tracking-widest text-left">
-                  {p.paket_utama.label}
-                </h3>
-                <p className="font-light tracking-[0.2em] text-[#5A5550] text-[10px] md:text-xs text-left">
-                  ({p.paket_utama.note || `MAX. ${p.paket_utama.maxPeople || 3} ORANG`})
-                </p>
-              </div>
-              <div className="text-[#2C2A29] font-medium tracking-widest text-sm mt-4 md:mt-0 relative z-10 text-left w-full md:w-auto">
-                RP. {p.paket_utama.price.toLocaleString('id-ID')}
-              </div>
-            </StaggerItem>
-
-            <StaggerItem className="flex flex-col md:flex-row justify-between items-center md:items-end border-b border-[#2C2A29]/20 pb-6 text-center md:text-left gap-2 md:gap-0 group hover:border-[#8B5E56] transition-colors duration-500 relative">
-              <div className="relative z-10 w-full md:w-auto">
-                <h3 className="font-heading text-xl md:text-2xl text-[#2C2A29] mb-1 group-hover:text-[#8B5E56] transition-colors uppercase tracking-widest text-left">
-                  {p.extra_person.label}
-                </h3>
-              </div>
-              <div className="text-[#2C2A29] font-medium tracking-widest text-sm mt-4 md:mt-0 relative z-10 text-left w-full md:w-auto">
-                RP. {p.extra_person.price.toLocaleString('id-ID')}
-              </div>
-            </StaggerItem>
-
-            <StaggerItem className="flex flex-col md:flex-row justify-between items-center md:items-end border-b border-[#2C2A29]/20 pb-6 text-center md:text-left gap-2 md:gap-0 group hover:border-[#8B5E56] transition-colors duration-500 relative">
-              <div className="relative z-10 w-full md:w-auto">
-                <h3 className="font-heading text-xl md:text-2xl text-[#2C2A29] mb-1 group-hover:text-[#8B5E56] transition-colors uppercase tracking-widest text-left">
-                  {p.extra_print.label}
-                </h3>
-              </div>
-              <div className="text-[#2C2A29] font-medium tracking-widest text-sm mt-4 md:mt-0 relative z-10 text-left w-full md:w-auto">
-                RP. {p.extra_print.price.toLocaleString('id-ID')}
-              </div>
-            </StaggerItem>
-
-            <StaggerItem className="flex flex-col md:flex-row justify-between items-center md:items-end border-b border-[#2C2A29]/20 pb-6 text-center md:text-left gap-2 md:gap-0 group hover:border-[#8B5E56] transition-colors duration-500 relative">
-              <div className="relative z-10 w-full md:w-auto">
-                <h3 className="font-heading text-xl md:text-2xl text-[#2C2A29] mb-1 group-hover:text-[#8B5E56] transition-colors uppercase tracking-widest text-left">
-                  {p.custom_frame.label}
-                </h3>
-              </div>
-              <div className="text-[#2C2A29] font-medium tracking-widest text-sm mt-4 md:mt-0 relative z-10 text-left w-full md:w-auto">
-                RP. {p.custom_frame.price.toLocaleString('id-ID')}
-              </div>
-            </StaggerItem>
+            {pricing.map((item, idx) => (
+              <StaggerItem key={idx} className="flex flex-col md:flex-row justify-between items-center md:items-end border-b border-[#2C2A29]/20 pb-6 text-center md:text-left gap-2 md:gap-0 group hover:border-[#8B5E56] transition-colors duration-500 relative">
+                <div className="relative z-10 w-full md:w-auto">
+                  <h3 className="font-heading text-xl md:text-2xl text-[#2C2A29] mb-1 group-hover:text-[#8B5E56] transition-colors uppercase tracking-widest text-left">
+                    {item.label}
+                  </h3>
+                  {(item.note || item.maxPeople) && (
+                    <p className="font-light tracking-[0.2em] text-[#5A5550] text-[10px] md:text-xs text-left">
+                      ({item.note || `MAX. ${item.maxPeople} ORANG`})
+                    </p>
+                  )}
+                </div>
+                <div className="text-[#2C2A29] font-medium tracking-widest text-sm mt-4 md:mt-0 relative z-10 text-left w-full md:w-auto">
+                  RP. {item.price.toLocaleString('id-ID')}
+                </div>
+              </StaggerItem>
+            ))}
           </StaggerContainer>
         </div>
       </div>

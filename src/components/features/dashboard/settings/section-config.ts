@@ -1,5 +1,5 @@
-export type SectionTab = "hero" | "marquee" | "about" | "gallery" | "themes" | "testimonials" | "location" | "cta"
-export type Tab = SectionTab | "pricing" | "password"
+export type SectionTab = "hero" | "marquee" | "about" | "gallery" | "themes" | "testimonials" | "pricing" | "location" | "cta"
+export type Tab = SectionTab | "password"
 
 export const CONTENT_SECTIONS: { id: SectionTab; label: string }[] = [
   { id: "hero", label: "Hero" },
@@ -8,12 +8,12 @@ export const CONTENT_SECTIONS: { id: SectionTab; label: string }[] = [
   { id: "gallery", label: "Galeri" },
   { id: "themes", label: "Tema" },
   { id: "testimonials", label: "Testimoni" },
+  { id: "pricing", label: "Harga" },
   { id: "location", label: "Lokasi" },
   { id: "cta", label: "CTA" },
 ]
 
 export const SETTINGS_TABS: { id: Tab; label: string }[] = [
-  { id: "pricing", label: "Harga" },
   { id: "password", label: "Kata Sandi" },
 ]
 
@@ -62,9 +62,7 @@ export const SECTION_CONFIG: SectionConfig = {
     { key: "title_line2", label: "Judul Baris 2", type: "text" },
     { key: "subtitle", label: "Subjudul", type: "textarea" },
     { key: "brand_name", label: "Nama Brand", type: "text" },
-    { key: "vertical_text_right", label: "Teks Vertikal Kanan", type: "text" },
-    { key: "vertical_text_left", label: "Teks Vertikal Kiri", type: "text" },
-    { key: "cta_text", label: "Teks Tombol", type: "text" },
+
     { key: "polaroid_1", label: "Polaroid 1", type: "image" },
     { key: "polaroid_2", label: "Polaroid 2", type: "image" },
     { key: "polaroid_3", label: "Polaroid 3", type: "image" },
@@ -99,8 +97,21 @@ export const SECTION_CONFIG: SectionConfig = {
       ],
     },
   ],
+  pricing: [
+    {
+      key: "items", label: "Paket", type: "objects",
+      objectFields: [
+        { key: "label", label: "Nama Paket" },
+        { key: "price", label: "Harga (Rp)" },
+        { key: "maxPeople", label: "Maks Orang" },
+        { key: "note", label: "Catatan" },
+      ],
+    },
+  ],
   location: [
-    { key: "address", label: "Alamat", type: "text" },
+    { key: "address_line1", label: "Alamat Baris 1", type: "text" },
+    { key: "address_line2", label: "Alamat Baris 2 (Highlight)", type: "text" },
+    { key: "address_sub", label: "Detail Alamat", type: "textarea" },
     { key: "phone", label: "Telepon", type: "text" },
     { key: "hours", label: "Jam Operasional", type: "text" },
     { key: "map_embed_url", label: "URL Peta", type: "text" },
@@ -108,6 +119,5 @@ export const SECTION_CONFIG: SectionConfig = {
   cta: [
     { key: "title", label: "Judul", type: "text" },
     { key: "description", label: "Deskripsi", type: "textarea" },
-    { key: "button_text", label: "Teks Tombol", type: "text" },
   ],
 }

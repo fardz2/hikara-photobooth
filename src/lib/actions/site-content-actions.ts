@@ -6,6 +6,7 @@ import {
   upsertSiteContent,
   upsertSectionContent,
   upsertPricing,
+  type PricingItem,
 } from "@/lib/services/site-content-service";
 
 export async function updateSiteContent(section: string, key: string, value: unknown) {
@@ -29,8 +30,8 @@ export async function updateSectionContent(
   return { success: true };
 }
 
-export async function updatePricing(entries: { key: string; value: unknown }[]) {
-  const result = await upsertPricing(entries);
+export async function updatePricing(items: PricingItem[]) {
+  const result = await upsertPricing(items);
   if (result.error) return result;
 
   revalidateTag(CACHE_TAGS.siteContent, "hours");

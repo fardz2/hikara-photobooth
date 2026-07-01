@@ -1,4 +1,4 @@
-import { type PricingDict } from "../services/site-content-service";
+import { type PricingItem } from "../services/site-content-service";
 
 export interface RawRevenueRow {
   total_price: number | null;
@@ -24,11 +24,13 @@ export interface RevenueStats {
  * Pure function to format and aggregate revenue data from raw database rows.
  * Pricing is passed in as a parameter (pre-fetched from DB).
  */
-export function formatRevenueStats(data: RawRevenueRow[], pricing: PricingDict): RevenueStats {
+export function formatRevenueStats(data: RawRevenueRow[], pricing: PricingItem[]): RevenueStats {
   const total = data.reduce((acc, row) => acc + (row.total_price || 0), 0);
 
-  const extraPersonPrice = pricing.extra_person?.price || 5000;
-  const extraPrintPrice = pricing.extra_print?.price || 10000;
+  const extraPerson = pricing.find((p) => p.label.includes("Orang")) || { price: 5000 };
+  const extraPrint = pricing.find((p) => p.label.includes("Print")) || { price: 10000 };
+  const extraPersonPrice = extraPerson.price;
+  const extraPrintPrice = extraPrint.price;
 
   const breakdown = data.reduce(
     (acc, row) => {

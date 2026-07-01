@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import { getAllSiteContent, getPricing } from "@/lib/services/site-content-service"
+import { getAllSiteContent } from "@/lib/services/site-content-service"
 import { SettingsClient } from "@/components/features/dashboard/settings/settings-client"
 import { SettingsSkeleton } from "@/components/skeletons/settings-skeleton"
 import { CONTENT_SECTIONS } from "@/components/features/dashboard/settings/section-config"
@@ -7,11 +7,8 @@ import { CONTENT_SECTIONS } from "@/components/features/dashboard/settings/secti
 const sectionKeys = CONTENT_SECTIONS.map((s) => s.id)
 
 async function SettingsContent() {
-  const [sectionData, pricing] = await Promise.all([
-    getAllSiteContent(sectionKeys),
-    getPricing(),
-  ])
-  return <SettingsClient sectionData={sectionData} pricing={pricing} />
+  const sectionData = await getAllSiteContent(sectionKeys)
+  return <SettingsClient sectionData={sectionData} />
 }
 
 export default function SettingsPage() {

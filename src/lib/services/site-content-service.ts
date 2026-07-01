@@ -2,6 +2,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { createPublicClient } from "@/lib/supabase/public";
 import { createClient } from "@/lib/supabase/server";
 import { CACHE_TAGS } from "@/lib/cache/tags";
+import { revalidateTag } from "next/cache";
 
 // ─── Read: public, cached ───
 
@@ -32,18 +33,16 @@ export interface PricingItem {
   note?: string;
 }
 
-export type PricingDict = Record<string, PricingItem>;
-
-function defaultPricing(): PricingDict {
-  return {
-    paket_utama: { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG" },
-    extra_person: { label: "Tambahan per Orang", price: 5000 },
-    extra_print: { label: "Extra Print", price: 10000 },
-    custom_frame: { label: "Custom Frame Birthday, Dll", price: 15000 },
-  };
+function defaultPricing(): PricingItem[] {
+  return [
+    { label: "Foto per Sesi + 2 Photostrip (Maks 3 Orang)", price: 35000, maxPeople: 3, note: "MAX. 3 ORANG" },
+    { label: "Tambahan per Orang", price: 5000 },
+    { label: "Extra Print", price: 10000 },
+    { label: "Custom Frame Birthday, Dll", price: 15000 },
+  ];
 }
 
-export async function getPricing() {
+export async function getPricing(): Promise<PricingItem[]> {
   "use cache";
   cacheLife("hours");
   cacheTag(CACHE_TAGS.pricing, CACHE_TAGS.siteContentSection("pricing"));
@@ -51,16 +50,13 @@ export async function getPricing() {
   const supabase = createPublicClient();
   const { data } = await supabase
     .from("site_content")
-    .select("key, value")
-    .eq("section", "pricing");
+    .select("value")
+    .eq("section", "pricing")
+    .eq("key", "items")
+    .single();
 
-  if (!data || data.length === 0) return defaultPricing();
-
-  const dict: Record<string, any> = {};
-  for (const row of data) {
-    dict[row.key] = row.value;
-  }
-  return dict;
+  if (!data) return defaultPricing();
+  return (data.value as PricingItem[]) || defaultPricing();
 }
 
 // ─── Read: admin, no cache ───
@@ -110,12 +106,13 @@ export async function upsertSectionContent(
   return { success: true };
 }
 
-export async function upsertPricing(entries: { key: string; value: unknown }[]) {
+export async function upsertPricing(items: PricingItem[]) {
   const supabase = await createClient();
-  const rows = entries.map((e) => ({ section: "pricing", key: e.key, value: e.value }));
-  const { error } = await supabase.from("site_content").upsert(rows, {
-    onConflict: "section, key",
-  });
+  const { error } = await supabase
+    .from("site_content")
+    .upsert({ section: "pricing", key: "items", value: items }, { onConflict: "section, key" });
+
   if (error) return { error: error.message };
+  revalidateTag(CACHE_TAGS.pricing, "hours");
   return { success: true };
 }
