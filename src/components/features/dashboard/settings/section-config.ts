@@ -15,7 +15,7 @@ export const CONTENT_SECTIONS: { id: SectionTab; label: string }[] = [
   { id: "marquee", label: "Marquee" },
   { id: "about", label: "Tentang" },
   { id: "gallery", label: "Galeri" },
-  { id: "themes", label: "Tema" },
+  { id: "themes", label: "Background" },
   { id: "testimonials", label: "Testimoni" },
   { id: "pricing", label: "Harga" },
   { id: "location", label: "Lokasi" },

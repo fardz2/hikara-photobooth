@@ -34,7 +34,7 @@ const SECTION_LABELS: Record<string, string> = {
   marquee: "Marquee",
   about: "Tentang Kami",
   gallery: "Galeri",
-  themes: "Tema",
+  themes: "Background Ruangan",
   testimonials: "Testimoni",
   pricing: "Pengaturan Harga",
   location: "Lokasi",

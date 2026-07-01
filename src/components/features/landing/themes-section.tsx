@@ -285,7 +285,7 @@ export const ThemesSection = ({ items }: Props) => {
         {/* Background Decor Typography */}
         <div className="absolute top-32 left-0 w-full overflow-hidden flex justify-center pointer-events-none select-none z-0 opacity-[0.02]">
           <span className="font-heading text-[20vw] md:text-[25vw] leading-none text-[#2C2A29] whitespace-nowrap tracking-tighter mix-blend-multiply">
-            FORMAT
+            TEMPLATE
           </span>
         </div>
 
@@ -293,13 +293,13 @@ export const ThemesSection = ({ items }: Props) => {
           <FadeUp className="mb-12 md:mb-20 px-6">
             <div className="text-center relative">
               <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] mb-4 font-sans font-medium flex items-center justify-center gap-4">
-                Layout Frame
+                Template
                 <span className="font-serif text-[#2C2A29]/50 ml-2 text-[10px] tracking-[0.2em] uppercase">
-                  FRAME
+                  CETAKAN
                 </span>
               </h2>
               <h3 className="font-heading text-4xl md:text-6xl text-[#2C2A29] relative inline-block z-10">
-                Format Cetak Fisik
+                Template
                 <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-12 border-b border-[#8B5E56]/40"></div>
               </h3>
             </div>
@@ -334,13 +334,13 @@ export const ThemesSection = ({ items }: Props) => {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 md:mb-32 gap-6">
             <div>
               <h2 className="text-[10px] uppercase tracking-[0.4em] text-[#8B5E56] mb-4 font-sans font-medium flex items-center gap-4">
-                Color Filters
+                Background
                 <span className="font-serif text-[#2C2A29]/50 ml-2 text-[10px] tracking-[0.2em] uppercase">
-                  FILTER
+                  RUANGAN
                 </span>
               </h2>
               <h3 className="font-heading text-4xl md:text-5xl text-[#2C2A29] tracking-tight">
-                Tema Estetik
+                Tema Ruangan
               </h3>
             </div>
             <p className="text-xs md:text-sm text-[#5A5550] max-w-sm uppercase tracking-widest leading-loose">
