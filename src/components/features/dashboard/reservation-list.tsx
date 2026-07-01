@@ -56,9 +56,6 @@ export const ReservationList = async ({ searchParams }: Props) => {
   const pending = globalStats.pending;
   const confirmed = globalStats.confirmed;
   const cancelled = globalStats.cancelled;
-
-  // We still use the exact count from getReservations if status is filtered
-  // to ensure pagination works correctly based on the active filter.
   const pageCountCount = count || 0;
 
   return (
