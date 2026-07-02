@@ -64,10 +64,12 @@ export function EditReservationDialog({
       ]
     : [];
   const ADDONS = addonItems.map((a: PricingItem) => ({
-    id: a.label
-      .toLowerCase()
-      .replace(/[^a-z]/g, "_")
-      .replace(/_+/g, "_"),
+    id:
+      a.id ??
+      a.label
+        .toLowerCase()
+        .replace(/[^a-z]/g, "_")
+        .replace(/_+/g, "_"),
     label: a.label,
     price: a.price,
   }));

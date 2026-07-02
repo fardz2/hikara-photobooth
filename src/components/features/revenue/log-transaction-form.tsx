@@ -120,6 +120,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
         addons: data.addons,
         session_time: data.sessionTime,
         extra_people_count: Object.values(extras).reduce((a, b) => a + b, 0),
+        // ponytail: extra_people_count sums ALL extras. Split by category when pricing supports it.
         extra_print_count: 0,
         extras,
         customer_name: data.customerName,

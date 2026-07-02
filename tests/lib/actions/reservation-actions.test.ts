@@ -266,10 +266,10 @@ describe('Reservation Actions', () => {
       expect(updateArg.extras).toEqual({ ext1: 2 })
     })
 
-    it('defaults extras to {} when not in edit payload (Zod default)', async () => {
+    it('does NOT include extras in payload when not in edit input', async () => {
       await editReservation('1', editPayload)
       const updateArg = mockUpdateReservation.mock.calls[0][1]
-      expect(updateArg.extras).toEqual({})
+      expect(updateArg.extras).toBeUndefined()
     })
 
     it('handles partial date string (not Date object)', async () => {

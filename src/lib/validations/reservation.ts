@@ -25,15 +25,14 @@ export const ReservationSchema = z.object({
       if (hour < 14) return false;
       if (hour > 23) return false;
       if (hour === 23 && minute > 0) return false;
-      // Only allow :00 or :30
       if (minute !== 0 && minute !== 30) return false;
       return true;
     }, "Jam sesi harus antara 14:00 - 23:00 (Interval 30 menit)"),
   package: z.string().min(1, "Pilih paket"),
-  addons: z.array(z.string()).default([]),
-  extras: z.record(z.string(), z.number().min(0)).optional().default({}),
-  extraPeopleCount: z.number().min(0).max(10).default(0),
-  extraPrintCount: z.number().min(0).max(10).default(0),
+  addons: z.array(z.string()),
+  extras: z.record(z.string(), z.number().min(0)).optional(),
+  extraPeopleCount: z.number().min(0).max(10).optional(),
+  extraPrintCount: z.number().min(0).max(10).optional(),
   paymentMethod: z.enum(["tunai", "qris"]),
   paymentProofUrl: z.string().url("URL bukti bayar tidak valid").optional(),
 });

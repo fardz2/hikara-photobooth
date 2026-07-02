@@ -64,20 +64,20 @@ export async function submitReservation(data: ReservationInput) {
     return { success: false, message: "Maaf, slot ini sudah habis." };
   }
 
-  // 4. Insert via service
+  // 4. Insert via service — use explicit counts from form (extras JSONB is source of truth)
+  const totalExtras = Object.values(validatedData.extras ?? {}).reduce((a, b) => a + b, 0);
   const result = await insertReservation({
     name: validatedData.name,
     phone: validatedData.phone,
     date: dateStr,
     time: validatedData.time,
     package: validatedData.package,
-    addons: validatedData.addons,
+    addons: validatedData.addons ?? [],
     extras: validatedData.extras ?? {},
-    extra_people_count: Object.values(validatedData.extras || {}).reduce(
-      (a, b) => a + b,
-      0,
-    ),
-    extra_print_count: 0,
+    extra_people_count: validatedData.extraPeopleCount ?? totalExtras,
+    // ponytail: extra_people_count sums ALL extras (people+prints). When pricing supports
+    // per-category extra counts, split by matching pricing items with category="extra" + fuzzy label.
+    extra_print_count: validatedData.extraPrintCount ?? 0,
     payment_method: validatedData.paymentMethod,
     payment_proof_url: validatedData.paymentProofUrl ?? null,
     total_price: totalPrice,
@@ -209,7 +209,7 @@ export async function editReservation(
   // 1. Validate
   const validation = FormSchema.partial().safeParse(data);
   if (!validation.success) {
-    return { success: false, message: validation.error.issues[0].message };
+    return { success: false, message: validation.error.issues[0]?.message ?? "Data tidak valid" };
   }
 
   const validatedData = validation.data;
@@ -236,40 +236,39 @@ export async function editReservation(
       };
   }
 
-  // 4. Recalculate price if needed
-  let updatedTotalPrice = current.total_price;
-  const isPricingChanged =
-    validatedData.package !== undefined ||
-    validatedData.addons !== undefined ||
-    validatedData.extras !== undefined ||
-    validatedData.extraPeopleCount !== undefined ||
-    validatedData.extraPrintCount !== undefined;
+  // 4. Recalculate price if pricing-relevant fields actually CHANGED
+  //    Use the raw `data` keys, not zod's default-filled validatedData
+  const rawKeys = Object.keys(data) as (keyof ReservationInput)[];
+  const pricingKeys: (keyof ReservationInput)[] = [
+    "package", "addons", "extras", "extraPeopleCount", "extraPrintCount",
+  ];
+  const isPricingChanged = pricingKeys.some((k) => rawKeys.includes(k));
 
+  let updatedTotalPrice = current.total_price;
   if (isPricingChanged) {
     updatedTotalPrice = await calculateTotalPrice({
       packageId: validatedData.package ?? current.package,
-      extras: validatedData.extras ?? {},
-      addons: validatedData.addons ?? [],
+      extras: validatedData.extras ?? current.extras ?? {},
+      addons: validatedData.addons ?? current.addons ?? [],
     });
   }
 
-  // 5. Build payload
+  // 5. Build payload — only fields in raw input
   const payload: Record<string, unknown> = {
     date: targetDate,
     time: targetTime,
     total_price: updatedTotalPrice,
   };
-  if (validatedData.name !== undefined) payload.name = validatedData.name;
-  if (validatedData.phone !== undefined) payload.phone = validatedData.phone;
-  if (validatedData.package !== undefined)
-    payload.package = validatedData.package;
-  if (validatedData.addons !== undefined) payload.addons = validatedData.addons;
-  if (validatedData.extraPeopleCount !== undefined)
+  if ("name" in data) payload.name = validatedData.name;
+  if ("phone" in data) payload.phone = validatedData.phone;
+  if ("package" in data) payload.package = validatedData.package;
+  if ("addons" in data) payload.addons = validatedData.addons;
+  if ("extraPeopleCount" in data)
     payload.extra_people_count = validatedData.extraPeopleCount;
-  if (validatedData.extraPrintCount !== undefined)
+  if ("extraPrintCount" in data)
     payload.extra_print_count = validatedData.extraPrintCount;
-  if (validatedData.extras !== undefined) payload.extras = validatedData.extras;
-  if (validatedData.paymentMethod !== undefined)
+  if ("extras" in data) payload.extras = validatedData.extras;
+  if ("paymentMethod" in data)
     payload.payment_method = validatedData.paymentMethod;
 
   // 6. Update via service
