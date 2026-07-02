@@ -153,7 +153,7 @@ export async function updateReservationStatus(
     const confirmMsg = `*KONFIRMASI PEMBAYARAN & RESERVASI* 📸
 
 Halo *${reservation.name}*, 
-Pembayaran QRIS Anda sebesar *Rp ${reservation.total_price.toLocaleString("id-ID")}* telah kami terima dan diverifikasi. 
+Pembayaran QRIS Anda sebesar *Rp ${reservation.total_price?.toLocaleString("id-ID") ?? "0"}* telah kami terima dan diverifikasi. 
 
 *Pesan untuk Anda:*
 📅 Tanggal: ${format(new Date(reservation.date), "EEEE, dd MMMM yyyy", { locale: idLocale })}

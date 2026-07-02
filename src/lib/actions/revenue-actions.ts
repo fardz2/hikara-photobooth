@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath, updateTag } from "next/cache";
+import { format } from "date-fns";
 import { CACHE_TAGS } from "@/lib/cache/tags";
 import { getCurrentUser } from "@/lib/services/auth-service";
 import {
@@ -55,6 +56,7 @@ export async function logTransaction(data: TransactionInput) {
 
   // 3. Revalidate
   updateTag(CACHE_TAGS.reservations);
+  updateTag(CACHE_TAGS.bookedSlots(format(new Date(), "yyyy-MM-dd")));
   revalidatePath("/dashboard/pendapatan");
   revalidatePath("/dashboard/reservations");
   return { success: true };
