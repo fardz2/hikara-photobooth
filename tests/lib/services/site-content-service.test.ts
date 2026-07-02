@@ -12,6 +12,7 @@ function makeSupabaseMock() {
   m.from = vi.fn().mockReturnValue(m)
   m.select = vi.fn().mockReturnValue(m)
   m.eq = vi.fn().mockResolvedValue({ data: null, error: null })
+  m.in = vi.fn().mockResolvedValue({ data: null, error: null })
   m.upsert = vi.fn().mockResolvedValue({ error: null })
   return m
 }
@@ -52,26 +53,47 @@ describe('site-content-service', () => {
     })
   })
 
-  describe('getAllSiteContent (admin, parallel)', () => {
-    it('fetches multiple sections in parallel', async () => {
-      mockAdmin.eq
-        .mockResolvedValueOnce({ data: [{ key: 't', value: 'A' }], error: null })
-        .mockResolvedValueOnce({ data: [{ key: 'd', value: 'B' }], error: null })
+  describe('getAllSiteContent (admin, single query)', () => {
+    it('fetches multiple sections with single .in() query', async () => {
+      mockAdmin.in.mockResolvedValueOnce({
+        data: [
+          { section: 'hero', key: 't', value: 'A' },
+          { section: 'footer', key: 'd', value: 'B' },
+        ],
+        error: null,
+      })
 
       const result = await getAllSiteContent(['hero', 'footer'])
 
       expect(vi.mocked(createClient)).toHaveBeenCalled()
-      expect(mockAdmin.from).toHaveBeenCalledTimes(2)
+      expect(mockAdmin.from).toHaveBeenCalledTimes(1)
+      expect(mockAdmin.select).toHaveBeenCalledWith('section, key, value')
+      expect(mockAdmin.in).toHaveBeenCalledWith('section', ['hero', 'footer'])
       expect(result).toEqual({ hero: { t: 'A' }, footer: { d: 'B' } })
     })
 
-    it('skips sections with null data', async () => {
-      mockAdmin.eq
-        .mockResolvedValueOnce({ data: [{ key: 'x', value: 1 }], error: null })
-        .mockResolvedValueOnce({ data: null, error: null })
+    it('returns empty object on error', async () => {
+      mockAdmin.in.mockResolvedValueOnce({ data: null, error: { message: 'fail' } })
 
       const result = await getAllSiteContent(['a', 'b'])
-      expect(result).toEqual({ a: { x: 1 } })
+      expect(result).toEqual({})
+    })
+
+    it('groups multiple keys in same section', async () => {
+      mockAdmin.in.mockResolvedValueOnce({
+        data: [
+          { section: 'hero', key: 'title', value: 'Hi' },
+          { section: 'hero', key: 'subtitle', value: 'World' },
+          { section: 'footer', key: 'year', value: 2026 },
+        ],
+        error: null,
+      })
+
+      const result = await getAllSiteContent(['hero', 'footer'])
+      expect(result).toEqual({
+        hero: { title: 'Hi', subtitle: 'World' },
+        footer: { year: 2026 },
+      })
     })
   })
 

@@ -54,8 +54,10 @@ vi.mock('@/lib/services/auth-service', () => ({
 }))
 
 describe('Reservation Actions', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
+    const { getCurrentUser } = await import('@/lib/services/auth-service')
+    vi.mocked(getCurrentUser).mockResolvedValue({ id: 'test-user' } as any)
     mockCheckSlot.mockResolvedValue(false)
     mockInsertReservation.mockResolvedValue({ success: true })
     mockUpdateStatus.mockResolvedValue({ success: true })
@@ -185,6 +187,13 @@ describe('Reservation Actions', () => {
       // Should NOT call checkSlotAvailability because isMovingToActive && isCurrentlyActive → false
       expect(mockCheckSlot).not.toHaveBeenCalled()
     })
+
+    it('returns unauthorized when not logged in', async () => {
+      const { getCurrentUser } = await import('@/lib/services/auth-service')
+      vi.mocked(getCurrentUser).mockResolvedValue(null)
+      const result = await updateReservationStatus('1', 'confirmed')
+      expect(result).toEqual({ success: false, message: 'Unauthorized' })
+    })
   })
 
   // ─── Edge Cases ───
@@ -281,6 +290,22 @@ describe('Reservation Actions', () => {
       await editReservation('1', { package: 'premium' })
       const updateArg = mockUpdateReservation.mock.calls[0][1]
       expect(updateArg.total_price).toBeDefined()
+    })
+
+    it('returns unauthorized when not logged in', async () => {
+      const { getCurrentUser } = await import('@/lib/services/auth-service')
+      vi.mocked(getCurrentUser).mockResolvedValue(null)
+      const result = await editReservation('1', editPayload)
+      expect(result).toEqual({ success: false, message: 'Unauthorized' })
+    })
+
+    it('does NOT call calculateTotalPrice when only name changes', async () => {
+      const { calculateTotalPrice } = await import('@/lib/utils/price')
+      await editReservation('1', { name: 'New Name' })
+      expect(calculateTotalPrice).not.toHaveBeenCalled()
+      const updateArg = mockUpdateReservation.mock.calls[0][1]
+      expect(updateArg.name).toBe('New Name')
+      expect(updateArg.total_price).toBe(35000) // unchanged
     })
   })
 

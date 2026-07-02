@@ -9,7 +9,6 @@ import {
 } from "@/lib/services/site-content-service";
 
 function invalidateSection(section: string) {
-  updateTag(CACHE_TAGS.siteContent);
   updateTag(CACHE_TAGS.siteContentSection(section));
 }
 

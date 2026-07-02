@@ -6,7 +6,7 @@ export const TransactionSchema = z.object({
     .string()
     .regex(/^([0-9]{2}:[0-9]{2})(:[0-9]{2})?$/, "Format jam tidak valid"),
   package: z.string().min(1, "Pilih paket"),
-  addons: z.array(z.string()),
+  addons: z.array(z.string()).default([]),
   extras: z.record(z.string(), z.number().min(0)).default({}),
   paymentMethod: z.enum(["tunai", "qris"]),
 });

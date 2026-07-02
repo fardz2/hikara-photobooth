@@ -41,7 +41,7 @@ describe('site-content-actions', () => {
 
       expect(result).toEqual({ success: true })
       expect(siteContentService.upsertSiteContent).toHaveBeenCalledWith('hero', 'title', 'Hello')
-      expect(updateTag).toHaveBeenCalledTimes(2)
+      expect(updateTag).toHaveBeenCalledTimes(1)
       expect(revalidatePath).toHaveBeenCalledWith('/dashboard/settings')
     })
 

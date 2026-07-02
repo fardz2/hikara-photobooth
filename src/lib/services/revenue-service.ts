@@ -9,18 +9,20 @@ import { formatRevenueStats } from "@/lib/utils/revenue";
 export async function getRevenueStats(from: string, to: string) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("reservations")
-    .select(
-      "total_price, payment_method, date, extra_print_count, extra_people_count",
-    )
-    .gte("date", from)
-    .lte("date", to)
-    .eq("status", "confirmed");
+  const [{ data, error }, pricing] = await Promise.all([
+    supabase
+      .from("reservations")
+      .select(
+        "total_price, payment_method, date, extra_print_count, extra_people_count",
+      )
+      .gte("date", from)
+      .lte("date", to)
+      .eq("status", "confirmed"),
+    getPricing(),
+  ]);
 
   if (error || !data) return null;
 
-  const pricing = await getPricing();
   return formatRevenueStats(data, pricing);
 }
 

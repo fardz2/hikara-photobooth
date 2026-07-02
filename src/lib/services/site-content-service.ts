@@ -31,19 +31,18 @@ export async function getSiteContent(section: string) {
 export async function getAllSiteContent(sections: string[]) {
   const supabase = await createClient();
 
-  const results = await Promise.all(
-    sections.map((s) =>
-      supabase.from("site_content").select("key, value").eq("section", s),
-    ),
-  );
+  const { data, error } = await supabase
+    .from("site_content")
+    .select("section, key, value")
+    .in("section", sections);
+
+  if (error || !data) return {};
 
   const sectionData: Record<string, unknown> = {};
-  results.forEach(({ data }, i) => {
-    if (!data) return;
-    const map: Record<string, unknown> = {};
-    for (const row of data) map[row.key] = row.value;
-    sectionData[sections[i]] = map;
-  });
+  for (const row of data) {
+    if (!sectionData[row.section]) sectionData[row.section] = {};
+    (sectionData[row.section] as Record<string, unknown>)[row.key] = row.value;
+  }
 
   return sectionData;
 }
