@@ -89,7 +89,7 @@ export function getColumns(
       accessorKey: "total_people",
       header: "Orang",
       cell: ({ row }) => {
-        const extra = row.original.extra_people_count || 0;
+        const extra = row.original.extra_people_count ?? 0;
         const pkg = (row.original.pricing_snapshot ?? pricing).find(
           (p: PricingItem) => p.category === "package",
         );
@@ -184,7 +184,7 @@ export function getColumns(
       header: "Tambahan",
       cell: ({ row }) => {
         const addons = row.getValue("addons") as string[] | null;
-        const extraPrint = row.original.extra_print_count || 0;
+        const extraPrint = row.original.extra_print_count ?? 0;
         return (
           <div className="flex gap-1 flex-wrap max-w-[150px]">
             {extraPrint > 0 && (

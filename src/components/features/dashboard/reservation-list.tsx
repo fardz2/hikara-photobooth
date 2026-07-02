@@ -56,7 +56,7 @@ export const ReservationList = async ({ searchParams }: Props) => {
   const pending = globalStats.pending;
   const confirmed = globalStats.confirmed;
   const cancelled = globalStats.cancelled;
-  const pageCountCount = count || 0;
+  const pageCountCount = count ?? 0;
 
   return (
     <div className="space-y-6">

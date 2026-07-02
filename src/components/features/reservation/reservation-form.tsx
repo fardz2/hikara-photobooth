@@ -141,11 +141,11 @@ export const ReservationForm = ({ pricing }: Props) => {
   const basePrice = pricelist.find((p) => p.id === pkg)?.price ?? 0;
   const addonsPrice = selectedAddons.reduce((acc, addonId) => {
     const addon = addons.find((a) => a.id === addonId);
-    return acc + (addon?.price || 0);
+    return acc + (addon?.price ?? 0);
   }, 0);
   const extrasPrice = Object.entries(extras).reduce((acc, [id, qty]) => {
     const item = extraItems.find((e) => e.id === id);
-    return acc + (item?.price || 0) * qty;
+    return acc + (item?.price ?? 0) * qty;
   }, 0);
   const totalPrice = basePrice + addonsPrice + extrasPrice;
 

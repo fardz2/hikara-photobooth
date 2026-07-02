@@ -86,7 +86,7 @@ export async function getReservationStats(
   ]);
 
   return {
-    total: totalCount || 0,
+    total: totalCount ?? 0,
     pending: pendingCount || 0,
     confirmed: confirmedCount || 0,
     cancelled: cancelledCount || 0,

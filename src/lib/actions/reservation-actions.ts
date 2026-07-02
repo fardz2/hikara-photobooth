@@ -181,10 +181,16 @@ export async function deleteReservation(id: string) {
   const user = await getCurrentUser();
   if (!user) return { success: false, message: "Unauthorized" };
 
+  // Fetch first to get date for bookedSlots invalidation
+  const reservation = await getReservationById(id);
+  if (!reservation)
+    return { success: false, message: "Reservasi tidak ditemukan." };
+
   const result = await deleteRes(id);
   if (result.error) return { success: false, message: result.error };
 
   updateTag(CACHE_TAGS.reservations);
+  updateTag(CACHE_TAGS.bookedSlots(reservation.date));
   revalidatePath("/dashboard/reservations");
   revalidatePath("/dashboard/pendapatan");
   return { success: true };
@@ -271,9 +277,12 @@ export async function editReservation(
   if (result.error)
     return { success: false, message: "Gagal memperbarui reservasi." };
 
-  // 7. Revalidate
+  // 7. Revalidate (invalidate BOTH old and new date slots)
   updateTag(CACHE_TAGS.reservations);
   updateTag(CACHE_TAGS.bookedSlots(targetDate));
+  if (current.date !== targetDate) {
+    updateTag(CACHE_TAGS.bookedSlots(current.date));
+  }
   revalidatePath("/dashboard/reservations");
   revalidatePath("/dashboard/pendapatan");
 

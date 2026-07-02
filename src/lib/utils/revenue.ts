@@ -28,7 +28,7 @@ export function formatRevenueStats(
   data: RawRevenueRow[],
   pricing: PricingItem[],
 ): RevenueStats {
-  const total = data.reduce((acc, row) => acc + (row.total_price || 0), 0);
+  const total = data.reduce((acc, row) => acc + (row.total_price ?? 0), 0);
 
   const extraPerson = pricing.find(
     (p) =>
@@ -51,14 +51,14 @@ export function formatRevenueStats(
 
   const breakdown = data.reduce(
     (acc, row) => {
-      const price = row.total_price || 0;
+      const price = row.total_price ?? 0;
       if (row.payment_method === "qris") {
         acc.qris += price;
       } else {
         acc.tunai += price;
       }
-      acc.extraPrint += (row.extra_print_count || 0) * extraPrintPrice;
-      acc.extraPeople += (row.extra_people_count || 0) * extraPersonPrice;
+      acc.extraPrint += (row.extra_print_count ?? 0) * extraPrintPrice;
+      acc.extraPeople += (row.extra_people_count ?? 0) * extraPersonPrice;
       return acc;
     },
     { tunai: 0, qris: 0, extraPrint: 0, extraPeople: 0 },
@@ -67,7 +67,7 @@ export function formatRevenueStats(
   const countByDate: Record<string, number> = {};
   data.forEach((row) => {
     const d = row.date || "unknown";
-    countByDate[d] = (countByDate[d] || 0) + (row.total_price || 0);
+    countByDate[d] = (countByDate[d] ?? 0) + (row.total_price ?? 0);
   });
 
   return {

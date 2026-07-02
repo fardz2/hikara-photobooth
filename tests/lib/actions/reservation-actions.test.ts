@@ -286,7 +286,12 @@ describe('Reservation Actions', () => {
 
   // ─── deleteReservation ───
   describe('deleteReservation', () => {
-    it('deletes reservation and revalidates cache on success', async () => {
+    it('deletes reservation and revalidates bookedSlots cache', async () => {
+      mockGetById.mockResolvedValue({
+        id: '1', date: '2024-03-01', time: '14:00',
+        name: 'John', phone: '62812', total_price: 35000,
+        status: 'pending', payment_method: 'qris',
+      })
       mockDeleteRes.mockResolvedValue({ success: true })
       const result = await deleteReservation('1')
       expect(result.success).toBe(true)
@@ -295,8 +300,8 @@ describe('Reservation Actions', () => {
       expect(revalidatePath).toHaveBeenCalledWith('/dashboard/reservations')
     })
 
-    it('returns error if reservation not found', async () => {
-      mockDeleteRes.mockResolvedValue({ error: 'Reservasi tidak ditemukan.' })
+    it('returns error if reservation not found before delete', async () => {
+      mockGetById.mockResolvedValue(null)
       const result = await deleteReservation('non-existent')
       expect(result.success).toBe(false)
       expect(result.message).toContain('tidak ditemukan')

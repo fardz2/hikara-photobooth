@@ -48,7 +48,7 @@ export const RecentTransactions = async ({ searchParams }: Props) => {
     );
   }
 
-  const total = count || 0;
+  const total = count ?? 0;
 
   return (
     <div className="bg-white p-8 border border-[#2C2A29]/10 space-y-6 text-[#2C2A29]">
@@ -70,7 +70,7 @@ export const RecentTransactions = async ({ searchParams }: Props) => {
       <FadeIn direction="up">
         <DataTable
           columns={columns}
-          data={transactions || []}
+          data={transactions ?? []}
           pageCount={Math.ceil(total / 10)}
           currentPage={page}
         />

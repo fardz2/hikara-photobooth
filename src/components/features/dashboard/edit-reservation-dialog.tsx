@@ -119,7 +119,7 @@ export function EditReservationDialog({
         );
       } else {
         // Legacy: distribute extra_people_count to first counter item
-        const totalExtraPeople = reservation.extra_people_count || 0;
+        const totalExtraPeople = reservation.extra_people_count ?? 0;
         if (totalExtraPeople > 0) {
           const firstCounter = extraItems.find(
             (e: PricingItem) => e.maxQty && e.maxQty > 0,
