@@ -20,7 +20,7 @@ export const LenisProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <ReactLenis
       root
-      options={{ autoRaf: false, lerp: 0.1, duration: 1.5, smoothWheel: true }}
+      options={{ autoRaf: false, lerp: 0.15, duration: 1.5 }}
       ref={lenisRef}
     >
       {children}
