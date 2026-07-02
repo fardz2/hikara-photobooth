@@ -1,3 +1,4 @@
+import "server-only";
 import { createClient } from "@/lib/supabase/server";
 
 // ─── Read: no cache (auth always fresh) ───

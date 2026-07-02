@@ -246,43 +246,56 @@ export const ReservationForm = ({ pricing }: Props) => {
       }
 
       // 2. Submit Reservation
-      const result = await submitReservation({
-        ...data,
-        phone: normalizePhoneNumber(data.phone),
-        date: format(data.date, "yyyy-MM-dd"),
-        addons: data.addons ?? [],
-        extras: extras,
-        paymentMethod: data.paymentMethod,
-        paymentProofUrl: paymentProofUrl,
-      });
+      let dateStr: string;
+      try {
+        dateStr = format(data.date, "yyyy-MM-dd");
+      } catch {
+        toast.error("Tanggal reservasi tidak valid.");
+        return;
+      }
 
-      if (result.success) {
-        toast.success(result.message);
-        setPaymentProofFile(null);
-        // Reset form but keep the selected date and package
-        const currentDate = watch("date");
-        const currentPackage = watch("package");
-        form.reset({
-          name: "",
-          phone: "",
-          date: currentDate as Date,
-          package: currentPackage,
-          time: "",
-          addons: [],
-          extras: {},
-          paymentMethod: "tunai",
+      try {
+        const result = await submitReservation({
+          ...data,
+          phone: normalizePhoneNumber(data.phone),
+          date: dateStr,
+          addons: data.addons ?? [],
+          extras: extras,
+          paymentMethod: data.paymentMethod,
+          paymentProofUrl: paymentProofUrl,
         });
-        const resetExtras: Record<string, number> = {};
-        extraItems.forEach((item) => {
-          if (item.id) resetExtras[item.id] = 0;
-        });
-        setExtras(resetExtras);
 
-        if (currentDate) {
-          handleDateChange(currentDate as Date);
+        if (result.success) {
+          toast.success(result.message);
+          setPaymentProofFile(null);
+          // Reset form but keep the selected date and package
+          const currentDate = watch("date");
+          const currentPackage = watch("package");
+          form.reset({
+            name: "",
+            phone: "",
+            date: currentDate as Date,
+            package: currentPackage,
+            time: "",
+            addons: [],
+            extras: {},
+            paymentMethod: "tunai",
+          });
+          const resetExtras: Record<string, number> = {};
+          extraItems.forEach((item) => {
+            if (item.id) resetExtras[item.id] = 0;
+          });
+          setExtras(resetExtras);
+
+          if (currentDate) {
+            handleDateChange(currentDate as Date);
+          }
+        } else {
+          toast.error(result.message);
         }
-      } else {
-        toast.error(result.message);
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        toast.error(`Gagal mengirim reservasi: ${msg}`);
       }
     });
   };

@@ -1,3 +1,4 @@
+import "server-only";
 /**
  * Fonnte WhatsApp Service
  *

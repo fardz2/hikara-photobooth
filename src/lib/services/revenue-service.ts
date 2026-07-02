@@ -1,3 +1,4 @@
+import "server-only";
 import { format } from "date-fns";
 import { getPricing } from "@/lib/services/pricing-service";
 import { createClient } from "@/lib/supabase/server";

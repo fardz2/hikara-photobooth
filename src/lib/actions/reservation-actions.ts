@@ -40,7 +40,7 @@ export async function submitReservation(data: ReservationInput) {
   if (!validation.success) {
     return {
       success: false,
-      message: validation.error.issues[0]?.message || "Data tidak valid",
+      message: validation.error.issues[0]?.message ?? "Data tidak valid",
     };
   }
 
@@ -79,7 +79,7 @@ export async function submitReservation(data: ReservationInput) {
     ),
     extra_print_count: 0,
     payment_method: validatedData.paymentMethod,
-    payment_proof_url: data.paymentProofUrl || null,
+    payment_proof_url: validatedData.paymentProofUrl ?? null,
     total_price: totalPrice,
     is_walk_in: false,
     status: "pending",

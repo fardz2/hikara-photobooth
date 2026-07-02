@@ -7,8 +7,9 @@ import { createClient } from "@/lib/supabase/server";
 export async function login(formData: FormData) {
   const supabase = await createClient();
 
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const email = formData.get("email")?.toString().trim();
+  const password = formData.get("password")?.toString();
+  if (!email || !password) return { error: "Email dan password wajib diisi." };
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -38,9 +39,13 @@ export async function logout() {
 export async function changePassword(formData: FormData) {
   const supabase = await createClient();
 
-  const currentPassword = formData.get("currentPassword") as string;
-  const newPassword = formData.get("newPassword") as string;
-  const confirmPassword = formData.get("confirmPassword") as string;
+  const currentPassword = formData.get("currentPassword")?.toString();
+  const newPassword = formData.get("newPassword")?.toString();
+  const confirmPassword = formData.get("confirmPassword")?.toString();
+
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    return { error: "Semua field password wajib diisi." };
+  }
 
   if (newPassword !== confirmPassword) {
     return { error: "Password baru tidak sama" };

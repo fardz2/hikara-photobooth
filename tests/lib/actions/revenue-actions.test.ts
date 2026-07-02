@@ -33,7 +33,7 @@ describe('Revenue Actions', () => {
     vi.clearAllMocks()
   })
 
-  it('logs a transaction successfully', async () => {
+  it('logs a transaction successfully with validated payload', async () => {
     const { getCurrentUser } = await import('@/lib/services/auth-service')
     vi.mocked(getCurrentUser).mockResolvedValue({ id: 'admin' } as any)
     vi.mocked(revenueService.logTransaction).mockResolvedValue({ success: true })
@@ -41,7 +41,18 @@ describe('Revenue Actions', () => {
     const result = await logTransaction(validInput)
 
     expect(result).toEqual({ success: true })
-    expect(revenueService.logTransaction).toHaveBeenCalledWith(validInput)
+    // Payload is built from VALIDATED data — check shape
+    expect(revenueService.logTransaction).toHaveBeenCalledWith(
+      expect.objectContaining({
+        customer_name: 'Walk-in',
+        session_time: '14:30',
+        package: 'basic',
+        payment_method: 'tunai',
+        amount: 35000,
+        addons: [],
+        extras: {},
+      })
+    )
     expect(updateTag).toHaveBeenCalled()
     expect(revalidatePath).toHaveBeenCalledTimes(2)
   })
@@ -80,19 +91,18 @@ describe('Revenue Actions', () => {
     expect(revenueService.logTransaction).not.toHaveBeenCalled()
   })
 
-  it('defaults empty customer_name to "Walk-in Customer" (intentional behavior)', async () => {
+  it('returns validation error for empty customer_name (min 1 required)', async () => {
     const { getCurrentUser } = await import('@/lib/services/auth-service')
     vi.mocked(getCurrentUser).mockResolvedValue({ id: 'admin' } as any)
-    vi.mocked(revenueService.logTransaction).mockResolvedValue({ success: true })
 
     const result = await logTransaction({
       ...validInput,
       customer_name: '',
     })
 
-    expect(result.success).toBe(true)
-    // validation passes because empty name defaults to "Walk-in Customer" before schema check
-    expect(revenueService.logTransaction).toHaveBeenCalled()
+    expect(result.success).toBe(false)
+    expect(result.message).toMatch(/nama/i)
+    expect(revenueService.logTransaction).not.toHaveBeenCalled()
   })
 
   it('returns validation error for missing package', async () => {
@@ -106,5 +116,48 @@ describe('Revenue Actions', () => {
 
     expect(result.success).toBe(false)
     expect(result.message).toMatch(/pilih|paket/i)
+  })
+
+  it('returns validation error for negative amount', async () => {
+    const { getCurrentUser } = await import('@/lib/services/auth-service')
+    vi.mocked(getCurrentUser).mockResolvedValue({ id: 'admin' } as any)
+
+    const result = await logTransaction({
+      ...validInput,
+      amount: -100,
+    })
+
+    expect(result.success).toBe(false)
+    expect(result.message).toMatch(/harga/i)
+    expect(revenueService.logTransaction).not.toHaveBeenCalled()
+  })
+
+  it('returns validation error for missing amount', async () => {
+    const { getCurrentUser } = await import('@/lib/services/auth-service')
+    vi.mocked(getCurrentUser).mockResolvedValue({ id: 'admin' } as any)
+
+    const result = await logTransaction({
+      ...validInput,
+      amount: undefined as any,
+    })
+
+    expect(result.success).toBe(false)
+    expect(revenueService.logTransaction).not.toHaveBeenCalled()
+  })
+
+  it('defaults undefined extras to empty object', async () => {
+    const { getCurrentUser } = await import('@/lib/services/auth-service')
+    vi.mocked(getCurrentUser).mockResolvedValue({ id: 'admin' } as any)
+    vi.mocked(revenueService.logTransaction).mockResolvedValue({ success: true })
+
+    const result = await logTransaction({
+      ...validInput,
+      extras: undefined as any,
+    })
+
+    expect(result.success).toBe(true)
+    expect(revenueService.logTransaction).toHaveBeenCalledWith(
+      expect.objectContaining({ extras: {} })
+    )
   })
 })

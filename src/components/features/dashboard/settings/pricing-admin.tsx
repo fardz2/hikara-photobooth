@@ -63,7 +63,7 @@ export function PricingAdmin({ initial }: Props) {
     setItems((prev) => [...prev, newItem(tab)]);
   };
 
-  const remove = (id: string | undefined) => {
+  const remove = (id: string | undefined, idx: number) => {
     if (id) {
       startSave(async () => {
         const res = await removePricingItem(id);
@@ -74,7 +74,7 @@ export function PricingAdmin({ initial }: Props) {
         }
       });
     } else {
-      setItems((prev) => prev.filter((i) => i.id !== undefined));
+      setItems((prev) => prev.filter((_, i) => i !== idx));
     }
   };
 
@@ -149,7 +149,7 @@ export function PricingAdmin({ initial }: Props) {
             {/* Delete */}
             <button
               type="button"
-              onClick={() => remove(item.id)}
+              onClick={() => remove(item.id, idx)}
               className="absolute top-2 right-2 size-6 flex items-center justify-center bg-white/80 hover:bg-red-50 rounded-full transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10"
               aria-label="Hapus item"
             >

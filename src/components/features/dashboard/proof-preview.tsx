@@ -10,7 +10,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { motion, useAnimation, useMotionValue } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -38,12 +38,12 @@ export const ProofPreview = ({ url, trigger }: ProofPreviewProps) => {
   const handleZoomIn = () => setScale((prev) => Math.min(prev + 0.5, 5));
   const handleZoomOut = () => setScale((prev) => Math.max(prev - 0.5, 1));
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setScale(1);
     x.set(0);
     y.set(0);
     controls.start({ x: 0, y: 0, scale: 1 });
-  };
+  }, [x, y, controls]);
 
   // Reset zoom and position when modal opens
   useEffect(() => {

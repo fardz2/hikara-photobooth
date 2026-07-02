@@ -92,10 +92,11 @@ export const LogTransactionForm = ({ pricing }: Props) => {
   }, 0);
   const totalPrice = basePrice + addonsPrice + extrasPrice;
 
-  const handlePackageSelect = (id: string) => {
+  const handlePackageSelect = (id: string | undefined) => {
+    if (!id) return;
     setSelectedPkgId(id);
     const pkg = packages.find((p) => p.id === id);
-    setValue("package", pkg?.label || id);
+    setValue("package", pkg?.label ?? id);
   };
 
   const handleAddonToggle = (id: string, checked: boolean) => {
@@ -214,7 +215,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
                 <button
                   key={p.id}
                   type="button"
-                  onClick={() => handlePackageSelect(p.id!)}
+                  onClick={() => handlePackageSelect(p.id)}
                   className={`p-4 border rounded-xl flex justify-between items-center group transition-all duration-300 shadow-sm ${
                     isSelected
                       ? "border-[#8B5E56] bg-[#8B5E56]/5"
@@ -266,7 +267,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
               const maxQty = item.maxQty ?? Infinity;
               const isCounter =
                 item.maxQty !== null && item.maxQty !== undefined;
-              const qty = extras[item.id!] ?? 0;
+              const qty = extras[item.id ?? ""] ?? 0;
 
               if (isCounter) {
                 return (
@@ -290,7 +291,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
                         onClick={() =>
                           setExtras((prev) => ({
                             ...prev,
-                            [item.id!]: Math.max(0, qty - 1),
+                            [item.id ?? ""]: Math.max(0, qty - 1),
                           }))
                         }
                         disabled={qty <= 0}
@@ -306,7 +307,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
                         onClick={() =>
                           setExtras((prev) => ({
                             ...prev,
-                            [item.id!]: Math.min(maxQty, qty + 1),
+                            [item.id ?? ""]: Math.min(maxQty, qty + 1),
                           }))
                         }
                         disabled={qty >= maxQty}
@@ -330,7 +331,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
                     onCheckedChange={(checked) =>
                       setExtras((prev) => ({
                         ...prev,
-                        [item.id!]: checked ? 1 : 0,
+                        [item.id ?? ""]: checked ? 1 : 0,
                       }))
                     }
                     className="rounded-none border-[#2C2A29]/20 data-[state=checked]:bg-[#8B5E56] data-[state=checked]:border-[#8B5E56]"

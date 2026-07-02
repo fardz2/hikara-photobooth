@@ -17,6 +17,8 @@ export const GallerySection = ({ images }: Props) => {
 
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-75%"]);
 
+  if (images.length === 0) return null;
+
   return (
     <section
       ref={targetRef}

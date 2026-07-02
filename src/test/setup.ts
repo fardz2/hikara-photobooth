@@ -7,6 +7,9 @@ afterEach(() => {
   cleanup();
 });
 
+// Mock server-only so service files can be imported in tests
+vi.mock("server-only", () => ({}));
+
 // Mock Next.js 16/React 19 APIs if needed
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
