@@ -34,15 +34,19 @@ export const LogTransactionForm = ({ pricing }: Props) => {
 
   const [extras, setExtras] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
-    extraItems.forEach((item) => { if (item.id) init[item.id] = 0; });
+    extraItems.forEach((item) => {
+      if (item.id) init[item.id] = 0;
+    });
     return init;
   });
 
   const ADDONS = addonItems.map((a) => ({
-    id: a.id ?? a.label
-      .toLowerCase()
-      .replace(/[^a-z]/g, "_")
-      .replace(/_+/g, "_"),
+    id:
+      a.id ??
+      a.label
+        .toLowerCase()
+        .replace(/[^a-z]/g, "_")
+        .replace(/_+/g, "_"),
     label: a.label,
     price: a.price,
   }));
@@ -75,7 +79,8 @@ export const LogTransactionForm = ({ pricing }: Props) => {
   const selectedAddons = watch("addons");
   const paymentMethod = watch("paymentMethod");
 
-  const selectedPkg = packages.find((p) => p.id === selectedPkgId) ?? packages[0];
+  const selectedPkg =
+    packages.find((p) => p.id === selectedPkgId) ?? packages[0];
   const basePrice = selectedPkg?.price || 0;
   const addonsPrice = (selectedAddons || []).reduce((acc, id) => {
     const addon = ADDONS.find((a) => a.id === id);
@@ -219,9 +224,7 @@ export const LogTransactionForm = ({ pricing }: Props) => {
                   <div className="flex items-center gap-3">
                     <div
                       className={`size-5 rounded-full flex items-center justify-center shadow-md transition-colors ${
-                        isSelected
-                          ? "bg-[#8B5E56]"
-                          : "bg-[#2C2A29]/10"
+                        isSelected ? "bg-[#8B5E56]" : "bg-[#2C2A29]/10"
                       }`}
                     >
                       {isSelected && (
@@ -261,7 +264,8 @@ export const LogTransactionForm = ({ pricing }: Props) => {
             {/* Dynamic extras */}
             {extraItems.map((item) => {
               const maxQty = item.maxQty ?? Infinity;
-              const isCounter = item.maxQty !== null && item.maxQty !== undefined;
+              const isCounter =
+                item.maxQty !== null && item.maxQty !== undefined;
               const qty = extras[item.id!] ?? 0;
 
               if (isCounter) {

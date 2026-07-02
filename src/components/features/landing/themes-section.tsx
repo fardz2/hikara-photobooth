@@ -231,7 +231,9 @@ const SmoothMarquee = ({
 
 export const ThemesSection = ({ items }: Props) => {
   const themes = items.length > 0 ? items : DEFAULT_THEMES;
-  const stripImages = themes[0]?.images?.length ? themes[0].images : DEFAULT_STRIP_IMAGES;
+  const stripImages = themes[0]?.images?.length
+    ? themes[0].images
+    : DEFAULT_STRIP_IMAGES;
 
   const templates = [
     {

@@ -72,7 +72,9 @@ export const ReservationForm = ({ pricing }: Props) => {
 
   const [extras, setExtras] = useState<Record<string, number>>(() => {
     const init: Record<string, number> = {};
-    extraItems.forEach((item) => { if (item.id) init[item.id] = 0; });
+    extraItems.forEach((item) => {
+      if (item.id) init[item.id] = 0;
+    });
     return init;
   });
 
@@ -83,10 +85,12 @@ export const ReservationForm = ({ pricing }: Props) => {
     note: p.note,
   }));
   const addons = addonItems.map((a) => ({
-    id: a.id ?? a.label
-      .toLowerCase()
-      .replace(/[^a-z]/g, "_")
-      .replace(/_+/g, "_"),
+    id:
+      a.id ??
+      a.label
+        .toLowerCase()
+        .replace(/[^a-z]/g, "_")
+        .replace(/_+/g, "_"),
     label: a.label,
     price: a.price,
   }));
@@ -101,7 +105,8 @@ export const ReservationForm = ({ pricing }: Props) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(FormSchema) as any,
+    // ponytail: zod v4 + @hookform/resolvers type mismatch — remove when upstream fixes
+    resolver: zodResolver(FormSchema) as never,
     defaultValues: {
       name: "",
       phone: "",
@@ -133,7 +138,7 @@ export const ReservationForm = ({ pricing }: Props) => {
   const [isPending, startTransition] = useTransition();
 
   // Calculate total price
-  const basePrice = pricelist.find((p) => p.id === pkg)?.price || 0;
+  const basePrice = pricelist.find((p) => p.id === pkg)?.price ?? 0;
   const addonsPrice = selectedAddons.reduce((acc, addonId) => {
     const addon = addons.find((a) => a.id === addonId);
     return acc + (addon?.price || 0);
@@ -230,8 +235,9 @@ export const ReservationForm = ({ pricing }: Props) => {
             .getPublicUrl(uploadData.path);
 
           paymentProofUrl = publicUrl;
-        } catch (err: any) {
-          toast.error(`Gagal mengunggah bukti: ${err.message}`);
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : String(err);
+          toast.error(`Gagal mengunggah bukti: ${msg}`);
           setIsUploading(false);
           return;
         } finally {
@@ -267,7 +273,9 @@ export const ReservationForm = ({ pricing }: Props) => {
           paymentMethod: "tunai",
         });
         const resetExtras: Record<string, number> = {};
-        extraItems.forEach((item) => { if (item.id) resetExtras[item.id] = 0; });
+        extraItems.forEach((item) => {
+          if (item.id) resetExtras[item.id] = 0;
+        });
         setExtras(resetExtras);
 
         if (currentDate) {
@@ -505,9 +513,7 @@ export const ReservationForm = ({ pricing }: Props) => {
                   <div className="flex items-center gap-3">
                     <div
                       className={`size-5 rounded-full flex items-center justify-center shadow-md transition-colors ${
-                        isSelected
-                          ? "bg-[#8B5E56]"
-                          : "bg-[#2C2A29]/10"
+                        isSelected ? "bg-[#8B5E56]" : "bg-[#2C2A29]/10"
                       }`}
                     >
                       {isSelected && (
@@ -605,8 +611,7 @@ export const ReservationForm = ({ pricing }: Props) => {
                   <div className="flex justify-between items-center text-[10px] tracking-wide text-[#5A5550]">
                     {qty > 0 && (
                       <span className="font-bold text-[#8B5E56]">
-                        Rp{" "}
-                        {(qty * item.price).toLocaleString("id-ID")}
+                        Rp {(qty * item.price).toLocaleString("id-ID")}
                       </span>
                     )}
                   </div>

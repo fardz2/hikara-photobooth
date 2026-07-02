@@ -87,7 +87,9 @@ function renderFieldInput(
   }
 
   // Default: text input — auto numeric for price-like keys
-  const isPrice = f.key.toLowerCase().includes("price") || f.key.toLowerCase().includes("harga");
+  const isPrice =
+    f.key.toLowerCase().includes("price") ||
+    f.key.toLowerCase().includes("harga");
   return (
     <input
       value={String(item[f.key] ?? "")}
@@ -107,9 +109,7 @@ export function ObjectListField({
   fields,
   categoryKey,
 }: Props) {
-  const [items, setItems] = useState<Record<string, unknown>[]>(
-    defaultValue,
-  );
+  const [items, setItems] = useState<Record<string, unknown>[]>(defaultValue);
   const [uploading, startUpload] = useTransition();
   const uploadRef = useRef<{ idx: number; key: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -168,9 +168,18 @@ export function ObjectListField({
   // Group items by category
   const groups = useMemo(() => {
     if (!categoryKey || catOptions.length === 0) {
-      return [{ key: "_all", label: label, items: items.map((item, i) => ({ item, i })) }];
+      return [
+        {
+          key: "_all",
+          label: label,
+          items: items.map((item, i) => ({ item, i })),
+        },
+      ];
     }
-    const map = new Map<string, { label: string; items: { item: Record<string, unknown>; i: number }[] }>();
+    const map = new Map<
+      string,
+      { label: string; items: { item: Record<string, unknown>; i: number }[] }
+    >();
     for (const opt of catOptions) {
       map.set(opt.value, { label: opt.label, items: [] });
     }

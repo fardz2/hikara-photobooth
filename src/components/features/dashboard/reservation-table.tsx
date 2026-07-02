@@ -12,11 +12,5 @@ interface Props {
 }
 
 export function ReservationTable({ pricing, data, ...rest }: Props) {
-  return (
-    <DataTable
-      columns={getColumns(pricing)}
-      data={data}
-      {...rest}
-    />
-  );
+  return <DataTable columns={getColumns(pricing)} data={data} {...rest} />;
 }

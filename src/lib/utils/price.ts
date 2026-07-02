@@ -19,9 +19,8 @@ export function calculateTotalPriceSync(
   const mainPkg = input.packageId
     ? pricing.find((p) => p.id === input.packageId)
     : undefined;
-  const basePrice = mainPkg?.price || (
-    pricing.find((p) => p.category === "package")?.price ?? 0
-  );
+  const basePrice =
+    mainPkg?.price ?? pricing.find((p) => p.category === "package")?.price ?? 0;
 
   const extraItems = pricing.filter((p) => p.category === "extra");
 

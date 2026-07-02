@@ -1,50 +1,63 @@
-import { describe, it, expect } from "vitest";
-import { isValidWhatsApp, normalizePhoneNumber } from "@/lib/utils/validation";
+import { describe, it, expect } from 'vitest'
+import { isValidWhatsApp, normalizePhoneNumber } from '@/lib/utils/validation'
 
-describe("isValidWhatsApp", () => {
-  it("returns true for valid Indonesian numbers starting with 62", () => {
-    expect(isValidWhatsApp("628123456789")).toBe(true);
-    expect(isValidWhatsApp("62812345678")).toBe(true);
-  });
+describe('isValidWhatsApp', () => {
+  it.each([
+    '6281234567890',
+    '62812345678',
+    '628123456789',    // 10 digits after 62
+    '6281234567',      // 8 digits after 62 (minimum in [2-9] + 7 digits)
+    '62899999999999',  // 12 digits after 62 (max)
+  ])('returns true for valid number %s', (phone) => {
+    expect(isValidWhatsApp(phone)).toBe(true)
+  })
 
-  it("returns false for numbers not starting with 62", () => {
-    expect(isValidWhatsApp("08123456789")).toBe(false);
-    expect(isValidWhatsApp("8123456789")).toBe(false);
-  });
+  it.each([
+    '6281234567890123', // 14 digits after 62 > 12 max
+    '620123456789',    // 0 after 62 (digit 0 not in [2-9])
+    '621123456789',    // 1 after 62 (digit 1 not in [2-9])
+    '08123456789',     // starts with 08, not 62
+    '1234567890',      // wrong prefix
+    'abcdef',          // non-digits
+    '628',             // too short
+    '',                // empty
+    '62812345678901234', // too long (>16 chars)
+  ])('returns false for invalid number %s', (phone) => {
+    expect(isValidWhatsApp(phone)).toBe(false)
+  })
+})
 
-  it("returns false for numbers with 0 after 62", () => {
-    expect(isValidWhatsApp("620812345678")).toBe(false);
-  });
+describe('normalizePhoneNumber', () => {
+  it('normalizes 08xxx → 628xxx', () => {
+    expect(normalizePhoneNumber('08123456789')).toBe('628123456789')
+  })
 
-  it("returns false for numbers that are too short", () => {
-    expect(isValidWhatsApp("62812")).toBe(false);
-  });
+  it('normalizes 8xxx → 628xxx', () => {
+    expect(normalizePhoneNumber('8123456789')).toBe('628123456789')
+  })
 
-  it("returns false for strings containing non-digit characters", () => {
-    expect(isValidWhatsApp("62812-3456-789")).toBe(false);
-    expect(isValidWhatsApp("62812abc")).toBe(false);
-  });
-});
+  it('normalizes 6208xxx → 628xxx', () => {
+    expect(normalizePhoneNumber('6208123456789')).toBe('628123456789')
+  })
 
-describe("normalizePhoneNumber", () => {
-  it("normalizes numbers starting with 08", () => {
-    expect(normalizePhoneNumber("08123456789")).toBe("628123456789");
-  });
+  it('keeps 628xxx as-is', () => {
+    expect(normalizePhoneNumber('628123456789')).toBe('628123456789')
+  })
 
-  it("normalizes numbers starting with 8", () => {
-    expect(normalizePhoneNumber("8123456789")).toBe("628123456789");
-  });
+  it('strips non-digit characters', () => {
+    expect(normalizePhoneNumber('+62 812-345-6789')).toBe('628123456789')
+  })
 
-  it("normalizes numbers starting with 6208", () => {
-    expect(normalizePhoneNumber("6208123456789")).toBe("628123456789");
-  });
+  it('handles empty string', () => {
+    expect(normalizePhoneNumber('')).toBe('')
+  })
 
-  it("keeps correct 628 numbers as is", () => {
-    expect(normalizePhoneNumber("628123456789")).toBe("628123456789");
-  });
+  it('preserves already-clean 628 number', () => {
+    expect(normalizePhoneNumber('6289999999999')).toBe('6289999999999')
+  })
 
-  it("removes non-digit characters during normalization", () => {
-    expect(normalizePhoneNumber("+62 812-3456-7890")).toBe("6281234567890");
-    expect(normalizePhoneNumber("0812 3456 7890")).toBe("6281234567890");
-  });
-});
+  it('handles 620 prefix without 8 (no transform applies)', () => {
+    // 620123456789 → doesn't match 08/8/6208 prefix → kept as-is
+    expect(normalizePhoneNumber('620123456789')).toBe('620123456789')
+  })
+})

@@ -7,7 +7,10 @@ import { getPricing } from "@/lib/services/pricing-service";
 import { escapeJsonForHtml } from "@/lib/utils/escape";
 
 const ReservationForm = dynamic(
-  () => import("@/components/features/reservation/reservation-form").then((m) => m.ReservationForm),
+  () =>
+    import("@/components/features/reservation/reservation-form").then(
+      (m) => m.ReservationForm,
+    ),
   { loading: () => <ReservationFormSkeleton /> },
 );
 

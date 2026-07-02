@@ -41,7 +41,7 @@ export function EditReservationDialog({
   onOpenChange,
   pricing,
 }: Props) {
-  const effectivePricing = reservation?.pricing_snapshot || pricing;
+  const effectivePricing = reservation?.pricing_snapshot ?? pricing;
   const packages = effectivePricing.filter(
     (p: PricingItem) => p.category === "package",
   );
@@ -55,7 +55,13 @@ export function EditReservationDialog({
   const mainPkg = packages[0];
 
   const PRICELIST = mainPkg
-    ? [{ id: mainPkg.id ?? "paket_utama", label: mainPkg.label, price: mainPkg.price }]
+    ? [
+        {
+          id: mainPkg.id ?? "paket_utama",
+          label: mainPkg.label,
+          price: mainPkg.price,
+        },
+      ]
     : [];
   const ADDONS = addonItems.map((a: PricingItem) => ({
     id: a.label
@@ -106,9 +112,11 @@ export function EditReservationDialog({
       // Prefer per-item extras record if available
       const savedExtras = (reservation as Record<string, unknown>).extras;
       if (savedExtras && typeof savedExtras === "object") {
-        Object.entries(savedExtras as Record<string, number>).forEach(([k, v]) => {
-          if (k in init) init[k] = v;
-        });
+        Object.entries(savedExtras as Record<string, number>).forEach(
+          ([k, v]) => {
+            if (k in init) init[k] = v;
+          },
+        );
       } else {
         // Legacy: distribute extra_people_count to first counter item
         const totalExtraPeople = reservation.extra_people_count || 0;
@@ -309,7 +317,8 @@ export function EditReservationDialog({
             <div className="grid grid-cols-1 gap-2">
               {extraItems.map((item: PricingItem) => {
                 const maxQty = item.maxQty ?? Infinity;
-                const isCounter = item.maxQty !== null && item.maxQty !== undefined;
+                const isCounter =
+                  item.maxQty !== null && item.maxQty !== undefined;
                 const qty = extras[item.id!] ?? 0;
 
                 if (isCounter) {
@@ -323,7 +332,8 @@ export function EditReservationDialog({
                           {item.label}
                         </span>
                         <span className="text-[8px] text-[#5A5550]/60 italic">
-                          Maks {maxQty === Infinity ? "∞" : maxQty} | +Rp {item.price.toLocaleString("id-ID")}
+                          Maks {maxQty === Infinity ? "∞" : maxQty} | +Rp{" "}
+                          {item.price.toLocaleString("id-ID")}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 ml-auto">
@@ -363,10 +373,7 @@ export function EditReservationDialog({
 
                 // Checkbox (once-off)
                 return (
-                  <div
-                    key={item.id}
-                    className="flex items-center space-x-2"
-                  >
+                  <div key={item.id} className="flex items-center space-x-2">
                     <Checkbox
                       id={`edit-extra-${item.id}`}
                       checked={qty > 0}

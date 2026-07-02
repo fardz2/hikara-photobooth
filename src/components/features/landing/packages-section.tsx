@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const PackagesSection = ({ pricing }: Props) => {
-  const packages = pricing.filter(p => p.category === "package");
+  const packages = pricing.filter((p) => p.category === "package");
   return (
     <section
       id="packages"

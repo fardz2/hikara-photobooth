@@ -4,6 +4,7 @@ import { Suspense } from "react";
 export const metadata: Metadata = {
   title: "Pemantauan Pendapatan",
 };
+
 import { RecentTransactions } from "@/components/features/revenue/recent-transactions";
 import { RevenueStats } from "@/components/features/revenue/revenue-stats";
 import { RevenueStatsSkeleton } from "@/components/skeletons/revenue-stats-skeleton";

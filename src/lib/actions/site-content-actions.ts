@@ -2,11 +2,11 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
+import { getCurrentUser } from "@/lib/services/auth-service";
 import {
   upsertSectionContent,
   upsertSiteContent,
 } from "@/lib/services/site-content-service";
-import { getCurrentUser } from "@/lib/services/auth-service";
 
 function invalidateSection(section: string) {
   updateTag(CACHE_TAGS.siteContent);

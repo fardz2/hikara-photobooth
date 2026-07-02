@@ -35,7 +35,7 @@ export async function getReservations(
   const selectColumns = `
     id, name, phone, package, date, time, status,
     total_price, payment_proof_url, payment_method,
-    extra_print_count, extra_people_count, addons, created_at
+    extra_print_count, extra_people_count, addons, extras, created_at
   `.replace(/\s+/g, "");
 
   let query = supabase
@@ -132,7 +132,7 @@ export async function getReservationById(id: string) {
   const { data, error } = await supabase
     .from("reservations")
     .select(
-      "name, phone, date, time, package, addons, extra_people_count, extra_print_count, payment_method, total_price, status",
+      "name, phone, date, time, package, addons, extras, extra_people_count, extra_print_count, payment_method, total_price, status",
     )
     .eq("id", id)
     .single();

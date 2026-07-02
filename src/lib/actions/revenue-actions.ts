@@ -2,12 +2,12 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
+import { getCurrentUser } from "@/lib/services/auth-service";
 import {
   logTransaction as insertTransaction,
   type TransactionInput,
 } from "@/lib/services/revenue-service";
 import { TransactionSchema } from "@/lib/validations/revenue";
-import { getCurrentUser } from "@/lib/services/auth-service";
 
 export type { TransactionInput };
 

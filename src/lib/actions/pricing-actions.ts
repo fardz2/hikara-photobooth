@@ -2,12 +2,12 @@
 
 import { updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
+import { getCurrentUser } from "@/lib/services/auth-service";
 import {
-  type PricingItem,
   deletePricingItem,
+  type PricingItem,
   upsertPricingItem,
 } from "@/lib/services/pricing-service";
-import { getCurrentUser } from "@/lib/services/auth-service";
 
 export async function savePricingItem(item: PricingItem) {
   const user = await getCurrentUser();

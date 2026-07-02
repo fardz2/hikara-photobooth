@@ -4,6 +4,7 @@ import { Suspense } from "react";
 export const metadata: Metadata = {
   title: "Daftar Reservasi",
 };
+
 import { ReservationList } from "@/components/features/dashboard/reservation-list";
 import { ReservationListSkeleton } from "@/components/skeletons/reservation-list-skeleton";
 import { DateRangeFilter } from "@/components/ui/date-range-filter";

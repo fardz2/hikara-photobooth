@@ -6,11 +6,11 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FadeIn } from "@/components/ui/fade-in";
+import { getAllPricing } from "@/lib/services/pricing-service";
 import {
   getReservationStats,
   getReservations,
 } from "@/lib/services/reservation-service";
-import { getAllPricing } from "@/lib/services/pricing-service";
 import { parseDateRangeParams } from "@/lib/utils/date-range";
 import type { Reservation } from "./columns";
 import { ReservationTable } from "./reservation-table";

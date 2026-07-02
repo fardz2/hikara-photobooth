@@ -56,24 +56,14 @@ class FonnteService {
       }
 
       const data = await response.json();
-      console.log("[FonnteService] Response:", JSON.stringify(data));
 
       if (!data || data.status === undefined) {
-        console.error(
-          "[FonnteService] Invalid response format:",
-          JSON.stringify(data),
-        );
         return { status: false, message: "Invalid API response" };
       }
 
       if (!data.status) {
         const errorDetail = data.message || data.reason || "Unknown error";
-        console.error(
-          `[FonnteService] Failed to send message: ${errorDetail}`,
-          JSON.stringify(data),
-        );
-      } else {
-        console.log(`[FonnteService] Message sent successfully to ${target}`);
+        console.warn(`[FonnteService] Failed: ${errorDetail}`);
       }
 
       return {

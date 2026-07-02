@@ -63,4 +63,59 @@ describe('calculateTotalPriceSync', () => {
     const expected = BASE_PRICE + (1 * EXTRA_PERSON_PRICE)
     expect(calculateTotalPriceSync(input, MOCK_PRICING)).toBe(expected)
   })
+
+  it('uses zero-price package as base (not fallback) when packageId matches a free promo', () => {
+    const freePricing: PricingItem[] = [
+      { id: "promo", label: "Promo Gratis", price: 0, category: "package" as const },
+      { id: "ext1", label: "Tambahan per Orang", price: 5000, category: "extra" as const },
+    ]
+    const result = calculateTotalPriceSync({ packageId: "promo" }, freePricing)
+    expect(result).toBe(0) // NOT 5000 (fallback first package would pick wrong one)
+  })
+
+  it('uses ?? operator correctly: first package with explicit 0 price returns 0, not second package', () => {
+    const pricing: PricingItem[] = [
+      { id: "pkg1", label: "First", price: 0, category: "package" as const },
+      { id: "pkg2", label: "Second", price: 50000, category: "package" as const },
+    ]
+    // No packageId → fallback uses first "package" item → price 0 (not 50000)
+    expect(calculateTotalPriceSync({}, pricing)).toBe(0)
+  })
+
+  it('returns base price extras=null (not provided) should not crash', () => {
+    expect(calculateTotalPriceSync({ extras: undefined }, MOCK_PRICING)).toBe(BASE_PRICE)
+  })
+
+  it('returns correct price with specific packageId that exists', () => {
+    const result = calculateTotalPriceSync({ packageId: "pkg1" }, MOCK_PRICING)
+    expect(result).toBe(BASE_PRICE)
+  })
+
+  it('returns fallback base price when specific packageId not found', () => {
+    const result = calculateTotalPriceSync({ packageId: "nonexistent" }, MOCK_PRICING)
+    // Falls back to first package category item
+    expect(result).toBe(BASE_PRICE)
+  })
+
+  it('handles extras with mixed known and unknown IDs', () => {
+    const result = calculateTotalPriceSync(
+      { extras: { ext1: 1, nonexistent: 5, ext2: 2 } },
+      MOCK_PRICING,
+    )
+    const expected = BASE_PRICE + (1 * EXTRA_PERSON_PRICE) + (2 * EXTRA_PRINT_PRICE)
+    expect(result).toBe(expected)
+  })
+
+  it('handles empty extras Record and empty addons array', () => {
+    const result = calculateTotalPriceSync({ extras: {}, addons: [] }, MOCK_PRICING)
+    expect(result).toBe(BASE_PRICE)
+  })
+
+  it('handles pricing where no package category exists', () => {
+    const noPackage: PricingItem[] = [
+      { id: "ext1", label: "Extra", price: 5000, category: "extra" as const },
+    ]
+    const result = calculateTotalPriceSync({ extras: { ext1: 1 } }, noPackage)
+    expect(result).toBe(5000) // only extras, no base
+  })
 })

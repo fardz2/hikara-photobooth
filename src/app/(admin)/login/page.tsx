@@ -4,6 +4,7 @@ import { LoginForm } from "@/components/features/auth/login-form";
 export const metadata: Metadata = {
   title: "Login Admin",
 };
+
 import { NoiseOverlay } from "@/components/ui/noise-overlay";
 
 export default function LoginPage() {

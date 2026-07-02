@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
-import { createClient } from "@/lib/supabase/server";
 import { createPublicClient } from "@/lib/supabase/public";
+import { createClient } from "@/lib/supabase/server";
 
 export type PricingCategory = "package" | "extra" | "addon";
 
@@ -81,10 +81,7 @@ export async function upsertPricingItem(item: PricingItem) {
 
 export async function deletePricingItem(id: string) {
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("pricing_items")
-    .delete()
-    .eq("id", id);
+  const { error } = await supabase.from("pricing_items").delete().eq("id", id);
   if (error) return { error: error.message };
   return { success: true };
 }

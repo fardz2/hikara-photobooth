@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
 import { revalidatePath, updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache/tags";
+import { getCurrentUser } from "@/lib/services/auth-service";
 import { fonnteService } from "@/lib/services/fonnte-service";
 import {
   checkSlotAvailability,
@@ -15,8 +16,6 @@ import {
   updateReservationStatus as updateStatus,
 } from "@/lib/services/reservation-service";
 import { calculateTotalPrice } from "@/lib/utils/price";
-import { isValidWhatsApp } from "@/lib/utils/validation";
-import { getCurrentUser } from "@/lib/services/auth-service";
 import { ReservationSchema as FormSchema } from "@/lib/validations/reservation";
 
 type ReservationInput = {
@@ -47,14 +46,6 @@ export async function submitReservation(data: ReservationInput) {
 
   const validatedData = validation.data;
 
-  if (!isValidWhatsApp(validatedData.phone)) {
-    return {
-      success: false,
-      message:
-        "Nomor WhatsApp tidak valid. Gunakan awalan 62 (contoh: 62812...).",
-    };
-  }
-
   const dateStr =
     typeof validatedData.date === "string"
       ? validatedData.date
@@ -81,7 +72,11 @@ export async function submitReservation(data: ReservationInput) {
     time: validatedData.time,
     package: validatedData.package,
     addons: validatedData.addons,
-    extra_people_count: Object.values(validatedData.extras || {}).reduce((a, b) => a + b, 0),
+    extras: validatedData.extras ?? {},
+    extra_people_count: Object.values(validatedData.extras || {}).reduce(
+      (a, b) => a + b,
+      0,
+    ),
     extra_print_count: 0,
     payment_method: validatedData.paymentMethod,
     payment_proof_url: data.paymentProofUrl || null,
@@ -267,8 +262,7 @@ export async function editReservation(
     payload.extra_people_count = validatedData.extraPeopleCount;
   if (validatedData.extraPrintCount !== undefined)
     payload.extra_print_count = validatedData.extraPrintCount;
-  if (validatedData.extras !== undefined)
-    payload.extras = validatedData.extras;
+  if (validatedData.extras !== undefined) payload.extras = validatedData.extras;
   if (validatedData.paymentMethod !== undefined)
     payload.payment_method = validatedData.paymentMethod;
 

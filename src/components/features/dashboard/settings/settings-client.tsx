@@ -2,11 +2,11 @@
 
 import { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { PricingItem } from "@/lib/services/pricing-service";
 import { PasswordForm } from "./password-form";
 import { PricingAdmin, PricingFormSkeleton } from "./pricing-admin";
 import { CONTENT_SECTIONS, SETTINGS_TABS } from "./section-config";
 import { SectionForm, SectionFormSkeleton } from "./section-form";
-import type { PricingItem } from "@/lib/services/pricing-service";
 
 interface Props {
   sectionData: Record<string, unknown>;

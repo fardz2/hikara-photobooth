@@ -90,7 +90,7 @@ export function getColumns(
       header: "Orang",
       cell: ({ row }) => {
         const extra = row.original.extra_people_count || 0;
-        const pkg = (row.original.pricing_snapshot || pricing).find(
+        const pkg = (row.original.pricing_snapshot ?? pricing).find(
           (p: PricingItem) => p.category === "package",
         );
         const total = (pkg?.maxQty ?? 4) + extra;

@@ -7,8 +7,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { savePricingItem, removePricingItem } from "@/lib/actions/pricing-actions";
-import type { PricingCategory, PricingItem } from "@/lib/services/pricing-service";
+import {
+  removePricingItem,
+  savePricingItem,
+} from "@/lib/actions/pricing-actions";
+import type {
+  PricingCategory,
+  PricingItem,
+} from "@/lib/services/pricing-service";
 
 type TabId = "package" | "extra" | "addon";
 
@@ -16,12 +22,6 @@ const TAB_LABELS: Record<TabId, string> = {
   package: "Paket Utama",
   extra: "Tambahan",
   addon: "Add-on",
-};
-
-const TAB_COLORS: Record<TabId, string> = {
-  package: "text-[#632626] border-[#632626]/30",
-  extra: "text-[#8B5E56] border-[#8B5E56]/30",
-  addon: "text-[#2C2A29]/60 border-[#2C2A29]/20",
 };
 
 const newItem = (category: PricingCategory): PricingItem => ({
@@ -84,7 +84,10 @@ export function PricingAdmin({ initial }: Props) {
       const newItems = filtered.filter((i) => !i.id);
       for (const item of newItems) {
         const res = await savePricingItem(item);
-        if ("error" in res) { toast.error(res.error); return; }
+        if ("error" in res) {
+          toast.error(res.error);
+          return;
+        }
         setItems((prev) =>
           prev.map((i) => (i === item ? { ...i, id: res.data?.id } : i)),
         );
@@ -150,7 +153,11 @@ export function PricingAdmin({ initial }: Props) {
               className="absolute top-2 right-2 size-6 flex items-center justify-center bg-white/80 hover:bg-red-50 rounded-full transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10"
               aria-label="Hapus item"
             >
-              <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} className="size-4 text-red-500" />
+              <HugeiconsIcon
+                icon={Cancel01Icon}
+                strokeWidth={2}
+                className="size-4 text-red-500"
+              />
             </button>
 
             <div className="grid grid-cols-2 gap-2">
@@ -168,7 +175,11 @@ export function PricingAdmin({ initial }: Props) {
                 pattern="[0-9]*"
                 value={item.price || ""}
                 onChange={(e) =>
-                  update(item.id, "price", Number(e.target.value.replace(/\D/g, "")) || 0)
+                  update(
+                    item.id,
+                    "price",
+                    Number(e.target.value.replace(/\D/g, "")) || 0,
+                  )
                 }
                 placeholder="Harga — contoh: 35000"
                 className="text-xs"
@@ -182,7 +193,9 @@ export function PricingAdmin({ initial }: Props) {
                   update(
                     item.id,
                     "maxQty",
-                    e.target.value ? Number(e.target.value.replace(/\D/g, "")) : null,
+                    e.target.value
+                      ? Number(e.target.value.replace(/\D/g, ""))
+                      : null,
                   )
                 }
                 placeholder="Maks Orang (opsional)"

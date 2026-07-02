@@ -54,9 +54,7 @@ export const LocationSection = ({ data }: Props) => {
           </p>
         </FadeUp>
         <FadeUp delay={0.2}>
-          <p
-            className="font-light tracking-[0.15em] text-[#EFEBDE]/60 text-xs md:text-sm mb-16 uppercase text-center max-w-xl leading-relaxed"
-          >
+          <p className="font-light tracking-[0.15em] text-[#EFEBDE]/60 text-xs md:text-sm mb-16 uppercase text-center max-w-xl leading-relaxed">
             {d.address_sub?.split("<br />").map((part: string, i: number) => (
               <span key={i}>
                 {i > 0 && <br />}
