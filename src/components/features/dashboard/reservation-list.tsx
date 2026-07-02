@@ -39,15 +39,12 @@ export const ReservationList = async ({ searchParams }: Props) => {
     getAllPricing(),
   ]);
 
-  const reservations = (data as any[] | null)?.map((item) => ({
-    ...item,
-    status: item.status as "pending" | "confirmed" | "cancelled",
-  })) as Reservation[] | null;
+  const reservations = (data ?? []) as unknown as Reservation[];
 
   if (error) {
     return (
       <div className="bg-red-50 text-red-600 p-6 border border-red-100 uppercase text-[10px] tracking-widest">
-        Error fetching reservations: {error.message}
+        Error memuat reservasi: {error.message}
       </div>
     );
   }

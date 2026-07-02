@@ -295,7 +295,7 @@ export async function editReservation(
 export async function getBookedSlots(date: string): Promise<string[]> {
   try {
     return await fetchBookedSlots(date);
-  } catch (err) {
+  } catch (err: unknown) {
     console.error(`[BE] Error fetching slots for ${date}:`, err);
     return [];
   }

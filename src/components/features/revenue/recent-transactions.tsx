@@ -35,15 +35,12 @@ export const RecentTransactions = async ({ searchParams }: Props) => {
     10,
     q,
   );
-  const transactions = (data as any[] | null)?.map((item) => ({
-    ...item,
-    status: item.status as "pending" | "confirmed" | "cancelled",
-  })) as Reservation[] | null;
+  const transactions = (data ?? []) as unknown as Reservation[];
 
   if (error) {
     return (
       <div className="bg-red-50 text-red-600 p-6 border border-red-100 uppercase text-[10px] tracking-widest">
-        Error fetching transactions: {error.message}
+        Error memuat transaksi: {error.message}
       </div>
     );
   }

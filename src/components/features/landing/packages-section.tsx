@@ -72,7 +72,7 @@ export const PackagesSection = ({ pricing }: Props) => {
             )}
             {packages.map((item, idx) => (
               <StaggerItem
-                key={idx}
+                key={item.id ?? `pkg-${idx}`}
                 className="flex flex-col md:flex-row justify-between items-center md:items-end border-b border-[#2C2A29]/20 pb-6 text-center md:text-left gap-2 md:gap-0 group hover:border-[#8B5E56] transition-colors duration-500 relative"
               >
                 <div className="relative z-10 w-full md:w-auto">

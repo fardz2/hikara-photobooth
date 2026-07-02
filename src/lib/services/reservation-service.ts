@@ -4,6 +4,9 @@ import { CACHE_TAGS } from "@/lib/cache/tags";
 import { createPublicClient } from "@/lib/supabase/public";
 import { createClient } from "@/lib/supabase/server";
 
+// Escape PostgreSQL LIKE wildcards (% and _) in user input
+const escapeIlike = (s: string) => s.replace(/[%_]/g, (c) => `\\${c}`);
+
 // ─── Read: public, cached (booked slots) ───
 
 export async function getBookedSlots(date: string) {
@@ -48,7 +51,7 @@ export async function getReservations(
   if (from) query = query.gte("date", from);
   if (to) query = query.lte("date", to);
   if (status && status !== "all") query = query.eq("status", status);
-  if (search) query = query.ilike("name", `%${search}%`);
+  if (search) query = query.ilike("name", `%${escapeIlike(search)}%`);
 
   const fromRange = (page - 1) * pageSize;
   const toRange = fromRange + pageSize - 1;
@@ -69,7 +72,7 @@ export async function getReservationStats(
       .select("*", { count: "exact", head: true });
     if (from) query = query.gte("date", from);
     if (to) query = query.lte("date", to);
-    if (search) query = query.ilike("name", `%${search}%`);
+    if (search) query = query.ilike("name", `%${escapeIlike(search)}%`);
     if (status) query = query.eq("status", status);
     return query;
   };

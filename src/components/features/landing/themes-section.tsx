@@ -355,7 +355,7 @@ export const ThemesSection = ({ items }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-x-24 md:gap-y-32">
           {themes.map((theme, idx) => (
             <div
-              key={idx}
+              key={theme.name}
               className="flex flex-col md:flex-row gap-8 md:gap-10 group cursor-pointer items-start"
             >
               <div className="w-full md:w-1/2">

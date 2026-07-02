@@ -35,10 +35,7 @@ export const ReservationSchema = z.object({
   extraPeopleCount: z.number().min(0).max(10).default(0),
   extraPrintCount: z.number().min(0).max(10).default(0),
   paymentMethod: z.enum(["tunai", "qris"]),
-  paymentProofUrl: z
-    .string()
-    .url("URL bukti bayar tidak valid")
-    .optional(),
+  paymentProofUrl: z.string().url("URL bukti bayar tidak valid").optional(),
 });
 
 export type ReservationValues = z.output<typeof ReservationSchema>;
